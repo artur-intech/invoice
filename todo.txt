@@ -1,0 +1,3 @@
+TODO
+- Update/delete clients, suppliers
+- Error handling (non-existent supplier and client id when adding invoices)

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+  <!-- Used by vscode "Run test" feature. -->
+  <NUnit>
+    <Verbosity>-1</Verbosity>
+    <!-- <ConsoleOut>1</ConsoleOut> -->
+    <!-- https://docs.nunit.org/articles/vs-test-adapter/Tips-And-Tricks.html#consoleout -->
+  </NUnit>
+  <RunConfiguration>
+    <EnvironmentVariables>
+      <!-- Overrides the ones in devcontainer.json -->
+      <PG_DATABASE>test</PG_DATABASE>
+      <TIME_ZONE>utc</TIME_ZONE>
+    </EnvironmentVariables>
+  </RunConfiguration>
+</RunSettings>

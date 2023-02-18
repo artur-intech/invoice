@@ -1,0 +1,36 @@
+{
+    "files.eol": "\n",
+    "files.defaultLanguage": "csharp",
+    "csharp.referencesCodeLens.enabled": false,
+    "omnisharp.enableRoslynAnalyzers": true,
+    "omnisharp.disableMSBuildDiagnosticWarning": true,
+    "omnisharp.organizeImportsOnFormat": true,
+    "omnisharp.testRunSettings": ".runsettings",
+    "vscode-postgres.defaultConnection": "db",
+    "vscode-postgres.defaultDatabase": "postgres",
+    // Used by vscode "Debug test" feature.
+    "csharp.unitTestDebuggingOptions": {
+        "env": {
+            "PG_DATABASE": "test"
+        }
+    },
+    "search.exclude": {
+        "bin/": true,
+        "obj/": true,
+    },
+    "files.watcherExclude": {
+        "**/.git/objects/**": true,
+        "**/.git/subtree-cache/**": true,
+        "**/node_modules/*/**": true,
+        "**/.hg/store/**": true,
+        "bin/": true,
+        "obj/": true
+    },
+    "cSpell.words": [
+        "darkgray",
+        "dimgray",
+        "iban",
+        "Intech",
+        "Npgsql"
+    ],
+}

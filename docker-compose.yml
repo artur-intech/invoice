@@ -1,0 +1,21 @@
+version: "3.9"
+services:
+  app:
+    build:
+      context: .
+    depends_on:
+      - db
+    environment:
+      PG_HOST: db
+      PG_PASSWORD: postgres
+
+  db:
+    image: postgres:14
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+
+volumes:
+  pg-data:

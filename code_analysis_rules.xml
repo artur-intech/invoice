@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RuleSet Name="Rules for Core Application" Description="Custom Rules" ToolsVersion="16.0">
+  <Rules AnalyzerId="Microsoft.CodeAnalysis.CSharp.Features" RuleNamespace="Microsoft.CodeAnalysis.CSharp.Features">
+    <!-- Do not require "I" prefix for interfaces -->
+    <Rule Id="IDE1006" Action="None" />
+    <!-- Mark members as static -->
+    <Rule Id="CA1822" Action="None" />
+  </Rules>
+</RuleSet>

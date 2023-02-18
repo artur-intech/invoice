@@ -1,0 +1,1 @@
+TRUNCATE suppliers, clients, invoices, line_items CASCADE;

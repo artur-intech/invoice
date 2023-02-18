@@ -1,0 +1,132 @@
+using System.Collections.Immutable;
+using System.Globalization;
+using Intech.Invoice;
+using Npgsql;
+
+var envPgHost = Environment.GetEnvironmentVariable("PG_HOST");
+var envPgUser = Environment.GetEnvironmentVariable("PG_USER");
+var envPgPassword = Environment.GetEnvironmentVariable("PG_PASSWORD");
+var envPgDatabase = Environment.GetEnvironmentVariable("PG_DATABASE");
+var dbConnectionString = $"Server={envPgHost}; User Id={envPgUser}; Password={envPgPassword}; Database={envPgDatabase}";
+using var pgDataSource = NpgsqlDataSource.Create(dbConnectionString);
+
+var envCulture = Environment.GetEnvironmentVariable("CULTURE");
+
+if (envCulture is not null)
+{
+    CultureInfo.CurrentCulture = new CultureInfo(envCulture);
+}
+
+var envTimeZone = Environment.GetEnvironmentVariable("TIME_ZONE");
+var timeZone = envTimeZone is not null ? TimeZoneInfo.FindSystemTimeZoneById(envTimeZone) : TimeZoneInfo.Local;
+
+var systemClock = new SystemClock(timeZone);
+
+var supportedCommands = ImmutableHashSet.Create("supplier create", "client create", "invoice create",
+    "invoice pdf", "invoice details", "invoice list");
+var currentCommand = string.Join(" ", args.Take(2));
+
+if (args.Length < 2 || !supportedCommands.Contains(currentCommand))
+{
+    Console.Write($"""
+    Please provide one of the supported commands:
+    {string.Join("\n", supportedCommands)}.
+    """);
+}
+else
+{
+    switch (currentCommand)
+    {
+        case "supplier create":
+            {
+                Console.WriteLine("Enter supplier name:");
+                var supplierName = Console.ReadLine();
+
+                Console.WriteLine("Enter supplier address:");
+                var supplierAddress = Console.ReadLine();
+
+                Console.WriteLine("Enter supplier VAT number:");
+                var supplierVatNumber = Console.ReadLine();
+
+                Console.WriteLine("Enter supplier IBAN:");
+                var supplierIban = Console.ReadLine();
+
+                var pgSuppliers = new PgSuppliers(pgDataSource);
+                var supplier = pgSuppliers.Add(supplierName, supplierAddress, supplierVatNumber, supplierIban);
+
+                Console.Write($"Supplier {supplier} has been created.");
+                break;
+            }
+        case "client create":
+            {
+                Console.WriteLine("Enter client name:");
+                var clientName = Console.ReadLine();
+
+                Console.WriteLine("Enter client address:");
+                var clientAddress = Console.ReadLine();
+
+                Console.WriteLine("Enter client VAT number:");
+                var clientVatNumber = Console.ReadLine();
+
+                var pgClients = new PgClients(pgDataSource);
+                var client = pgClients.Add(clientName, clientAddress, clientVatNumber);
+
+                Console.Write($"Client {client} has been created.");
+                break;
+            }
+        case "invoice create":
+            {
+                Console.WriteLine("Enter supplier id:");
+                int supplierId = int.Parse(Console.ReadLine());
+
+                Console.WriteLine("Enter client id:");
+                int clientId = int.Parse(Console.ReadLine());
+
+                Console.WriteLine("Enter line item name:");
+                string lineItemName = Console.ReadLine();
+
+                Console.WriteLine("Enter line item price:");
+                int lineItemPrice = int.Parse(Console.ReadLine());
+
+                Console.WriteLine("Enter line item quantity:");
+                int lineItemQuantity = int.Parse(Console.ReadLine());
+
+                var invoiceDate = systemClock.TodayInAppTimeZone();
+                using var pgConnection = pgDataSource.OpenConnection();
+
+                using var pgTransaction = pgConnection.BeginTransaction();
+                var invoice = new PgInvoices(pgDataSource).Add(
+                    number: new TimestampedNumber(systemClock).ToString(),
+                    date: invoiceDate,
+                    dueDate: DueDate.Standard(invoiceDate).Date(),
+                    vatRate: new ReverseChargedVatRate().IntValue(),
+                    supplierId: supplierId,
+                    clientId: clientId);
+                new PgLineItems(pgDataSource).Add(invoice.Id(), lineItemName, lineItemPrice, lineItemQuantity);
+                pgTransaction.Commit();
+
+                Console.WriteLine($"Invoice {invoice} has been issued.");
+                break;
+            }
+        case "invoice pdf":
+            {
+                int invoiceId = int.Parse(args[2]);
+                var invoice = new PgInvoice(invoiceId, pgDataSource);
+                invoice.SavePdf();
+
+                Console.Write($"Invoice PDF has been saved.");
+                break;
+            }
+        case "invoice details":
+            {
+                int invoiceId = int.Parse(args[2]);
+                new ConsoleInvoiceDetails(new PgInvoice(invoiceId, pgDataSource), new ConsoleMedia()).Print();
+                break;
+            }
+        case "invoice list":
+            {
+                new ConsoleInvoiceList(new PgInvoices(pgDataSource).Fetch()).Print();
+                break;
+            }
+    }
+}
