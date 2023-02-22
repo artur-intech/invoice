@@ -6,34 +6,6 @@ namespace Intech.Invoice.Test;
 class ConsoleTests : TestsBase
 {
     [Test]
-    public void NoArgument()
-    {
-        var capturedStdOut = CapturedStdOut(() =>
-        {
-            RunApp();
-        });
-
-        Assert.AreEqual($"""
-            Please provide one of the supported commands:
-            {string.Join("\n", SupportedCommands())}.
-            """, capturedStdOut);
-    }
-
-    [Test]
-    public void InvalidArguments()
-    {
-        var capturedStdOut = CapturedStdOut(() =>
-        {
-            RunApp(arguments: new string[] { "invalid", "command" });
-        });
-
-        Assert.AreEqual($"""
-            Please provide one of the supported commands:
-            {string.Join("\n", SupportedCommands())}.
-            """, capturedStdOut);
-    }
-
-    [Test]
     [Property("SkipFixtureCreation", "true")]
     public void CreatesSupplier()
     {
@@ -188,6 +160,34 @@ class ConsoleTests : TestsBase
             Date: {invoice.Date}
             Due date: {invoice.DueDate}
             Total: {invoice.Total}
+            """, capturedStdOut);
+    }
+
+    [Test]
+    public void NoArguments()
+    {
+        var capturedStdOut = CapturedStdOut(() =>
+        {
+            RunApp();
+        });
+
+        Assert.AreEqual($"""
+            Please provide one of the supported commands:
+            {string.Join("\n", SupportedCommands())}.
+            """, capturedStdOut);
+    }
+
+    [Test]
+    public void InvalidArguments()
+    {
+        var capturedStdOut = CapturedStdOut(() =>
+        {
+            RunApp(arguments: new string[] { "invalid", "command" });
+        });
+
+        Assert.AreEqual($"""
+            Please provide one of the supported commands:
+            {string.Join("\n", SupportedCommands())}.
             """, capturedStdOut);
     }
 
