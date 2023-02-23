@@ -191,6 +191,32 @@ class ConsoleTests : TestsBase
             """, capturedStdOut);
     }
 
+    [Test]
+    [Property("SkipFixtureCreation", "true")]
+    public void ValidatesUserInput()
+    {
+        Assert.Zero((long)pgDataSource.CreateCommand("SELECT COUNT(*) FROM suppliers").ExecuteScalar());
+
+        var stdIn = " ";
+
+        var capturedStdOut = CapturedStdOut(() =>
+        {
+            SubstituteStdIn(stdIn, () =>
+            {
+                RunApp(arguments: new string[] { "supplier", "create" });
+            });
+        });
+
+        Assert.AreEqual($"""
+            Enter supplier name:
+            Enter supplier address:
+            Enter supplier VAT number:
+            Enter supplier IBAN:
+            Supplier name cannot be empty.
+            """, capturedStdOut);
+        Assert.Zero((long)pgDataSource.CreateCommand("SELECT COUNT(*) FROM suppliers").ExecuteScalar());
+    }
+
     IImmutableSet<string> SupportedCommands()
     {
         return ImmutableHashSet.Create("supplier create", "client create", "invoice create",
