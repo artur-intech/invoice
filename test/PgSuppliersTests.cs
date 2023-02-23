@@ -28,4 +28,14 @@ class PgSuppliersTests : TestsBase
         Assert.AreEqual(vatNumber, reader["vat_number"]);
         Assert.AreEqual(iban, reader["iban"]);
     }
+
+    [Test]
+    public void UniqNameDatabaseConstraint()
+    {
+        dynamic existingSupplier = fixtures["suppliers"]["one"];
+        Assert.Throws(typeof(Npgsql.PostgresException), () =>
+        {
+            new PgSuppliers(pgDataSource).Add(name: existingSupplier.Name, address: "any", vatNumber: "any", iban: "any");
+        });
+    }
 }

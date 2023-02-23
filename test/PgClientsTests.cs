@@ -26,4 +26,14 @@ class PgClientsTests : TestsBase
         Assert.AreEqual(address, reader["address"]);
         Assert.AreEqual(vatNumber, reader["vat_number"]);
     }
+
+    [Test]
+    public void UniqNameDatabaseConstraint()
+    {
+        dynamic existingClient = fixtures["clients"]["one"];
+        Assert.Throws(typeof(Npgsql.PostgresException), () =>
+        {
+            new PgClients(pgDataSource).Add(name: existingClient.Name, address: "any", vatNumber: "any");
+        });
+    }
 }
