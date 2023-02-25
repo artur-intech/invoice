@@ -1,4 +1,5 @@
 using System.Collections.Immutable;
+using System.Dynamic;
 using NUnit.Framework;
 
 namespace Intech.Invoice.Test;
@@ -94,13 +95,14 @@ class ConsoleTests : TestsBase
             });
         });
 
-        StringAssert.IsMatch("""
+        dynamic createdDbRow = LastInvoiceDbRow();
+        StringAssert.IsMatch($"""
             Enter supplier id:
             Enter client id:
             Enter line item name:
             Enter line item price:
             Enter line item quantity:
-            Invoice .* has been issued.
+            Invoice {createdDbRow.Number} has been issued.
             """, capturedStdOut);
         Assert.AreEqual(1, pgDataSource.CreateCommand("SELECT COUNT(*) FROM invoices").ExecuteScalar());
         Assert.AreEqual(1, pgDataSource.CreateCommand("SELECT COUNT(*) FROM line_items").ExecuteScalar());
@@ -221,5 +223,17 @@ class ConsoleTests : TestsBase
     {
         return ImmutableHashSet.Create("supplier create", "client create", "invoice create",
             "invoice pdf", "invoice details", "invoice list");
+    }
+
+    ExpandoObject LastInvoiceDbRow()
+    {
+        using var command = pgDataSource.CreateCommand("SELECT * FROM invoices ORDER BY id DESC LIMIT 1");
+        using var reader = command.ExecuteReader();
+        reader.Read();
+
+        dynamic invoice = new ExpandoObject();
+        invoice.Number = reader["number"];
+
+        return invoice;
     }
 }
