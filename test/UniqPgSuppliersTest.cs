@@ -2,7 +2,7 @@ using NUnit.Framework;
 
 namespace Intech.Invoice.Test;
 
-class UniqPgSuppliersTests : TestsBase
+class UniqPgSuppliersTest : TestBase
 {
     [Test]
     public void ValidatesSupplierNameUniqueness()

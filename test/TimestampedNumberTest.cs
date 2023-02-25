@@ -2,7 +2,7 @@ using NUnit.Framework;
 
 namespace Intech.Invoice.Test;
 
-public class TimestampedNumberTests
+public class TimestampedNumberTest
 {
     [Test]
     public void RepresentsItselfAsString()

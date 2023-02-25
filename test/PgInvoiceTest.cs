@@ -2,7 +2,7 @@ using NUnit.Framework;
 
 namespace Intech.Invoice.Test;
 
-class PgInvoiceTests : TestsBase
+class PgInvoiceTest : TestBase
 {
     [Test]
     public void RepresentsItselfAsString()

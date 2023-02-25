@@ -2,7 +2,7 @@ using NUnit.Framework;
 
 namespace Intech.Invoice.Test;
 
-class StrictPgSuppliersTests : TestsBase
+class StrictPgSuppliersTest : TestBase
 {
     [Test]
     [TestCase("")]

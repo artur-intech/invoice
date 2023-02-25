@@ -4,7 +4,7 @@ using NUnit.Framework;
 
 namespace Intech.Invoice.Test;
 
-class ConsoleTests : TestsBase
+class ConsoleTest : TestBase
 {
     [Test]
     [Property("SkipFixtureCreation", "true")]

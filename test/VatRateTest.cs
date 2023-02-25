@@ -2,7 +2,7 @@ using NUnit.Framework;
 
 namespace Intech.Invoice.Test;
 
-class VatRateTests
+class VatRateTest
 {
     [Test]
     public void CreatesStandard()
