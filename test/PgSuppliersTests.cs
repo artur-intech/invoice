@@ -1,3 +1,4 @@
+using System.Dynamic;
 using NUnit.Framework;
 
 namespace Intech.Invoice.Test;
@@ -15,18 +16,14 @@ class PgSuppliersTests : TestsBase
         var vatNumber = "vat_number";
         var iban = "iban";
 
-        var addedId = new PgSuppliers(pgDataSource).Add(name: name, address: address, vatNumber: vatNumber, iban: iban).Id();
+        var createdSupplierId = new PgSuppliers(pgDataSource).Add(name: name, address: address, vatNumber: vatNumber, iban: iban).Id();
 
         Assert.AreEqual(1, pgDataSource.CreateCommand("SELECT COUNT(*) FROM suppliers").ExecuteScalar());
-        var sql = "SELECT * FROM suppliers WHERE id = $1";
-        using var command = pgDataSource.CreateCommand(sql);
-        command.Parameters.AddWithValue(addedId);
-        using var reader = command.ExecuteReader();
-        reader.Read();
-        Assert.AreEqual(name, reader["name"]);
-        Assert.AreEqual(address, reader["address"]);
-        Assert.AreEqual(vatNumber, reader["vat_number"]);
-        Assert.AreEqual(iban, reader["iban"]);
+        dynamic dbRow = DbRow(createdSupplierId);
+        Assert.AreEqual(name, dbRow.Name);
+        Assert.AreEqual(address, dbRow.Address);
+        Assert.AreEqual(vatNumber, dbRow.VatNumber);
+        Assert.AreEqual(iban, dbRow.Iban);
     }
 
     [Test]
@@ -37,5 +34,21 @@ class PgSuppliersTests : TestsBase
         {
             new PgSuppliers(pgDataSource).Add(name: existingSupplier.Name, address: "any", vatNumber: "any", iban: "any");
         });
+    }
+
+    ExpandoObject DbRow(int id)
+    {
+        using var command = pgDataSource.CreateCommand("SELECT * FROM suppliers WHERE id = $1");
+        command.Parameters.AddWithValue(id);
+        using var reader = command.ExecuteReader();
+        reader.Read();
+
+        dynamic row = new ExpandoObject();
+        row.Name = reader["name"];
+        row.Address = reader["address"];
+        row.VatNumber = reader["vat_number"];
+        row.Iban = reader["iban"];
+
+        return row;
     }
 }
