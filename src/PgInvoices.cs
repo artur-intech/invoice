@@ -50,7 +50,7 @@ sealed class PgInvoices : Invoices
             suppliers s,
             clients c
             WHERE
-            s.id = $6 AND c.id = $7
+            s.id = $6 AND c.id = $1
             RETURNING id
             """;
 
@@ -61,7 +61,6 @@ sealed class PgInvoices : Invoices
         command.Parameters.AddWithValue(dueDate);
         command.Parameters.AddWithValue(vatRate);
         command.Parameters.AddWithValue(supplierId);
-        command.Parameters.AddWithValue(clientId);
         int addedId = (int)command.ExecuteScalar();
 
         return new PgInvoice(addedId, pgDataSource);
