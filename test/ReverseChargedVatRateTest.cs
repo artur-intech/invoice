@@ -2,7 +2,7 @@ using NUnit.Framework;
 
 namespace Intech.Invoice.Test;
 
-public class ReverseChargedVatRateTests
+public class ReverseChargedVatRateTest
 {
     [Test]
     public void RepresentsItselfAsInteger()

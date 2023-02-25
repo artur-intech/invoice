@@ -2,7 +2,7 @@ using NUnit.Framework;
 
 namespace Intech.Invoice.Test;
 
-class DueDateTests
+class DueDateTest
 {
     [Test]
     public void CreatesStandard()
