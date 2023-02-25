@@ -1,3 +1,6 @@
 TODO
 - Update/delete clients, suppliers
-- Error handling (non-existent supplier and client id when adding invoices)
+- Database constraints for empty strings
+- Find SQL manipulation library
+- Invoice supplier and client id validation
+- Show full exception details in dev mode
