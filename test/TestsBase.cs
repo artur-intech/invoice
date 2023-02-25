@@ -31,18 +31,19 @@ class TestsBase
         var skipFixtures = (skipFixturesProperty is not null) ? bool.Parse(skipFixturesProperty.ToString()) : false;
         if (skipFixtures) return;
 
-        var supplier = new SupplierFixtures(pgDataSource).Create();
+        var firstSupplier = new SupplierFixtures(pgDataSource).Create();
+        var secondSupplier = new SupplierFixtures(pgDataSource).Create(name: "best supplier");
         var client = new ClientFixtures(pgDataSource).Create();
         var invoices = new InvoiceFixtures(pgDataSource);
 
-        var invoiceId = invoices.Create(supplier.Id, client.Id);
+        var invoiceId = invoices.Create(firstSupplier.Id, client.Id);
         var lineItem = new LineItemFixtures(pgDataSource).Create(invoiceId);
 
         var invoice = invoices.Fetch(invoiceId);
 
         fixtures = new Dictionary<string, Dictionary<string, object>>
         {
-            { "suppliers", new Dictionary<string, object> { { "one", supplier } } },
+            { "suppliers", new Dictionary<string, object> { { "one", firstSupplier }, { "two", secondSupplier } } },
             { "clients", new Dictionary<string, object> { { "one", client } } },
             { "invoices", new Dictionary<string, object> { { "one", invoice } } },
             { "line_items", new Dictionary<string, object> { { "one", lineItem } } }
@@ -52,8 +53,9 @@ class TestsBase
     // TODO Remove duplication
     protected void CreateSupplierFixtures()
     {
-        var fixture = new SupplierFixtures(pgDataSource).Create();
-        fixtures.Add("suppliers", new Dictionary<string, object> { { "one", fixture } });
+        var firstFixture = new SupplierFixtures(pgDataSource).Create();
+        var secondFixture = new SupplierFixtures(pgDataSource).Create(name: "best supplier");
+        fixtures.Add("suppliers", new Dictionary<string, object> { { "one", firstFixture }, { "two", secondFixture } });
     }
 
     // TODO Remove duplication
