@@ -19,7 +19,7 @@ class PgInvoicesTest : Base
         var dueDate = new DateOnly(1970, 01, 02);
         var vatRate = 20;
 
-        var addedId = new PgInvoices(pgDataSource).Add(number: number,
+        var createdInvoiceId = new PgInvoices(pgDataSource).Add(number: number,
                                                        date: date,
                                                        dueDate: dueDate,
                                                        vatRate: vatRate,
@@ -29,7 +29,7 @@ class PgInvoicesTest : Base
         Assert.AreEqual(1, pgDataSource.CreateCommand("SELECT COUNT(*) FROM invoices").ExecuteScalar());
         var sql = "SELECT * FROM invoices WHERE id = $1";
         using var command = pgDataSource.CreateCommand(sql);
-        command.Parameters.AddWithValue(addedId);
+        command.Parameters.AddWithValue(createdInvoiceId);
         using var reader = command.ExecuteReader();
         reader.Read();
         Assert.AreEqual(number, reader["number"]);
