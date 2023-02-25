@@ -3,12 +3,12 @@ using NUnit.Framework;
 
 namespace Intech.Invoice.Test;
 
-class TestBase
+class Base
 {
     protected NpgsqlDataSource? pgDataSource;
     protected Dictionary<string, Dictionary<string, object>>? fixtures;
 
-    public TestBase()
+    public Base()
     {
         fixtures = new Dictionary<string, Dictionary<string, object>>();
     }

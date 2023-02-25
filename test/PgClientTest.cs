@@ -2,7 +2,7 @@ using NUnit.Framework;
 
 namespace Intech.Invoice.Test;
 
-class PgClientTest : TestBase
+class PgClientTest : Base
 {
     [Test]
     public void ReturnsName()

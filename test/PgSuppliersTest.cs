@@ -3,7 +3,7 @@ using NUnit.Framework;
 
 namespace Intech.Invoice.Test;
 
-class PgSuppliersTest : TestBase
+class PgSuppliersTest : Base
 {
     [Test]
     [Property("SkipFixtureCreation", "true")]
