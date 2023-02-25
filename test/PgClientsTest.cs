@@ -15,10 +15,10 @@ class PgClientsTest : Base
         var address = "address";
         var vatNumber = "vat_number";
 
-        var addedId = new PgClients(pgDataSource).Add(name: name, address: address, vatNumber: vatNumber).Id();
+        var createdClientId = new PgClients(pgDataSource).Add(name: name, address: address, vatNumber: vatNumber).Id();
 
         Assert.AreEqual(1, pgDataSource.CreateCommand("SELECT COUNT(*) FROM clients").ExecuteScalar());
-        dynamic dbRow = DbRow(addedId);
+        dynamic dbRow = DbRow(createdClientId);
         Assert.AreEqual(name, dbRow.Name);
         Assert.AreEqual(address, dbRow.Address);
         Assert.AreEqual(vatNumber, dbRow.VatNumber);
