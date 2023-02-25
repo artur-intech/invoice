@@ -1,3 +1,4 @@
+using System.Dynamic;
 using NUnit.Framework;
 
 namespace Intech.Invoice.Test;
@@ -17,14 +18,10 @@ class PgClientsTest : Base
         var addedId = new PgClients(pgDataSource).Add(name: name, address: address, vatNumber: vatNumber).Id();
 
         Assert.AreEqual(1, pgDataSource.CreateCommand("SELECT COUNT(*) FROM clients").ExecuteScalar());
-        var sql = "SELECT * FROM clients WHERE id = $1";
-        using var command = pgDataSource.CreateCommand(sql);
-        command.Parameters.AddWithValue(addedId);
-        using var reader = command.ExecuteReader();
-        reader.Read();
-        Assert.AreEqual(name, reader["name"]);
-        Assert.AreEqual(address, reader["address"]);
-        Assert.AreEqual(vatNumber, reader["vat_number"]);
+        dynamic dbRow = DbRow(addedId);
+        Assert.AreEqual(name, dbRow.Name);
+        Assert.AreEqual(address, dbRow.Address);
+        Assert.AreEqual(vatNumber, dbRow.VatNumber);
     }
 
     [Test]
@@ -35,5 +32,20 @@ class PgClientsTest : Base
         {
             new PgClients(pgDataSource).Add(name: existingClient.Name, address: "any", vatNumber: "any");
         });
+    }
+
+    ExpandoObject DbRow(int id)
+    {
+        using var command = pgDataSource.CreateCommand("SELECT * FROM clients WHERE id = $1");
+        command.Parameters.AddWithValue(id);
+        using var reader = command.ExecuteReader();
+        reader.Read();
+
+        dynamic row = new ExpandoObject();
+        row.Name = reader["name"];
+        row.Address = reader["address"];
+        row.VatNumber = reader["vat_number"];
+
+        return row;
     }
 }
