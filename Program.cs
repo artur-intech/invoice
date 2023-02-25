@@ -77,7 +77,7 @@ try
                 }
             case "invoice create":
                 {
-                    Console.WriteLine("Enter supplier id:");
+                    Console.WriteLine($"Enter supplier id{new SupplierHint(new PgSuppliers(pgDataSource))}:");
                     int supplierId = int.Parse(Console.ReadLine());
 
                     Console.WriteLine("Enter client id:");
@@ -106,7 +106,7 @@ try
                     new PgLineItems(pgDataSource).Add(invoice.Id(), lineItemName, lineItemPrice, lineItemQuantity);
                     pgTransaction.Commit();
 
-                    Console.WriteLine($"Invoice {invoice} has been issued.");
+                    Console.Write($"Invoice {invoice} has been issued.");
                     break;
                 }
             case "invoice pdf":

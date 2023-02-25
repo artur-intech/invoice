@@ -1,3 +1,4 @@
+using System.Collections;
 using Npgsql;
 
 namespace Intech.Invoice;
@@ -21,6 +22,16 @@ sealed class UniqPgSuppliers : Suppliers
         }
 
         return origin.Add(name: name, address: address, vatNumber: vatNumber, iban: iban);
+    }
+
+    public IEnumerator<Supplier> GetEnumerator()
+    {
+        return origin.GetEnumerator();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return ((IEnumerable)origin).GetEnumerator();
     }
 
     bool NameExists(string name)
