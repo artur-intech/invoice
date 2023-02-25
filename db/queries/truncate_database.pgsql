@@ -1,1 +1,1 @@
-TRUNCATE suppliers, clients, invoices, line_items CASCADE;
+TRUNCATE suppliers, clients, invoices, line_items RESTART IDENTITY CASCADE;
