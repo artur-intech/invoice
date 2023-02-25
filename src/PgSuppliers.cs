@@ -1,3 +1,4 @@
+using System.Collections;
 using Npgsql;
 
 namespace Intech.Invoice;
@@ -35,5 +36,22 @@ sealed class PgSuppliers : Suppliers
         int id = (int)command.ExecuteScalar();
 
         return new PgSupplier(id, pgDataSource);
+    }
+
+    public IEnumerator<Supplier> GetEnumerator()
+    {
+        using var command = pgDataSource.CreateCommand("SELECT id FROM suppliers");
+        using var reader = command.ExecuteReader();
+
+        while (reader.Read())
+        {
+            var id = (int)reader["id"];
+            yield return new PgSupplier(id, pgDataSource);
+        }
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
     }
 }

@@ -1,3 +1,5 @@
+using System.Collections;
+
 namespace Intech.Invoice;
 
 sealed class StrictPgSuppliers : Suppliers
@@ -27,5 +29,15 @@ sealed class StrictPgSuppliers : Suppliers
         }
 
         return origin.Add(name: name, address: address, vatNumber: vatNumber, iban: iban);
+    }
+
+    public IEnumerator<Supplier> GetEnumerator()
+    {
+        return origin.GetEnumerator();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return ((IEnumerable)origin).GetEnumerator();
     }
 }
