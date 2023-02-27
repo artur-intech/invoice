@@ -61,9 +61,16 @@ sealed class PgInvoices : Invoices
         command.Parameters.AddWithValue(dueDate);
         command.Parameters.AddWithValue(vatRate);
         command.Parameters.AddWithValue(supplierId);
-        int addedId = (int)command.ExecuteScalar();
+        object result = command.ExecuteScalar();
 
-        return new PgInvoice(addedId, pgDataSource);
+        if (result is null)
+        {
+            throw new Exception("Database query didn't return invoice id.");
+        }
+
+        var id = (int)result;
+
+        return new PgInvoice(id, pgDataSource);
     }
 
     public IEnumerable<PgInvoice> Fetch()
