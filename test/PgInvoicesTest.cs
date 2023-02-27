@@ -15,10 +15,10 @@ class PgInvoicesTest : Base
         CreateClientFixtures();
         dynamic supplier = fixtures["suppliers"]["one"];
         dynamic client = fixtures["clients"]["one"];
-        var number = "1234";
-        var date = new DateOnly(1970, 01, 01);
-        var dueDate = new DateOnly(1970, 01, 02);
-        var vatRate = 20;
+        var number = ValidNumber();
+        var date = ValidDate();
+        var dueDate = ValidDueDate();
+        var vatRate = ValidVatRate();
 
         var createdInvoiceId = new PgInvoices(pgDataSource).Add(number: number,
                                                        date: date,
@@ -51,10 +51,10 @@ class PgInvoicesTest : Base
 
         var exception = Assert.Throws(typeof(Exception), () =>
             {
-                new PgInvoices(pgDataSource).Add(number: "valid",
-                    date: DateOnly.FromDateTime(DateTime.Now),
-                    dueDate: DateOnly.FromDateTime(DateTime.Now),
-                    vatRate: 1,
+                new PgInvoices(pgDataSource).Add(number: ValidNumber(),
+                    date: ValidDate(),
+                    dueDate: ValidDueDate(),
+                    vatRate: ValidVatRate(),
                     supplierId: nonexistentSupplierId,
                     clientId: client.Id);
             });
@@ -83,5 +83,25 @@ class PgInvoicesTest : Base
         row.ClientVatNumber = reader["client_vat_number"];
 
         return row;
+    }
+
+    string ValidNumber()
+    {
+        return "1234";
+    }
+
+    DateOnly ValidDate()
+    {
+        return new DateOnly(1970, 01, 01);
+    }
+
+    DateOnly ValidDueDate()
+    {
+        return new DateOnly(1970, 01, 02);
+    }
+
+    int ValidVatRate()
+    {
+        return 20;
     }
 }
