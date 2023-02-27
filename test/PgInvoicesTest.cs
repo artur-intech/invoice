@@ -43,6 +43,24 @@ class PgInvoicesTest : Base
         Assert.AreEqual(client.VatNumber, dbRow.ClientVatNumber);
     }
 
+    [Test]
+    public void ThrowsExceptionWhenSupplierDoesNotExist()
+    {
+        dynamic client = fixtures["clients"]["one"];
+        var nonexistentSupplierId = 99;
+
+        var exception = Assert.Throws(typeof(Exception), () =>
+            {
+                new PgInvoices(pgDataSource).Add(number: "valid",
+                    date: DateOnly.FromDateTime(DateTime.Now),
+                    dueDate: DateOnly.FromDateTime(DateTime.Now),
+                    vatRate: 1,
+                    supplierId: nonexistentSupplierId,
+                    clientId: client.Id);
+            });
+        Assert.AreEqual("Database query didn't return invoice id.", exception.Message);
+    }
+
     ExpandoObject DbRow(int id)
     {
         using var command = pgDataSource.CreateCommand("SELECT * FROM invoices WHERE id = $1");
