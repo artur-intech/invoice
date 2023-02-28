@@ -25,7 +25,7 @@ class PgClientsTest : Base
     }
 
     [Test]
-    public void UniqNameDatabaseConstraint()
+    public void UniqNameDbConstraint()
     {
         dynamic existingClient = fixtures["clients"]["one"];
         Assert.Throws(typeof(Npgsql.PostgresException), () =>

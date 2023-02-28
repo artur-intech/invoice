@@ -61,7 +61,7 @@ class PgInvoicesTest : Base
     }
 
     [Test]
-    public void UniqNumberDatabaseConstraint()
+    public void UniqNumberDbConstraint()
     {
         dynamic existingInvoice = fixtures["invoices"]["one"];
 

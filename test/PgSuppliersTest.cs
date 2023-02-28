@@ -27,7 +27,7 @@ class PgSuppliersTest : Base
     }
 
     [Test]
-    public void UniqNameDatabaseConstraint()
+    public void UniqNameDbConstraint()
     {
         dynamic existingSupplier = fixtures["suppliers"]["one"];
         Assert.Throws(typeof(Npgsql.PostgresException), () =>
