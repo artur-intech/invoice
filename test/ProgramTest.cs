@@ -79,10 +79,11 @@ class ConsoleTest : Base
         CreateClientFixtures();
         dynamic firstSupplier = fixtures["suppliers"]["one"];
         dynamic secondSupplier = fixtures["suppliers"]["two"];
-        dynamic client = fixtures["clients"]["one"];
+        dynamic firstClient = fixtures["clients"]["one"];
+        dynamic secondClient = fixtures["clients"]["two"];
         var stdIn = $"""
             {firstSupplier.Id}
-            {client.Id}
+            {firstClient.Id}
             Software development
             100
             160
@@ -99,7 +100,7 @@ class ConsoleTest : Base
         dynamic createdDbRow = LastInvoiceDbRow();
         Assert.AreEqual($"""
             Enter supplier id ({firstSupplier.Id} - "{firstSupplier.Name}", {secondSupplier.Id} - "{secondSupplier.Name}"):
-            Enter client id:
+            Enter client id ({firstClient.Id} - "{firstClient.Name}", {secondClient.Id} - "{secondClient.Name}"):
             Enter line item name:
             Enter line item price:
             Enter line item quantity:

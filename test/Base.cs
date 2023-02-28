@@ -33,10 +33,11 @@ class Base
 
         var firstSupplier = new SupplierFixtures(pgDataSource).Create();
         var secondSupplier = new SupplierFixtures(pgDataSource).Create(name: "best supplier");
-        var client = new ClientFixtures(pgDataSource).Create();
+        var firstClient = new ClientFixtures(pgDataSource).Create();
+        var secondClient = new ClientFixtures(pgDataSource).Create(name: "best client");
         var invoices = new InvoiceFixtures(pgDataSource);
 
-        var invoiceId = invoices.Create(firstSupplier.Id, client.Id);
+        var invoiceId = invoices.Create(firstSupplier.Id, firstClient.Id);
         var lineItem = new LineItemFixtures(pgDataSource).Create(invoiceId);
 
         var invoice = invoices.Fetch(invoiceId);
@@ -44,7 +45,7 @@ class Base
         fixtures = new Dictionary<string, Dictionary<string, object>>
         {
             { "suppliers", new Dictionary<string, object> { { "one", firstSupplier }, { "two", secondSupplier } } },
-            { "clients", new Dictionary<string, object> { { "one", client } } },
+            { "clients", new Dictionary<string, object> { { "one", firstClient }, { "two", secondClient } } },
             { "invoices", new Dictionary<string, object> { { "one", invoice } } },
             { "line_items", new Dictionary<string, object> { { "one", lineItem } } }
         };
@@ -61,8 +62,9 @@ class Base
     // TODO Remove duplication
     protected void CreateClientFixtures()
     {
-        var fixture = new ClientFixtures(pgDataSource).Create();
-        fixtures.Add("clients", new Dictionary<string, object> { { "one", fixture } });
+        var firstFixture = new ClientFixtures(pgDataSource).Create();
+        var secondFixture = new ClientFixtures(pgDataSource).Create(name: "best client");
+        fixtures.Add("clients", new Dictionary<string, object> { { "one", firstFixture }, { "two", secondFixture } });
     }
 
     [TearDown]

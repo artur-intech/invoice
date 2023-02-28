@@ -1,4 +1,6 @@
+using System.Collections;
 using Npgsql;
+
 namespace Intech.Invoice;
 
 sealed class PgClients : Clients
@@ -31,5 +33,22 @@ sealed class PgClients : Clients
         int id = (int)command.ExecuteScalar();
 
         return new PgClient(id, pgDataSource);
+    }
+
+    public IEnumerator<Client> GetEnumerator()
+    {
+        using var command = pgDataSource.CreateCommand("SELECT id FROM clients");
+        using var reader = command.ExecuteReader();
+
+        while (reader.Read())
+        {
+            var id = (int)reader["id"];
+            yield return new PgClient(id, pgDataSource);
+        }
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
     }
 }

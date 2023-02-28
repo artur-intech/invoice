@@ -80,7 +80,7 @@ try
                     Console.WriteLine($"Enter supplier id{new SupplierHint(new PgSuppliers(pgDataSource))}:");
                     int supplierId = int.Parse(Console.ReadLine());
 
-                    Console.WriteLine("Enter client id:");
+                    Console.WriteLine($"Enter client id{new ClientHint(new PgClients(pgDataSource))}:");
                     int clientId = int.Parse(Console.ReadLine());
 
                     Console.WriteLine("Enter line item name:");
