@@ -134,5 +134,14 @@ try
 }
 catch (Exception e)
 {
-    Console.Write(e.Message);
+    var showDetailedExceptions = Convert.ToBoolean(Environment.GetEnvironmentVariable("SHOW_DETAILED_EXCEPTIONS")) || false;
+
+    if (showDetailedExceptions)
+    {
+        Console.Write(e);
+    }
+    else
+    {
+        Console.Write(e.Message);
+    }
 }
