@@ -46,7 +46,6 @@ class PgInvoicesTest : Base
     [Test]
     public void ThrowsExceptionWhenSupplierDoesNotExist()
     {
-        dynamic client = fixtures["clients"]["one"];
         var nonexistentSupplierId = 99;
 
         var exception = Assert.Throws(typeof(Exception), () =>
@@ -56,7 +55,7 @@ class PgInvoicesTest : Base
                     dueDate: ValidDueDate(),
                     vatRate: ValidVatRate(),
                     supplierId: nonexistentSupplierId,
-                    clientId: client.Id);
+                    clientId: ValidClientId());
             });
         Assert.AreEqual("Database query didn't return invoice id.", exception.Message);
     }
@@ -68,7 +67,7 @@ class PgInvoicesTest : Base
 
         var exception = Assert.Throws(typeof(Npgsql.PostgresException), () =>
         {
-            new PgInvoices(pgDataSource).Add(existingInvoice.Number, ValidDate(), ValidDueDate(), ValidVatRate(), supplierId: 1, clientId: 1);
+            new PgInvoices(pgDataSource).Add(existingInvoice.Number, ValidDate(), ValidDueDate(), ValidVatRate(), supplierId: ValidSupplierId(), clientId: ValidClientId());
         });
         StringAssert.Contains("violates unique constraint \"uniq_invoice_number\"", exception.Message);
     }
@@ -80,7 +79,7 @@ class PgInvoicesTest : Base
 
         var exception = Assert.Throws(typeof(Npgsql.PostgresException), () =>
         {
-            new PgInvoices(pgDataSource).Add(ValidNumber(), ValidDate(), pastDueDate, ValidVatRate(), supplierId: 1, clientId: 1);
+            new PgInvoices(pgDataSource).Add(ValidNumber(), ValidDate(), pastDueDate, ValidVatRate(), supplierId: ValidSupplierId(), clientId: ValidClientId());
         });
         StringAssert.Contains("violates check constraint \"later_invoice_due_date\"", exception.Message);
     }
@@ -92,7 +91,7 @@ class PgInvoicesTest : Base
 
         var exception = Assert.Throws(typeof(Npgsql.PostgresException), () =>
         {
-            new PgInvoices(pgDataSource).Add(ValidNumber(), ValidDate(), ValidDueDate(), negativeVatRate, supplierId: 1, clientId: 1);
+            new PgInvoices(pgDataSource).Add(ValidNumber(), ValidDate(), ValidDueDate(), negativeVatRate, supplierId: ValidSupplierId(), clientId: ValidClientId());
         });
         StringAssert.Contains("violates check constraint \"nonnegative_invoice_vat_rate\"", exception.Message);
     }
@@ -139,5 +138,17 @@ class PgInvoicesTest : Base
     int ValidVatRate()
     {
         return 20;
+    }
+
+    int ValidSupplierId()
+    {
+        dynamic supplier = fixtures["suppliers"]["one"];
+        return supplier.Id;
+    }
+
+    int ValidClientId()
+    {
+        dynamic client = fixtures["clients"]["one"];
+        return client.Id;
     }
 }
