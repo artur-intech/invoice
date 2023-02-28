@@ -12,8 +12,8 @@ class PgClientsTest : Base
         Assert.Zero((long)pgDataSource.CreateCommand("SELECT COUNT(*) FROM clients").ExecuteScalar());
 
         var name = "name";
-        var address = "address";
-        var vatNumber = "vat_number";
+        var address = ValidAddress();
+        var vatNumber = ValidVatNumber();
 
         var createdClientId = new PgClients(pgDataSource).Add(name, address, vatNumber).Id();
 
@@ -31,7 +31,7 @@ class PgClientsTest : Base
 
         var exception = Assert.Throws(typeof(Npgsql.PostgresException), () =>
         {
-            new PgClients(pgDataSource).Add(name: existingClient.Name, address: "any", vatNumber: "any");
+            new PgClients(pgDataSource).Add(name: existingClient.Name, address: ValidAddress(), vatNumber: ValidVatNumber());
         });
         StringAssert.Contains("violates unique constraint \"uniq_client_name\"", exception.Message);
     }
@@ -49,5 +49,15 @@ class PgClientsTest : Base
         row.VatNumber = reader["vat_number"];
 
         return row;
+    }
+
+    string ValidAddress()
+    {
+        return "address";
+    }
+
+    string ValidVatNumber()
+    {
+        return "vat_number";
     }
 }
