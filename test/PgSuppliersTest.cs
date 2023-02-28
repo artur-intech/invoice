@@ -16,7 +16,7 @@ class PgSuppliersTest : Base
         var vatNumber = "vat_number";
         var iban = "iban";
 
-        var createdSupplierId = new PgSuppliers(pgDataSource).Add(name: name, address: address, vatNumber: vatNumber, iban: iban).Id();
+        var createdSupplierId = new PgSuppliers(pgDataSource).Add(name, address, vatNumber, iban).Id();
 
         Assert.AreEqual(1, pgDataSource.CreateCommand("SELECT COUNT(*) FROM suppliers").ExecuteScalar());
         dynamic dbRow = DbRow(createdSupplierId);
