@@ -111,4 +111,14 @@ class Base
 
         Console.SetIn(originalStdIn);
     }
+
+    protected string ValidAddress()
+    {
+        return "address";
+    }
+
+    protected string ValidVatNumber()
+    {
+        return "vat_number";
+    }
 }
