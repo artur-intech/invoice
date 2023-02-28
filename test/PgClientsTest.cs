@@ -50,14 +50,4 @@ class PgClientsTest : Base
 
         return row;
     }
-
-    string ValidAddress()
-    {
-        return "address";
-    }
-
-    string ValidVatNumber()
-    {
-        return "vat_number";
-    }
 }
