@@ -28,10 +28,12 @@ class PgClientsTest : Base
     public void UniqNameDbConstraint()
     {
         dynamic existingClient = fixtures["clients"]["one"];
-        Assert.Throws(typeof(Npgsql.PostgresException), () =>
+
+        var exception = Assert.Throws(typeof(Npgsql.PostgresException), () =>
         {
             new PgClients(pgDataSource).Add(name: existingClient.Name, address: "any", vatNumber: "any");
         });
+        StringAssert.Contains("violates unique constraint \"uniq_client_name\"", exception.Message);
     }
 
     ExpandoObject DbRow(int id)

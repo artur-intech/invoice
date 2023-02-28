@@ -30,10 +30,12 @@ class PgSuppliersTest : Base
     public void UniqNameDbConstraint()
     {
         dynamic existingSupplier = fixtures["suppliers"]["one"];
-        Assert.Throws(typeof(Npgsql.PostgresException), () =>
-        {
-            new PgSuppliers(pgDataSource).Add(name: existingSupplier.Name, address: "any", vatNumber: "any", iban: "any");
-        });
+
+        var exception = Assert.Throws(typeof(Npgsql.PostgresException), () =>
+         {
+             new PgSuppliers(pgDataSource).Add(name: existingSupplier.Name, address: "any", vatNumber: "any", iban: "any");
+         });
+        StringAssert.Contains("violates unique constraint \"uniq_supplier_name\"", exception.Message);
     }
 
     ExpandoObject DbRow(int id)
