@@ -11,7 +11,8 @@
 				"ckolkman.vscode-postgres",
 				"mathematic.vscode-pdf",
 				"streetsidesoftware.code-spell-checker",
-				"gruntfuggly.todo-tree"
+				"gruntfuggly.todo-tree",
+				"eamodio.gitlens"
 			]
 		}
 	},
@@ -21,6 +22,7 @@
 		"PG_PASSWORD": "postgres",
 		"PG_DATABASE": "postgres",
 		"TIME_ZONE": "Europe/Moscow",
+		"CULTURE": "ru-RU",
 		"SHOW_DETAILED_EXCEPTIONS": "true"
 	}
 	// Features to add to the dev container. More info: https://containers.dev/features.
