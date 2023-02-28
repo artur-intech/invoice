@@ -11,6 +11,7 @@
       <!-- Overrides the ones in devcontainer.json -->
       <PG_DATABASE>test</PG_DATABASE>
       <TIME_ZONE>utc</TIME_ZONE>
+      <SHOW_DETAILED_EXCEPTIONS>false</SHOW_DETAILED_EXCEPTIONS>
     </EnvironmentVariables>
   </RunConfiguration>
 </RunSettings>
