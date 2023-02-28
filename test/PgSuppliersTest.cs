@@ -14,7 +14,7 @@ class PgSuppliersTest : Base
         var name = "name";
         var address = "address";
         var vatNumber = "vat_number";
-        var iban = "iban";
+        var iban = ValidIban();
 
         var createdSupplierId = new PgSuppliers(pgDataSource).Add(name, address, vatNumber, iban).Id();
 
@@ -32,9 +32,9 @@ class PgSuppliersTest : Base
         dynamic existingSupplier = fixtures["suppliers"]["one"];
 
         var exception = Assert.Throws(typeof(Npgsql.PostgresException), () =>
-         {
-             new PgSuppliers(pgDataSource).Add(name: existingSupplier.Name, address: "any", vatNumber: "any", iban: "any");
-         });
+        {
+            new PgSuppliers(pgDataSource).Add(name: existingSupplier.Name, address: "any", vatNumber: "any", iban: ValidIban());
+        });
         StringAssert.Contains("violates unique constraint \"uniq_supplier_name\"", exception.Message);
     }
 
@@ -52,5 +52,10 @@ class PgSuppliersTest : Base
         row.Iban = reader["iban"];
 
         return row;
+    }
+
+    string ValidIban()
+    {
+        return "iban";
     }
 }
