@@ -1,3 +1,4 @@
+using System.Collections;
 using Npgsql;
 
 namespace Intech.Invoice;
@@ -29,5 +30,15 @@ sealed class UniqPgClients : Clients
         var command = pgDataSource.CreateCommand(sql);
         command.Parameters.AddWithValue(name);
         return (long)command.ExecuteScalar() > 0;
+    }
+
+    public IEnumerator<Client> GetEnumerator()
+    {
+        return origin.GetEnumerator();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return ((IEnumerable)origin).GetEnumerator();
     }
 }

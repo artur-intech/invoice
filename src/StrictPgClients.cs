@@ -1,3 +1,5 @@
+using System.Collections;
+
 namespace Intech.Invoice;
 
 sealed class StrictPgClients : Clients
@@ -27,5 +29,15 @@ sealed class StrictPgClients : Clients
         }
 
         return origin.Add(name: name, address: address, vatNumber: vatNumber);
+    }
+
+    public IEnumerator<Client> GetEnumerator()
+    {
+        return origin.GetEnumerator();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return ((IEnumerable)origin).GetEnumerator();
     }
 }
