@@ -61,6 +61,42 @@ class PgInvoicesTest : Base
         Assert.AreEqual("Database query didn't return invoice id.", exception.Message);
     }
 
+    [Test]
+    public void UniqNumberDatabaseConstraint()
+    {
+        dynamic existingInvoice = fixtures["invoices"]["one"];
+
+        var exception = Assert.Throws(typeof(Npgsql.PostgresException), () =>
+        {
+            new PgInvoices(pgDataSource).Add(existingInvoice.Number, ValidDate(), ValidDueDate(), ValidVatRate(), supplierId: 1, clientId: 1);
+        });
+        StringAssert.Contains("violates unique constraint \"uniq_invoice_number\"", exception.Message);
+    }
+
+    [Test]
+    public void LaterDueDateDbConstraint()
+    {
+        var pastDueDate = ValidDate().AddDays(-1);
+
+        var exception = Assert.Throws(typeof(Npgsql.PostgresException), () =>
+        {
+            new PgInvoices(pgDataSource).Add(ValidNumber(), ValidDate(), pastDueDate, ValidVatRate(), supplierId: 1, clientId: 1);
+        });
+        StringAssert.Contains("violates check constraint \"later_invoice_due_date\"", exception.Message);
+    }
+
+    [Test]
+    public void NonNegativeVatRateDbConstraint()
+    {
+        var negativeVatRate = -1;
+
+        var exception = Assert.Throws(typeof(Npgsql.PostgresException), () =>
+        {
+            new PgInvoices(pgDataSource).Add(ValidNumber(), ValidDate(), ValidDueDate(), negativeVatRate, supplierId: 1, clientId: 1);
+        });
+        StringAssert.Contains("violates check constraint \"nonnegative_invoice_vat_rate\"", exception.Message);
+    }
+
     ExpandoObject DbRow(int id)
     {
         using var command = pgDataSource.CreateCommand("SELECT * FROM invoices WHERE id = $1");
