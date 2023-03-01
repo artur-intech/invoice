@@ -11,7 +11,7 @@ class PgClientsTest : Base
     {
         Assert.Zero((long)pgDataSource.CreateCommand("SELECT COUNT(*) FROM clients").ExecuteScalar());
 
-        var name = "name";
+        var name = ValidName();
         var address = ValidAddress();
         var vatNumber = ValidVatNumber();
 

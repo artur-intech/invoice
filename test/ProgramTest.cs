@@ -12,7 +12,7 @@ class ConsoleTest : Base
     {
         Assert.Zero((long)pgDataSource.CreateCommand("SELECT COUNT(*) FROM suppliers").ExecuteScalar());
 
-        var name = "new supplier";
+        var name = ValidName();
         var stdIn = $"""
             {name}
             {ValidAddress()}
@@ -44,7 +44,7 @@ class ConsoleTest : Base
     {
         Assert.Zero((long)pgDataSource.CreateCommand("SELECT COUNT(*) FROM clients").ExecuteScalar());
 
-        var name = "new client";
+        var name = ValidName();
         var stdIn = $"""
             {name}
             {ValidAddress()}
