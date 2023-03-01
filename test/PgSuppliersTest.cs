@@ -53,9 +53,4 @@ class PgSuppliersTest : Base
 
         return row;
     }
-
-    string ValidIban()
-    {
-        return "iban";
-    }
 }

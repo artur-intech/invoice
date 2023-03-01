@@ -121,4 +121,9 @@ class Base
     {
         return "vat_number";
     }
+
+    protected string ValidIban()
+    {
+        return "iban";
+    }
 }
