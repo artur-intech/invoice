@@ -112,6 +112,11 @@ class Base
         Console.SetIn(originalStdIn);
     }
 
+    protected string ValidName()
+    {
+        return "name";
+    }
+
     protected string ValidAddress()
     {
         return "address";

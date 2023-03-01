@@ -11,7 +11,7 @@ class PgSuppliersTest : Base
     {
         Assert.Zero((long)pgDataSource.CreateCommand("SELECT COUNT(*) FROM suppliers").ExecuteScalar());
 
-        var name = "name";
+        var name = ValidName();
         var address = ValidAddress();
         var vatNumber = ValidVatNumber();
         var iban = ValidIban();

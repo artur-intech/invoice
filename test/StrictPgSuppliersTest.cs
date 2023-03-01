@@ -25,7 +25,7 @@ class StrictPgSuppliersTest : Base
         var strictPgSuppliers = new StrictPgSuppliers(new Suppliers.Fake());
         var exception = Assert.Throws(typeof(Exception), () =>
         {
-            strictPgSuppliers.Add(name: "any", address: address, vatNumber: ValidVatNumber(), iban: ValidIban());
+            strictPgSuppliers.Add(name: ValidName(), address: address, vatNumber: ValidVatNumber(), iban: ValidIban());
         });
         Assert.AreEqual("Supplier address cannot be empty.", exception.Message);
     }
@@ -38,7 +38,7 @@ class StrictPgSuppliersTest : Base
         var strictPgSuppliers = new StrictPgSuppliers(new Suppliers.Fake());
         var exception = Assert.Throws(typeof(Exception), () =>
         {
-            strictPgSuppliers.Add(name: "any", address: ValidAddress(), vatNumber: ValidVatNumber(), iban: iban);
+            strictPgSuppliers.Add(name: ValidName(), address: ValidAddress(), vatNumber: ValidVatNumber(), iban: iban);
         });
         Assert.AreEqual("Supplier IBAN cannot be empty.", exception.Message);
     }
