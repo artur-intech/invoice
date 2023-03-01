@@ -15,9 +15,9 @@ class ConsoleTest : Base
         var name = "new supplier";
         var stdIn = $"""
             {name}
-            Main street 1
-            US1234
-            US12345
+            {ValidAddress()}
+            {ValidVatNumber()}
+            {ValidIban()}
             """;
 
         var capturedStdOut = CapturedStdOut(() =>
@@ -47,8 +47,8 @@ class ConsoleTest : Base
         var name = "new client";
         var stdIn = $"""
             {name}
-            address
-            vat_number
+            {ValidAddress()}
+            {ValidVatNumber()}
             """;
 
         var capturedStdOut = CapturedStdOut(() =>
