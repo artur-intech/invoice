@@ -8,7 +8,7 @@ class PgClientTest : Base
     public void ReturnsName()
     {
         dynamic clientFixture = fixtures["clients"]["one"];
-        var pgClient = new PgClient(id: clientFixture.Id, pgDataSource: pgDataSource);
+        var pgClient = new PgClient(clientFixture.Id, pgDataSource);
         Assert.AreEqual(clientFixture.Name, $"{pgClient}");
     }
 }

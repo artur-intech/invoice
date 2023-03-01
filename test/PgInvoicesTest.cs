@@ -20,12 +20,7 @@ class PgInvoicesTest : Base
         var dueDate = ValidDueDate();
         var vatRate = ValidVatRate();
 
-        var createdInvoiceId = new PgInvoices(pgDataSource).Add(number: number,
-                                                       date: date,
-                                                       dueDate: dueDate,
-                                                       vatRate: vatRate,
-                                                       supplierId: supplier.Id,
-                                                       clientId: client.Id).Id();
+        var createdInvoiceId = new PgInvoices(pgDataSource).Add(number, date, dueDate, vatRate, supplier.Id, client.Id).Id();
 
         Assert.AreEqual(1, pgDataSource.CreateCommand("SELECT COUNT(*) FROM invoices").ExecuteScalar());
         dynamic dbRow = DbRow(createdInvoiceId);
@@ -67,7 +62,7 @@ class PgInvoicesTest : Base
 
         var exception = Assert.Throws(typeof(Npgsql.PostgresException), () =>
         {
-            new PgInvoices(pgDataSource).Add(existingInvoice.Number, ValidDate(), ValidDueDate(), ValidVatRate(), supplierId: ValidSupplierId(), clientId: ValidClientId());
+            new PgInvoices(pgDataSource).Add(existingInvoice.Number, ValidDate(), ValidDueDate(), ValidVatRate(), ValidSupplierId(), ValidClientId());
         });
         StringAssert.Contains("violates unique constraint \"uniq_invoice_number\"", exception.Message);
     }
@@ -79,7 +74,7 @@ class PgInvoicesTest : Base
 
         var exception = Assert.Throws(typeof(Npgsql.PostgresException), () =>
         {
-            new PgInvoices(pgDataSource).Add(ValidNumber(), ValidDate(), pastDueDate, ValidVatRate(), supplierId: ValidSupplierId(), clientId: ValidClientId());
+            new PgInvoices(pgDataSource).Add(ValidNumber(), ValidDate(), pastDueDate, ValidVatRate(), ValidSupplierId(), ValidClientId());
         });
         StringAssert.Contains("violates check constraint \"later_invoice_due_date\"", exception.Message);
     }
@@ -91,7 +86,7 @@ class PgInvoicesTest : Base
 
         var exception = Assert.Throws(typeof(Npgsql.PostgresException), () =>
         {
-            new PgInvoices(pgDataSource).Add(ValidNumber(), ValidDate(), ValidDueDate(), negativeVatRate, supplierId: ValidSupplierId(), clientId: ValidClientId());
+            new PgInvoices(pgDataSource).Add(ValidNumber(), ValidDate(), ValidDueDate(), negativeVatRate, ValidSupplierId(), ValidClientId());
         });
         StringAssert.Contains("violates check constraint \"nonnegative_invoice_vat_rate\"", exception.Message);
     }

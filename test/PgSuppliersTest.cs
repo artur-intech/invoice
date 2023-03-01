@@ -33,7 +33,7 @@ class PgSuppliersTest : Base
 
         var exception = Assert.Throws(typeof(Npgsql.PostgresException), () =>
         {
-            new PgSuppliers(pgDataSource).Add(name: existingSupplier.Name, address: ValidAddress(), vatNumber: ValidVatNumber(), iban: ValidIban());
+            new PgSuppliers(pgDataSource).Add(existingSupplier.Name, ValidAddress(), ValidVatNumber(), ValidIban());
         });
         StringAssert.Contains("violates unique constraint \"uniq_supplier_name\"", exception.Message);
     }

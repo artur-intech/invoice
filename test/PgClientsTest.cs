@@ -31,7 +31,7 @@ class PgClientsTest : Base
 
         var exception = Assert.Throws(typeof(Npgsql.PostgresException), () =>
         {
-            new PgClients(pgDataSource).Add(name: existingClient.Name, address: ValidAddress(), vatNumber: ValidVatNumber());
+            new PgClients(pgDataSource).Add(existingClient.Name, ValidAddress(), ValidVatNumber());
         });
         StringAssert.Contains("violates unique constraint \"uniq_client_name\"", exception.Message);
     }

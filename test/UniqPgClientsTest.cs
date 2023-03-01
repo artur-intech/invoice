@@ -12,7 +12,7 @@ class UniqPgClientsTest : Base
         var uniqPgClients = new UniqPgClients(new Clients.Fake(), pgDataSource);
         var exception = Assert.Throws(typeof(Exception), () =>
         {
-            uniqPgClients.Add(name: existingClient.Name, address: ValidAddress(), vatNumber: ValidVatNumber());
+            uniqPgClients.Add(existingClient.Name, ValidAddress(), ValidVatNumber());
         });
         Assert.AreEqual("Client name has already been taken.", exception.Message);
     }
