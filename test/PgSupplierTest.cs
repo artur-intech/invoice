@@ -8,7 +8,7 @@ class PgSupplierTest : Base
     public void RepresentsItselfAsString()
     {
         dynamic supplierFixture = fixtures["suppliers"]["one"];
-        var pgSupplier = new PgSupplier(id: supplierFixture.Id, pgDataSource: pgDataSource);
+        var pgSupplier = new PgSupplier(supplierFixture.Id, pgDataSource);
         Assert.AreEqual(supplierFixture.Name, $"{pgSupplier}");
     }
 }

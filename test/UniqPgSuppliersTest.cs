@@ -12,7 +12,7 @@ class UniqPgSuppliersTest : Base
         var uniqPgSuppliers = new UniqPgSuppliers(new Suppliers.Fake(), pgDataSource);
         var exception = Assert.Throws(typeof(Exception), () =>
         {
-            uniqPgSuppliers.Add(name: existingSupplier.Name, address: ValidAddress(), vatNumber: ValidVatNumber(), iban: ValidIban());
+            uniqPgSuppliers.Add(existingSupplier.Name, ValidAddress(), ValidVatNumber(), ValidIban());
         });
         Assert.AreEqual("Supplier name has already been taken.", exception.Message);
     }

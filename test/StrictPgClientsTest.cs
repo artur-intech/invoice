@@ -12,7 +12,7 @@ class StrictPgClientsTest : Base
         var strictPgClients = new StrictPgClients(new Clients.Fake());
         var exception = Assert.Throws(typeof(Exception), () =>
         {
-            strictPgClients.Add(name: name, address: ValidAddress(), vatNumber: ValidVatNumber());
+            strictPgClients.Add(name, ValidAddress(), ValidVatNumber());
         });
         Assert.AreEqual("Client name cannot be empty.", exception.Message);
     }
@@ -25,7 +25,7 @@ class StrictPgClientsTest : Base
         var strictPgClients = new StrictPgClients(new Clients.Fake());
         var exception = Assert.Throws(typeof(Exception), () =>
         {
-            strictPgClients.Add(name: ValidName(), address: address, vatNumber: ValidVatNumber());
+            strictPgClients.Add(ValidName(), address, ValidVatNumber());
         });
         Assert.AreEqual("Client address cannot be empty.", exception.Message);
     }
@@ -38,7 +38,7 @@ class StrictPgClientsTest : Base
         var strictPgClients = new StrictPgClients(new Clients.Fake());
         var exception = Assert.Throws(typeof(Exception), () =>
         {
-            strictPgClients.Add(name: ValidName(), address: ValidAddress(), vatNumber: vatNumber);
+            strictPgClients.Add(ValidName(), ValidAddress(), vatNumber);
         });
         Assert.AreEqual("Client VAT number cannot be empty.", exception.Message);
     }
