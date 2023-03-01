@@ -21,7 +21,7 @@ sealed class UniqPgSuppliers : Suppliers
             throw new Exception("Supplier name has already been taken.");
         }
 
-        return origin.Add(name: name, address: address, vatNumber: vatNumber, iban: iban);
+        return origin.Add(name, address, vatNumber, iban);
     }
 
     public IEnumerator<Supplier> GetEnumerator()
