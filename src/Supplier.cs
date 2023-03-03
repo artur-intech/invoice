@@ -13,8 +13,14 @@ interface Supplier
         {
             return "Fake supplier";
         }
+
+        ConsoleMedia Supplier.Print(ConsoleMedia media)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     int Id();
     string ToString();
+    ConsoleMedia Print(ConsoleMedia media);
 }

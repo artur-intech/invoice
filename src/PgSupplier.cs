@@ -35,6 +35,26 @@ sealed class PgSupplier : Supplier
         command.ExecuteNonQuery();
     }
 
+    public ConsoleMedia Print(ConsoleMedia media)
+    {
+        var sql = "SELECT * FROM suppliers WHERE id = $1";
+        using var command = pgDataSource.CreateCommand(sql);
+        command.Parameters.AddWithValue(id);
+        using var reader = command.ExecuteReader();
+
+        reader.Read();
+        var name = reader["name"];
+        var address = reader["address"];
+        var vatNumber = reader["vat_number"];
+        var iban = reader["iban"];
+
+        return media.With("Id", id)
+                    .With("Name", name)
+                    .With("Address", address)
+                    .With("VAT number", vatNumber)
+                    .With("IBAN", iban);
+    }
+
     string Name()
     {
         using var command = pgDataSource.CreateCommand("SELECT name FROM suppliers WHERE id = $1");
