@@ -151,7 +151,8 @@ class ConsoleTest : Base
     public void PrintsAllInvoices()
     {
         dynamic client = fixtures["clients"]["one"];
-        dynamic invoice = fixtures["invoices"]["one"];
+        dynamic firstInvoice = fixtures["invoices"]["one"];
+        dynamic secondInvoice = fixtures["invoices"]["two"];
 
         var capturedStdOut = CapturedStdOut(() =>
         {
@@ -160,10 +161,16 @@ class ConsoleTest : Base
 
         Assert.AreEqual($"""
             Client: {client.Name}
-            Number: {invoice.Number}
-            Date: {invoice.Date}
-            Due date: {invoice.DueDate}
-            Total: {invoice.Total}
+            Number: {firstInvoice.Number}
+            Date: {firstInvoice.Date}
+            Due date: {firstInvoice.DueDate}
+            Total: {firstInvoice.Total}
+            {ListDelimiter()}
+            Client: {client.Name}
+            Number: {secondInvoice.Number}
+            Date: {secondInvoice.Date}
+            Due date: {secondInvoice.DueDate}
+            Total: {secondInvoice.Total}
             """, capturedStdOut);
     }
 
