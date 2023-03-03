@@ -12,17 +12,21 @@ sealed class ConsoleDelimitedList<T>
     public void Print()
     {
         var i = 0;
-        var delimiter = new string('-', 50);
 
         foreach (dynamic listItem in list)
         {
             if (i != 0)
             {
-                Console.Write(Environment.NewLine + delimiter + Environment.NewLine);
+                Console.Write(Environment.NewLine + Delimiter() + Environment.NewLine);
             }
 
             Console.Write(listItem.Print(new ConsoleMedia()).Text());
             i++;
         }
+    }
+
+    string Delimiter()
+    {
+        return new string('-', 50);
     }
 }
