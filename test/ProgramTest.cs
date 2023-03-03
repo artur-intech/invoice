@@ -265,7 +265,6 @@ class ConsoleTest : Base
     {
         dynamic firstSupplier = fixtures["suppliers"]["one"];
         dynamic secondSupplier = fixtures["suppliers"]["two"];
-        var delimiter = new string('-', 50);
 
         var capturedStdOut = CapturedStdOut(() =>
         {
@@ -278,7 +277,7 @@ class ConsoleTest : Base
             Address: {firstSupplier.Address}
             VAT number: {firstSupplier.VatNumber}
             IBAN: {firstSupplier.Iban}
-            {delimiter}
+            {ListDelimiter()}
             Id: {secondSupplier.Id}
             Name: {secondSupplier.Name}
             Address: {secondSupplier.Address}
@@ -292,7 +291,6 @@ class ConsoleTest : Base
     {
         dynamic firstClient = fixtures["clients"]["one"];
         dynamic secondClient = fixtures["clients"]["two"];
-        var delimiter = new string('-', 50);
 
         var capturedStdOut = CapturedStdOut(() =>
         {
@@ -304,7 +302,7 @@ class ConsoleTest : Base
             Name: {firstClient.Name}
             Address: {firstClient.Address}
             VAT number: {firstClient.VatNumber}
-            {delimiter}
+            {ListDelimiter()}
             Id: {secondClient.Id}
             Name: {secondClient.Name}
             Address: {secondClient.Address}
@@ -328,5 +326,10 @@ class ConsoleTest : Base
         invoice.Number = reader["number"];
 
         return invoice;
+    }
+
+    string ListDelimiter()
+    {
+        return new string('-', 50);
     }
 }
