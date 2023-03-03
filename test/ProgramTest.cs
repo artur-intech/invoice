@@ -260,10 +260,37 @@ class ConsoleTest : Base
         Assert.AreEqual(newName, supplier.Name);
     }
 
+    [Test]
+    public void PrintsAllSuppliers()
+    {
+        dynamic firstSupplier = fixtures["suppliers"]["one"];
+        dynamic secondSupplier = fixtures["suppliers"]["two"];
+        var delimiter = new string('-', 50);
+
+        var capturedStdOut = CapturedStdOut(() =>
+        {
+            RunApp(arguments: new string[] { "supplier", "list" });
+        });
+
+        Assert.AreEqual($"""
+            Id: {firstSupplier.Id}
+            Name: {firstSupplier.Name}
+            Address: {firstSupplier.Address}
+            VAT number: {firstSupplier.VatNumber}
+            IBAN: {firstSupplier.Iban}
+            {delimiter}
+            Id: {secondSupplier.Id}
+            Name: {secondSupplier.Name}
+            Address: {secondSupplier.Address}
+            VAT number: {secondSupplier.VatNumber}
+            IBAN: {secondSupplier.Iban}
+            """, capturedStdOut);
+    }
+
     IImmutableSet<string> SupportedCommands()
     {
         return ImmutableHashSet.Create("supplier create", "client create", "invoice create",
-            "invoice pdf", "invoice details", "invoice list", "supplier modify");
+            "invoice pdf", "invoice details", "invoice list", "supplier modify", "supplier list");
     }
 
     ExpandoObject LastInvoiceDbRow()
