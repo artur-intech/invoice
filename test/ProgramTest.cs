@@ -287,10 +287,35 @@ class ConsoleTest : Base
             """, capturedStdOut);
     }
 
+    [Test]
+    public void PrintsAllClients()
+    {
+        dynamic firstClient = fixtures["clients"]["one"];
+        dynamic secondClient = fixtures["clients"]["two"];
+        var delimiter = new string('-', 50);
+
+        var capturedStdOut = CapturedStdOut(() =>
+        {
+            RunApp(arguments: new string[] { "client", "list" });
+        });
+
+        Assert.AreEqual($"""
+            Id: {firstClient.Id}
+            Name: {firstClient.Name}
+            Address: {firstClient.Address}
+            VAT number: {firstClient.VatNumber}
+            {delimiter}
+            Id: {secondClient.Id}
+            Name: {secondClient.Name}
+            Address: {secondClient.Address}
+            VAT number: {secondClient.VatNumber}
+            """, capturedStdOut);
+    }
+
     IImmutableSet<string> SupportedCommands()
     {
         return ImmutableHashSet.Create("supplier create", "client create", "invoice create",
-            "invoice pdf", "invoice details", "invoice list", "supplier modify", "supplier list");
+            "invoice pdf", "invoice details", "invoice list", "supplier modify", "supplier list", "client list");
     }
 
     ExpandoObject LastInvoiceDbRow()
