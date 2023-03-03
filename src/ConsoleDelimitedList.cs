@@ -1,12 +1,12 @@
 namespace Intech.Invoice;
 
-sealed class ConsoleClientList
+sealed class ConsoleDelimitedList<T>
 {
-    readonly IEnumerable<Client> clients;
+    readonly IEnumerable<T> list;
 
-    public ConsoleClientList(IEnumerable<Client> clients)
+    public ConsoleDelimitedList(IEnumerable<T> list)
     {
-        this.clients = clients;
+        this.list = list;
     }
 
     public void Print()
@@ -14,14 +14,14 @@ sealed class ConsoleClientList
         var i = 0;
         var delimiter = new string('-', 50);
 
-        foreach (var client in clients)
+        foreach (dynamic listItem in list)
         {
             if (i != 0)
             {
                 Console.Write(Environment.NewLine + delimiter + Environment.NewLine);
             }
 
-            Console.Write(client.Print(new ConsoleMedia()).Text());
+            Console.Write(listItem.Print(new ConsoleMedia()).Text());
             i++;
         }
     }
