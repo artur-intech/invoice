@@ -24,7 +24,7 @@ class SupplierFixtures
         return Fetch(createdId);
     }
 
-    SupplierFixture Fetch(int id)
+    public SupplierFixture Fetch(int id)
     {
         var sql = "SELECT * FROM suppliers WHERE id = $1";
         using var command = pgDataSource.CreateCommand(sql);

@@ -221,10 +221,49 @@ class ConsoleTest : Base
         Assert.Zero((long)pgDataSource.CreateCommand("SELECT COUNT(*) FROM suppliers").ExecuteScalar());
     }
 
+    [Test]
+    public void ModifiesSupplier()
+    {
+        dynamic supplier = fixtures["suppliers"]["one"];
+        var newName = "new name";
+        var newAddress = "new address";
+        var newVatNumber = "new vat";
+        var newIban = "new iban";
+        Assert.AreNotEqual(newName, supplier.Name);
+        Assert.AreNotEqual(newAddress, supplier.Address);
+        Assert.AreNotEqual(newVatNumber, supplier.VatNumber);
+        Assert.AreNotEqual(newIban, supplier.Iban);
+
+        var stdIn = $"""
+            {newName}
+            {newAddress}
+            {newVatNumber}
+            {newIban}
+            """;
+
+        var capturedStdOut = CapturedStdOut(() =>
+        {
+            SubstituteStdIn(stdIn, () =>
+            {
+                RunApp(arguments: new string[] { "supplier", "modify", supplier.Id.ToString() });
+            });
+        });
+
+        Assert.AreEqual($"""
+            Enter new supplier name:
+            Enter new supplier address:
+            Enter new supplier VAT number:
+            Enter new supplier IBAN:
+            Supplier {newName} has been modified.
+            """, capturedStdOut);
+        supplier = new SupplierFixtures(pgDataSource).Fetch(supplier.Id);
+        Assert.AreEqual(newName, supplier.Name);
+    }
+
     IImmutableSet<string> SupportedCommands()
     {
         return ImmutableHashSet.Create("supplier create", "client create", "invoice create",
-            "invoice pdf", "invoice details", "invoice list");
+            "invoice pdf", "invoice details", "invoice list", "supplier modify");
     }
 
     ExpandoObject LastInvoiceDbRow()
