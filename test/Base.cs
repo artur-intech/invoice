@@ -40,13 +40,16 @@ class Base
         var invoiceId = invoices.Create(firstSupplier.Id, firstClient.Id);
         var lineItem = new LineItemFixtures(pgDataSource).Create(invoiceId);
 
-        var invoice = invoices.Fetch(invoiceId);
+        var firstInvoice = invoices.Fetch(invoiceId);
+        var secondInvoiceId = invoices.Create(firstSupplier.Id, firstClient.Id, number: "1234");
+        new LineItemFixtures(pgDataSource).Create(secondInvoiceId);
+        var secondInvoice = invoices.Fetch(secondInvoiceId);
 
         fixtures = new Dictionary<string, Dictionary<string, object>>
         {
             { "suppliers", new Dictionary<string, object> { { "one", firstSupplier }, { "two", secondSupplier } } },
             { "clients", new Dictionary<string, object> { { "one", firstClient }, { "two", secondClient } } },
-            { "invoices", new Dictionary<string, object> { { "one", invoice } } },
+            { "invoices", new Dictionary<string, object> { { "one", firstInvoice }, { "two", secondInvoice } } },
             { "line_items", new Dictionary<string, object> { { "one", lineItem } } }
         };
     }
