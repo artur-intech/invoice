@@ -51,10 +51,30 @@ sealed class PgClient : Client
         command.ExecuteNonQuery();
     }
 
-    string Name()
+    public string Name()
     {
         using var command = pgDataSource.CreateCommand("SELECT name FROM clients WHERE id = $1");
         command.Parameters.AddWithValue(id);
         return (string)command.ExecuteScalar();
+    }
+
+    public void Delete()
+    {
+        if (Invoiced())
+        {
+            throw new Exception("Client has invoices and therefore cannot be deleted.");
+        }
+
+        using var command = pgDataSource.CreateCommand("DELETE FROM clients WHERE id = $1");
+        command.Parameters.AddWithValue(id);
+        command.ExecuteNonQuery();
+    }
+
+    bool Invoiced()
+    {
+        var sql = "SELECT COUNT(*) > 0 FROM invoices WHERE client_id = $1";
+        using var command = pgDataSource.CreateCommand(sql);
+        command.Parameters.AddWithValue(id);
+        return (bool)command.ExecuteScalar();
     }
 }
