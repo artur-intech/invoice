@@ -8,11 +8,6 @@ class Base
     protected NpgsqlDataSource? pgDataSource;
     protected Dictionary<string, Dictionary<string, object>>? fixtures;
 
-    public Base()
-    {
-        fixtures = new Dictionary<string, Dictionary<string, object>>();
-    }
-
     [OneTimeSetUp]
     protected void SetupPgDataSource()
     {
@@ -22,6 +17,12 @@ class Base
         var pgDatabase = Environment.GetEnvironmentVariable("PG_DATABASE");
         var dbConnectionString = $"Server={pgHost}; User Id={pgUser}; Password={pgPassword}; Database={pgDatabase}; Include Error Detail=true";
         pgDataSource = NpgsqlDataSource.Create(dbConnectionString);
+    }
+
+    [SetUp]
+    protected void InitFixtures()
+    {
+        fixtures = new Dictionary<string, Dictionary<string, object>>();
     }
 
     [SetUp]
