@@ -214,20 +214,20 @@ sealed class PgInvoice : Invoice
         command.Parameters.AddWithValue(id);
         using var reader = command.ExecuteReader();
         reader.Read();
-        var number = (string)reader["number"];
+        var number = reader["number"];
         var date = reader.GetFieldValue<DateOnly>(reader.GetOrdinal("date"));
         var dueDate = reader.GetFieldValue<DateOnly>(reader.GetOrdinal("due_date"));
         var vatRate = (short)reader["vat_rate"];
         var invoiceSubtotal = (long)reader["subtotal"];
         var invoiceVatAmount = (long)reader["vat_amount"];
         var total = (long)reader["total"];
-        var supplierName = (string)reader["supplier_name"];
-        var supplierAddress = (string)reader["supplier_address"];
-        var supplierVatNumber = (string)reader["supplier_vat_number"];
-        var supplierIban = (string)reader["supplier_iban"];
-        var clientName = (string)reader["client_name"];
-        var clientAddress = (string)reader["client_address"];
-        var clientVatNumber = (string)reader["client_vat_number"];
+        var supplierName = reader["supplier_name"];
+        var supplierAddress = reader["supplier_address"];
+        var supplierVatNumber = reader["supplier_vat_number"];
+        var supplierIban = reader["supplier_iban"];
+        var clientName = reader["client_name"];
+        var clientAddress = reader["client_address"];
+        var clientVatNumber = reader["client_vat_number"];
 
         return media.With("Id", id)
                     .With("Client", clientName)
