@@ -23,7 +23,7 @@ var timeZone = envTimeZone is not null ? TimeZoneInfo.FindSystemTimeZoneById(env
 var systemClock = new SystemClock(timeZone);
 
 var supportedCommands = ImmutableHashSet.Create("supplier create", "client create", "invoice create",
-    "invoice pdf", "invoice details", "invoice list", "supplier modify", "supplier list", "client list", "client modify");
+    "invoice pdf", "invoice details", "invoice list", "supplier modify", "supplier list", "client list", "client modify", "supplier delete");
 var currentCommand = string.Join(" ", args.Take(2));
 
 try
@@ -179,6 +179,18 @@ try
                     client.Modify(newName, newAddress, newVatNumber);
 
                     Console.Write($"Client {client} has been modified.");
+
+                    break;
+                }
+            case "supplier delete":
+                {
+                    int id = int.Parse(args[2]);
+
+                    var supplier = new PgSupplier(id, pgDataSource);
+                    var name = supplier.Name();
+                    supplier.Delete();
+
+                    Console.Write($"Supplier {name} has been deleted.");
 
                     break;
                 }

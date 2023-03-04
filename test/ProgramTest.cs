@@ -355,10 +355,24 @@ class ConsoleTest : Base
         Assert.AreEqual(newName, client.Name);
     }
 
+    [Test]
+    public void DeletesSupplier()
+    {
+        dynamic supplier = fixtures["suppliers"]["one"];
+
+        var capturedStdOut = CapturedStdOut(() =>
+        {
+            RunApp(arguments: new string[] { "supplier", "delete", supplier.Id.ToString() });
+        });
+
+        Assert.AreEqual($"Supplier {supplier.Name} has been deleted.", capturedStdOut);
+        Assert.AreEqual(fixtures["suppliers"].Count - 1, (long)pgDataSource.CreateCommand("SELECT COUNT(*) FROM suppliers").ExecuteScalar(), "Supplier should have been deleted.");
+    }
+
     IImmutableSet<string> SupportedCommands()
     {
         return ImmutableHashSet.Create("supplier create", "client create", "invoice create",
-            "invoice pdf", "invoice details", "invoice list", "supplier modify", "supplier list", "client list", "client modify");
+            "invoice pdf", "invoice details", "invoice list", "supplier modify", "supplier list", "client list", "client modify", "supplier delete");
     }
 
     ExpandoObject LastInvoiceDbRow()
