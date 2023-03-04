@@ -121,7 +121,10 @@ try
             case "invoice details":
                 {
                     int invoiceId = int.Parse(args[2]);
-                    new ConsoleInvoiceDetails(new PgInvoice(invoiceId, pgDataSource), new ConsoleMedia()).Print();
+
+                    var pgInvoice = new PgInvoice(invoiceId, pgDataSource);
+                    Console.Write(pgInvoice.Print(new ConsoleMedia()).Text());
+
                     break;
                 }
             case "invoice list":
