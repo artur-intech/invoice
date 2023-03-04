@@ -17,10 +17,10 @@ sealed class ConsoleDelimitedList<T>
         {
             if (i != 0)
             {
-                Console.Write(Environment.NewLine + Delimiter() + Environment.NewLine);
+                Console.Write(Delimiter() + Environment.NewLine);
             }
 
-            Console.Write(listItem.Print(new ConsoleMedia()).Text());
+            Console.WriteLine(listItem.Print(new ConsoleMedia()).Text());
             i++;
         }
     }

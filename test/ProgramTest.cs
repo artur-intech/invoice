@@ -173,7 +173,7 @@ class ConsoleTest : Base
             Number: {secondInvoice.Number}
             Date: {secondInvoice.Date}
             Due date: {secondInvoice.DueDate}
-            Total: {secondInvoice.Total}
+            Total: {secondInvoice.Total}{Environment.NewLine}
             """, capturedStdOut);
     }
 
@@ -292,7 +292,7 @@ class ConsoleTest : Base
             Name: {secondSupplier.Name}
             Address: {secondSupplier.Address}
             VAT number: {secondSupplier.VatNumber}
-            IBAN: {secondSupplier.Iban}
+            IBAN: {secondSupplier.Iban}{Environment.NewLine}
             """, capturedStdOut);
     }
 
@@ -316,7 +316,7 @@ class ConsoleTest : Base
             Id: {secondClient.Id}
             Name: {secondClient.Name}
             Address: {secondClient.Address}
-            VAT number: {secondClient.VatNumber}
+            VAT number: {secondClient.VatNumber}{Environment.NewLine}
             """, capturedStdOut);
     }
 
