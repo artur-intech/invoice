@@ -23,7 +23,7 @@ var timeZone = envTimeZone is not null ? TimeZoneInfo.FindSystemTimeZoneById(env
 var systemClock = new SystemClock(timeZone);
 
 var supportedCommands = ImmutableHashSet.Create("supplier create", "client create", "invoice create",
-    "invoice pdf", "invoice details", "invoice list", "supplier modify", "supplier list", "client list");
+    "invoice pdf", "invoice details", "invoice list", "supplier modify", "supplier list", "client list", "client modify");
 var currentCommand = string.Join(" ", args.Take(2));
 
 try
@@ -160,6 +160,26 @@ try
             case "client list":
                 {
                     new ConsoleDelimitedList<Client>(new PgClients(pgDataSource)).Print();
+                    break;
+                }
+            case "client modify":
+                {
+                    int id = int.Parse(args[2]);
+
+                    Console.WriteLine("Enter new client name:");
+                    var newName = Console.ReadLine();
+
+                    Console.WriteLine("Enter new client address:");
+                    var newAddress = Console.ReadLine();
+
+                    Console.WriteLine("Enter new client VAT number:");
+                    var newVatNumber = Console.ReadLine();
+
+                    var client = new PgClient(id, pgDataSource);
+                    client.Modify(newName, newAddress, newVatNumber);
+
+                    Console.Write($"Client {client} has been modified.");
+
                     break;
                 }
         }

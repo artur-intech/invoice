@@ -23,7 +23,7 @@ class ClientFixtures
         return Fetch(createdId);
     }
 
-    ClientFixture Fetch(int id)
+    public ClientFixture Fetch(int id)
     {
         var sql = "SELECT * FROM clients WHERE id = $1";
         using var command = pgDataSource.CreateCommand(sql);

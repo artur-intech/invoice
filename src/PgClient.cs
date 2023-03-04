@@ -40,6 +40,17 @@ sealed class PgClient : Client
                     .With("VAT number", vatNumber);
     }
 
+    public void Modify(string newName, string newAddress, string newVatNumber)
+    {
+        var sql = "UPDATE clients SET name = $1, address = $2, vat_number = $3 WHERE id = $4";
+        using var command = pgDataSource.CreateCommand(sql);
+        command.Parameters.AddWithValue(newName);
+        command.Parameters.AddWithValue(newAddress);
+        command.Parameters.AddWithValue(newVatNumber);
+        command.Parameters.AddWithValue(id);
+        command.ExecuteNonQuery();
+    }
+
     string Name()
     {
         using var command = pgDataSource.CreateCommand("SELECT name FROM clients WHERE id = $1");

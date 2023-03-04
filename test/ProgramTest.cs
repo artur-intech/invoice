@@ -317,10 +317,45 @@ class ConsoleTest : Base
             """, capturedStdOut);
     }
 
+    [Test]
+    public void ModifiesClient()
+    {
+        dynamic client = fixtures["clients"]["one"];
+        var newName = "new name";
+        var newAddress = "new address";
+        var newVatNumber = "new vat";
+        Assert.AreNotEqual(newName, client.Name);
+        Assert.AreNotEqual(newAddress, client.Address);
+        Assert.AreNotEqual(newVatNumber, client.VatNumber);
+
+        var stdIn = $"""
+            {newName}
+            {newAddress}
+            {newVatNumber}
+            """;
+
+        var capturedStdOut = CapturedStdOut(() =>
+        {
+            SubstituteStdIn(stdIn, () =>
+            {
+                RunApp(arguments: new string[] { "client", "modify", client.Id.ToString() });
+            });
+        });
+
+        Assert.AreEqual($"""
+            Enter new client name:
+            Enter new client address:
+            Enter new client VAT number:
+            Client {newName} has been modified.
+            """, capturedStdOut);
+        client = new ClientFixtures(pgDataSource).Fetch(client.Id);
+        Assert.AreEqual(newName, client.Name);
+    }
+
     IImmutableSet<string> SupportedCommands()
     {
         return ImmutableHashSet.Create("supplier create", "client create", "invoice create",
-            "invoice pdf", "invoice details", "invoice list", "supplier modify", "supplier list", "client list");
+            "invoice pdf", "invoice details", "invoice list", "supplier modify", "supplier list", "client list", "client modify");
     }
 
     ExpandoObject LastInvoiceDbRow()
