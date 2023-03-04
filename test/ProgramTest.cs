@@ -140,6 +140,7 @@ class ConsoleTest : Base
         });
 
         Assert.AreEqual($"""
+            Id: {invoice.Id}
             Client: {client.Name}
             Number: {invoice.Number}
             Date: {invoice.Date}
@@ -160,12 +161,14 @@ class ConsoleTest : Base
         });
 
         Assert.AreEqual($"""
+            Id: {firstInvoice.Id}
             Client: {client.Name}
             Number: {firstInvoice.Number}
             Date: {firstInvoice.Date}
             Due date: {firstInvoice.DueDate}
             Total: {firstInvoice.Total}
             {ListDelimiter()}
+            Id: {secondInvoice.Id}
             Client: {client.Name}
             Number: {secondInvoice.Number}
             Date: {secondInvoice.Date}

@@ -229,7 +229,8 @@ sealed class PgInvoice : Invoice
         var clientAddress = (string)reader["client_address"];
         var clientVatNumber = (string)reader["client_vat_number"];
 
-        return media.With("Client", clientName)
+        return media.With("Id", id)
+                    .With("Client", clientName)
                     .With("Number", number)
                     .With("Date", date)
                     .With("Due date", dueDate)
