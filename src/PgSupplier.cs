@@ -55,7 +55,14 @@ sealed class PgSupplier : Supplier
                     .With("IBAN", iban);
     }
 
-    string Name()
+    public void Delete()
+    {
+        using var command = pgDataSource.CreateCommand("DELETE FROM suppliers WHERE id = $1");
+        command.Parameters.AddWithValue(id);
+        command.ExecuteNonQuery();
+    }
+
+    public string Name()
     {
         using var command = pgDataSource.CreateCommand("SELECT name FROM suppliers WHERE id = $1");
         command.Parameters.AddWithValue(id);
