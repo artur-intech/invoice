@@ -11,17 +11,12 @@ sealed class ConsoleDelimitedList<T>
 
     public void Print()
     {
-        var i = 0;
+        Console.WriteLine($"Records total: {list.ToList().Count}");
 
         foreach (dynamic listItem in list)
         {
-            if (i != 0)
-            {
-                Console.Write(Delimiter() + Environment.NewLine);
-            }
-
+            Console.Write(Delimiter() + Environment.NewLine);
             Console.WriteLine(listItem.Print(new ConsoleMedia()).Text());
-            i++;
         }
     }
 
