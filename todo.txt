@@ -6,3 +6,4 @@ TODO
 - Allow a client to be deleted even if it has invoices. Nullify foreign id.
 - Database migrations.
 - Do not print subtotal and vat amount in invoice list
+- Limit database-aware tests to integration and Pg family ones.
