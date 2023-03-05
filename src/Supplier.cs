@@ -14,7 +14,22 @@ interface Supplier
             return "Fake supplier";
         }
 
+        public void Delete()
+        {
+            throw new NotImplementedException();
+        }
+
+        public string Name()
+        {
+            throw new NotImplementedException();
+        }
+
         ConsoleMedia Supplier.Print(ConsoleMedia media)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Modify(string newName, string newAddress, string newVatNumber, string newIban)
         {
             throw new NotImplementedException();
         }
@@ -23,4 +38,7 @@ interface Supplier
     int Id();
     string ToString();
     ConsoleMedia Print(ConsoleMedia media);
+    string Name();
+    void Delete();
+    void Modify(string newName, string newAddress, string newVatNumber, string newIban);
 }
