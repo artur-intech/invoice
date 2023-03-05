@@ -163,6 +163,8 @@ class ConsoleTest : Base
         });
 
         Assert.AreEqual($"""
+            Records total: {fixtures["invoices"].Count}
+            {ListDelimiter()}
             Id: {firstInvoice.Id}
             Client: {client.Name}
             Number: {firstInvoice.Number}
@@ -288,6 +290,8 @@ class ConsoleTest : Base
         });
 
         Assert.AreEqual($"""
+            Records total: {fixtures["suppliers"].Count}
+            {ListDelimiter()}
             Id: {firstSupplier.Id}
             Name: {firstSupplier.Name}
             Address: {firstSupplier.Address}
@@ -314,6 +318,8 @@ class ConsoleTest : Base
         });
 
         Assert.AreEqual($"""
+            Records total: {fixtures["clients"].Count}
+            {ListDelimiter()}
             Id: {firstClient.Id}
             Name: {firstClient.Name}
             Address: {firstClient.Address}
