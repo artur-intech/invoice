@@ -31,6 +31,7 @@
         "dimgray",
         "iban",
         "Intech",
-        "Npgsql"
+        "Npgsql",
+        "Uninvoiced"
     ],
 }
