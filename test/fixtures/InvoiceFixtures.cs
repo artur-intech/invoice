@@ -84,9 +84,11 @@ class InvoiceFixtures
         var date = reader.GetFieldValue<DateOnly>(reader.GetOrdinal("date"));
         var dueDate = reader.GetFieldValue<DateOnly>(reader.GetOrdinal("due_date"));
         var vatRate = (short)reader["vat_rate"];
+        var subtotal = (long)reader["subtotal"];
+        var vatAmount = (long)reader["vat_amount"];
         var total = (long)reader["total"];
         var supplierName = (string)reader["supplier_name"];
 
-        return new InvoiceFixture() { Id = id, Number = number, Date = date, DueDate = dueDate, VatRate = vatRate, Total = total, SupplierName = supplierName };
+        return new InvoiceFixture() { Id = id, Number = number, Date = date, DueDate = dueDate, VatRate = vatRate, Subtotal = subtotal, VatAmount = vatAmount, Total = total, SupplierName = supplierName };
     }
 }

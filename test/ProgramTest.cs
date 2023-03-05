@@ -145,6 +145,8 @@ class ConsoleTest : Base
             Number: {invoice.Number}
             Date: {invoice.Date}
             Due date: {invoice.DueDate}
+            Subtotal: {invoice.Subtotal}
+            VAT amount: {invoice.VatAmount}
             Total: {invoice.Total}
             """, capturedStdOut);
     }
@@ -166,6 +168,8 @@ class ConsoleTest : Base
             Number: {firstInvoice.Number}
             Date: {firstInvoice.Date}
             Due date: {firstInvoice.DueDate}
+            Subtotal: {firstInvoice.Subtotal}
+            VAT amount: {firstInvoice.VatAmount}
             Total: {firstInvoice.Total}
             {ListDelimiter()}
             Id: {secondInvoice.Id}
@@ -173,6 +177,8 @@ class ConsoleTest : Base
             Number: {secondInvoice.Number}
             Date: {secondInvoice.Date}
             Due date: {secondInvoice.DueDate}
+            Subtotal: {secondInvoice.Subtotal}
+            VAT amount: {secondInvoice.VatAmount}
             Total: {secondInvoice.Total}{Environment.NewLine}
             """, capturedStdOut);
     }

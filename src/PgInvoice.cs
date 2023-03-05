@@ -234,6 +234,8 @@ sealed class PgInvoice : Invoice
                     .With("Number", number)
                     .With("Date", date)
                     .With("Due date", dueDate)
+                    .With("Subtotal", subtotal)
+                    .With("VAT amount", vatAmount)
                     .With("Total", total);
     }
 }
