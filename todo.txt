@@ -2,7 +2,6 @@ TODO
 - Database constraints for empty strings
 - Find SQL manipulation library
 - Invoice supplier and client id validation
-- Show full exception details in dev mode
 - Allow a client to be deleted even if it has invoices. Nullify foreign id.
 - Database migrations.
 - Do not print subtotal and vat amount in invoice list
