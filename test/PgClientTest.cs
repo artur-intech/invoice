@@ -37,4 +37,41 @@ class PgClientTest : Base
         });
         StringAssert.Contains("Client has invoices and therefore cannot be deleted.", exception.Message);
     }
+
+    [Test]
+    public void RepresentsItselfAsString()
+    {
+        dynamic clientFixture = fixtures["clients"]["one"];
+        var pgClient = new PgClient(clientFixture.Id, pgDataSource);
+        Assert.AreEqual(clientFixture.Name, $"{pgClient}");
+    }
+
+    [Test]
+    public void ModifiesItself()
+    {
+        dynamic clientFixture = fixtures["clients"]["one"];
+        var newName = "new name";
+        var newAddress = "new address";
+        var newVatNumber = "new vat";
+
+        Assert.AreNotEqual(newName, clientFixture.Name);
+        Assert.AreNotEqual(newAddress, clientFixture.Address);
+        Assert.AreNotEqual(newVatNumber, clientFixture.VatNumber);
+
+        var pgClient = new PgClient(clientFixture.Id, pgDataSource);
+        pgClient.Modify(newName, newAddress, newVatNumber);
+
+        clientFixture = new ClientFixtures(pgDataSource).Fetch(clientFixture.Id);
+        Assert.AreEqual(newName, clientFixture.Name);
+        Assert.AreEqual(newAddress, clientFixture.Address);
+        Assert.AreEqual(newVatNumber, clientFixture.VatNumber);
+    }
+
+    [Test]
+    public void ReportsId()
+    {
+        dynamic clientFixture = fixtures["clients"]["one"];
+        var pgClient = new PgSupplier(clientFixture.Id, pgDataSource);
+        Assert.AreEqual(clientFixture.Id, pgClient.Id());
+    }
 }
