@@ -1,4 +1,5 @@
-using System.Collections.Immutable;
+using System.Collections;
+
 using Npgsql;
 
 namespace Intech.Invoice;
@@ -73,19 +74,41 @@ sealed class PgInvoices : Invoices
         return new PgInvoice(id, pgDataSource);
     }
 
-    public IEnumerable<PgInvoice> Fetch()
+    public IEnumerator<Invoice> GetEnumerator()
     {
-        using var command = pgDataSource.CreateCommand("SELECT id FROM invoices");
+        var sql = """
+            SELECT
+            invoices.*,
+            SUM(price * quantity::int) AS subtotal,
+            (SUM(price * quantity::int) * vat_rate) / 100 AS vat_amount,
+            SUM(price * quantity::int) + ((SUM(price * quantity::int) * vat_rate) / 100) AS total
+            FROM
+            invoices
+            LEFT JOIN
+            line_items ON invoices.id = line_items.invoice_id
+            GROUP BY
+            invoices.id
+            """;
+        using var command = pgDataSource.CreateCommand(sql);
         using var reader = command.ExecuteReader();
-        var pgInvoices = ImmutableList<PgInvoice>.Empty;
 
         while (reader.Read())
         {
-            var invoiceId = (int)reader["id"];
-            var pgInvoice = new PgInvoice(invoiceId, pgDataSource);
-            pgInvoices = pgInvoices.Add(pgInvoice);
-        }
+            var id = (int)reader["id"];
+            var clientName = (string)reader["client_name"];
+            var number = (string)reader["number"];
+            var date = reader.GetFieldValue<DateOnly>(reader.GetOrdinal("date"));
+            var dueDate = reader.GetFieldValue<DateOnly>(reader.GetOrdinal("due_date"));
+            var subtotal = new Money((long)reader["subtotal"]);
+            var vatAmount = new Money((long)reader["vat_amount"]);
+            var total = new Money((long)reader["total"]);
 
-        return pgInvoices;
+            yield return new ConstInvoice(new PgInvoice(id, pgDataSource), clientName, number, date, dueDate, subtotal, vatAmount, total);
+        }
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
     }
 }

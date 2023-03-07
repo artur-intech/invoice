@@ -38,11 +38,11 @@ class Base
         var secondClient = new ClientFixtures(pgDataSource).Create(name: "best client");
         var invoices = new InvoiceFixtures(pgDataSource);
 
-        var invoiceId = invoices.Create(firstSupplier.Id, firstClient.Id);
+        var invoiceId = invoices.Create(firstSupplier.Id, firstClient.Id, date: new DateOnly(1970, 01, 01), dueDate: new DateOnly(1970, 01, 01));
         var lineItem = new LineItemFixtures(pgDataSource).Create(invoiceId);
 
         var firstInvoice = invoices.Fetch(invoiceId);
-        var secondInvoiceId = invoices.Create(firstSupplier.Id, firstClient.Id, number: "1234");
+        var secondInvoiceId = invoices.Create(firstSupplier.Id, firstClient.Id, number: "1234", date: new DateOnly(1970, 01, 02), dueDate: new DateOnly(1970, 01, 02));
         new LineItemFixtures(pgDataSource).Create(secondInvoiceId);
         var secondInvoice = invoices.Fetch(secondInvoiceId);
 
