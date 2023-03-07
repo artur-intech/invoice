@@ -40,13 +40,18 @@ sealed class PgSuppliers : Suppliers
 
     public IEnumerator<Supplier> GetEnumerator()
     {
-        using var command = pgDataSource.CreateCommand("SELECT id FROM suppliers");
+        using var command = pgDataSource.CreateCommand("SELECT * FROM suppliers");
         using var reader = command.ExecuteReader();
 
         while (reader.Read())
         {
             var id = (int)reader["id"];
-            yield return new PgSupplier(id, pgDataSource);
+            var name = (string)reader["name"];
+            var address = (string)reader["address"];
+            var vatNumber = (string)reader["vat_number"];
+            var iban = (string)reader["iban"];
+
+            yield return new ConstSupplier(new PgSupplier(id, pgDataSource), name, address, vatNumber, iban);
         }
     }
 
