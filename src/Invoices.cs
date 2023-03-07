@@ -1,7 +1,6 @@
 namespace Intech.Invoice;
 
-interface Invoices
+interface Invoices : IEnumerable<Invoice>
 {
     Invoice Add(string number, DateOnly date, DateOnly dueDate, int vatRate, int supplierId, int customerId);
-    IEnumerable<PgInvoice> Fetch();
 }

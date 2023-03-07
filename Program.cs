@@ -129,7 +129,7 @@ try
                 }
             case "invoice list":
                 {
-                    new ConsoleDelimitedList<Invoice>(new PgInvoices(pgDataSource).Fetch()).Print();
+                    new ConsoleDelimitedList<Invoice>(new PgInvoices(pgDataSource)).Print();
                     break;
                 }
             case "supplier modify":

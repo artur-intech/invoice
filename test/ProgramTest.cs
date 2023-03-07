@@ -165,6 +165,15 @@ class ConsoleTest : Base
         Assert.AreEqual($"""
             Records total: {fixtures["invoices"].Count}
             {ListDelimiter()}
+            Id: {secondInvoice.Id}
+            Client: {client.Name}
+            Number: {secondInvoice.Number}
+            Date: {secondInvoice.Date}
+            Due date: {secondInvoice.DueDate}
+            Subtotal: {new Money(secondInvoice.Subtotal)}
+            VAT amount: {new Money(secondInvoice.VatAmount)}
+            Total: {new Money(secondInvoice.Total)}
+            {ListDelimiter()}
             Id: {firstInvoice.Id}
             Client: {client.Name}
             Number: {firstInvoice.Number}
@@ -173,15 +182,7 @@ class ConsoleTest : Base
             Subtotal: {new Money(firstInvoice.Subtotal)}
             VAT amount: {new Money(firstInvoice.VatAmount)}
             Total: {new Money(firstInvoice.Total)}
-            {ListDelimiter()}
-            Id: {secondInvoice.Id}
-            Client: {client.Name}
-            Number: {secondInvoice.Number}
-            Date: {secondInvoice.Date}
-            Due date: {secondInvoice.DueDate}
-            Subtotal: {new Money(secondInvoice.Subtotal)}
-            VAT amount: {new Money(secondInvoice.VatAmount)}
-            Total: {new Money(secondInvoice.Total)}{Environment.NewLine}
+
             """, capturedStdOut);
     }
 
