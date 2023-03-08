@@ -97,13 +97,9 @@ class PgInvoicesTest : Base
     {
         CreateSupplierFixtures();
         CreateClientFixtures();
-        var invoiceFixtures = new InvoiceFixtures(pgDataSource);
-        var thirdInvoiceId = invoiceFixtures.Create(ValidSupplierId(), ValidClientId(), date: new DateOnly(1970, 01, 01));
-        var firstInvoiceId = invoiceFixtures.Create(ValidSupplierId(), ValidClientId(), date: new DateOnly(1970, 01, 03));
-        var secondInvoiceId = invoiceFixtures.Create(ValidSupplierId(), ValidClientId(), date: new DateOnly(1970, 01, 02));
-        new LineItemFixtures(pgDataSource).Create(firstInvoiceId);
-        new LineItemFixtures(pgDataSource).Create(secondInvoiceId);
-        new LineItemFixtures(pgDataSource).Create(thirdInvoiceId);
+        var thirdInvoiceId = Invoice(new DateOnly(1970, 01, 01)).Id;
+        var firstInvoiceId = Invoice(new DateOnly(1970, 01, 03)).Id;
+        var secondInvoiceId = Invoice(new DateOnly(1970, 01, 02)).Id;
 
         var pgInvoices = new PgInvoices(pgDataSource).ToList();
 
@@ -166,5 +162,14 @@ class PgInvoicesTest : Base
     {
         dynamic client = fixtures["clients"]["one"];
         return client.Id;
+    }
+
+    InvoiceFixture Invoice(DateOnly date)
+    {
+        var fixtures = new InvoiceFixtures(pgDataSource);
+        var id = fixtures.Create(ValidSupplierId(), ValidClientId(), date);
+        new LineItemFixtures(pgDataSource).Create(id);
+
+        return fixtures.Fetch(id);
     }
 }
