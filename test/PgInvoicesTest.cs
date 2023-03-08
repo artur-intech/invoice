@@ -91,6 +91,27 @@ class PgInvoicesTest : Base
         StringAssert.Contains("violates check constraint \"nonnegative_invoice_vat_rate\"", exception.Message);
     }
 
+    [Test]
+    [Property("SkipFixtureCreation", "true")]
+    public void SortsChronologically()
+    {
+        CreateSupplierFixtures();
+        CreateClientFixtures();
+        var invoiceFixtures = new InvoiceFixtures(pgDataSource);
+        var thirdInvoiceId = invoiceFixtures.Create(ValidSupplierId(), ValidClientId(), date: new DateOnly(1970, 01, 01));
+        var firstInvoiceId = invoiceFixtures.Create(ValidSupplierId(), ValidClientId(), date: new DateOnly(1970, 01, 03));
+        var secondInvoiceId = invoiceFixtures.Create(ValidSupplierId(), ValidClientId(), date: new DateOnly(1970, 01, 02));
+        new LineItemFixtures(pgDataSource).Create(firstInvoiceId);
+        new LineItemFixtures(pgDataSource).Create(secondInvoiceId);
+        new LineItemFixtures(pgDataSource).Create(thirdInvoiceId);
+
+        var pgInvoices = new PgInvoices(pgDataSource).ToList();
+
+        CollectionAssert.AreEqual(new List<int> { firstInvoiceId, secondInvoiceId, thirdInvoiceId },
+            pgInvoices.Select(i => i.Id()).ToList(),
+            "Invoices should be sorted by date in the descending order.");
+    }
+
     ExpandoObject DbRow(int id)
     {
         using var command = pgDataSource.CreateCommand("SELECT * FROM invoices WHERE id = $1");

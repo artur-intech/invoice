@@ -88,6 +88,8 @@ sealed class PgInvoices : Invoices
             line_items ON invoices.id = line_items.invoice_id
             GROUP BY
             invoices.id
+            ORDER BY
+            date DESC
             """;
         using var command = pgDataSource.CreateCommand(sql);
         using var reader = command.ExecuteReader();
