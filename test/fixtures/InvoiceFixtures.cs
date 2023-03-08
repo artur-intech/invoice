@@ -11,7 +11,7 @@ class InvoiceFixtures
         this.pgDataSource = pgDataSource;
     }
 
-    public int Create(int supplierId, int clientId, DateOnly date = default, DateOnly dueDate = default, string number = "test invoice number", int vatRate = 20)
+    public int Create(int supplierId, int clientId, DateOnly date = default, DateOnly? dueDate = null, string? number = null, int vatRate = 20)
     {
         var sql = """
             INSERT INTO invoices(
@@ -47,11 +47,20 @@ class InvoiceFixtures
             s.id = $6 AND c.id = $1
             RETURNING id
             """;
+
+        if (number is null)
+        {
+            var rand = new Random();
+            number = rand.Next().ToString();
+        }
+
+        dueDate ??= date;
+
         using var command = pgDataSource.CreateCommand(sql);
         command.Parameters.AddWithValue(clientId);
         command.Parameters.AddWithValue(number);
         command.Parameters.AddWithValue(date);
-        command.Parameters.AddWithValue(dueDate);
+        command.Parameters.AddWithValue(dueDate ?? new DateOnly(1970, 01, 02));
         command.Parameters.AddWithValue(vatRate);
         command.Parameters.AddWithValue(supplierId);
         var createdId = (int)command.ExecuteScalar();
