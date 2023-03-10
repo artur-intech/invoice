@@ -84,6 +84,7 @@ class ConsoleTest : Base
         var stdIn = $"""
             {firstSupplier.Id}
             {firstClient.Id}
+            {ValidVatRate()}
             Software development
             100
             160
@@ -101,6 +102,7 @@ class ConsoleTest : Base
         Assert.AreEqual($"""
             Enter supplier id ({firstSupplier.Id} - "{firstSupplier.Name}", {secondSupplier.Id} - "{secondSupplier.Name}"):
             Enter client id ({firstClient.Id} - "{firstClient.Name}", {secondClient.Id} - "{secondClient.Name}"):
+            Enter VAT rate (integer percent or "reverse-charged" string):
             Enter line item name:
             Enter line item price:
             Enter line item quantity:
@@ -419,5 +421,10 @@ class ConsoleTest : Base
     string ListDelimiter()
     {
         return new string('-', 50);
+    }
+
+    int ValidVatRate()
+    {
+        return 20;
     }
 }
