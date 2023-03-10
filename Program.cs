@@ -83,6 +83,10 @@ try
                     Console.WriteLine($"Enter client id{new ClientHint(new PgClients(pgDataSource))}:");
                     int clientId = int.Parse(Console.ReadLine());
 
+                    Console.WriteLine("Enter VAT rate (integer percent or \"reverse-charged\" string):");
+                    var vatRateInput = new VatRateInput(Console.ReadLine());
+                    var vatRate = vatRateInput.VatRate();
+
                     Console.WriteLine("Enter line item name:");
                     string lineItemName = Console.ReadLine();
 
@@ -100,7 +104,7 @@ try
                         number: new TimestampedNumber(systemClock).ToString(),
                         date: invoiceDate,
                         dueDate: DueDate.Standard(invoiceDate).Date(),
-                        vatRate: new ReverseChargedVatRate().IntValue(),
+                        vatRate: vatRate.IntValue(),
                         supplierId: supplierId,
                         clientId: clientId);
                     new PgLineItems(pgDataSource).Add(invoice.Id(), lineItemName, lineItemPrice, lineItemQuantity);

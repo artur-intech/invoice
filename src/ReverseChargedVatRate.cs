@@ -1,5 +1,6 @@
 namespace Intech.Invoice;
 
+// TODO Implement VatRate identity
 sealed class ReverseChargedVatRate : VatRate
 {
     public int IntValue()
