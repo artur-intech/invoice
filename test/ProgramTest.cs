@@ -102,7 +102,7 @@ class ConsoleTest : Base
         Assert.AreEqual($"""
             Enter supplier id ({firstSupplier.Id} - "{firstSupplier.Name}", {secondSupplier.Id} - "{secondSupplier.Name}"):
             Enter client id ({firstClient.Id} - "{firstClient.Name}", {secondClient.Id} - "{secondClient.Name}"):
-            Enter VAT rate (integer percent or "reverse-charged" string):
+            Enter VAT rate (positive integer or "reverse-charged" string):
             Enter line item name:
             Enter line item price:
             Enter line item quantity:
