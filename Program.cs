@@ -83,7 +83,7 @@ try
                     Console.WriteLine($"Enter client id{new ClientHint(new PgClients(pgDataSource))}:");
                     int clientId = int.Parse(Console.ReadLine());
 
-                    Console.WriteLine("Enter VAT rate (integer percent or \"reverse-charged\" string):");
+                    Console.WriteLine("Enter VAT rate (positive integer or \"reverse-charged\" string):");
                     var vatRateInput = new VatRateInput(Console.ReadLine());
                     var vatRate = vatRateInput.VatRate();
 
