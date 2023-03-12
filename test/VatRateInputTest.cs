@@ -14,8 +14,7 @@ class VatRateInputTest
     [Test]
     public void ReturnsDefaultVatRate()
     {
-        var vatRateInput = new VatRateInput("20");
-        Assert.AreEqual(new DefaultVatRate(20).IntValue(), vatRateInput.VatRate().IntValue());
+        Assert.AreEqual(new DefaultVatRate(20), new VatRateInput("20").VatRate());
     }
 
     [Test]
