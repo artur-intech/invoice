@@ -26,6 +26,8 @@ var supportedCommands = ImmutableHashSet.Create("supplier create", "client creat
     "invoice pdf", "invoice details", "invoice list", "supplier modify", "supplier list", "client list", "client modify", "supplier delete", "client delete");
 var currentCommand = string.Join(" ", args.Take(2));
 
+var standardVatRate = int.Parse(Environment.GetEnvironmentVariable("STANDARD_VAT_RATE"));
+
 try
 {
     if (args.Length < 2 || !supportedCommands.Contains(currentCommand))
@@ -83,7 +85,7 @@ try
                     Console.WriteLine($"Enter client id{new ClientHint(new PgClients(pgDataSource))}:");
                     int clientId = int.Parse(Console.ReadLine());
 
-                    Console.WriteLine("Enter VAT rate (positive integer or \"reverse-charged\" string):");
+                    Console.WriteLine($"Enter VAT rate as positive integer, \"reverse-charged\" string or leave blank to apply the standard rate of {standardVatRate}%:");
                     var vatRateInput = new VatRateInput(Console.ReadLine());
                     var vatRate = vatRateInput.VatRate();
 

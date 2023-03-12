@@ -11,7 +11,11 @@ sealed class VatRateInput
 
     public VatRate VatRate()
     {
-        if (value == "reverse-charged")
+        if (string.IsNullOrEmpty(value))
+        {
+            return Intech.Invoice.VatRate.Standard();
+        }
+        else if (value == "reverse-charged")
         {
             return new ReverseChargedVatRate();
         }
