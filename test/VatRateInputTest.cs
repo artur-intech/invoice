@@ -28,4 +28,11 @@ class VatRateInputTest
         });
         Assert.AreEqual(errorMessage, exception.Message);
     }
+
+    [Test]
+    public void ReturnsStandard()
+    {
+        var vatRateInput = new VatRateInput("");
+        Assert.AreEqual(VatRate.Standard(), vatRateInput.VatRate());
+    }
 }
