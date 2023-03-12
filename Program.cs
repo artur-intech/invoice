@@ -26,10 +26,16 @@ var supportedCommands = ImmutableHashSet.Create("supplier create", "client creat
     "invoice pdf", "invoice details", "invoice list", "supplier modify", "supplier list", "client list", "client modify", "supplier delete", "client delete");
 var currentCommand = string.Join(" ", args.Take(2));
 
-var standardVatRate = int.Parse(Environment.GetEnvironmentVariable("STANDARD_VAT_RATE"));
-
 try
 {
+    if (Environment.GetEnvironmentVariable("STANDARD_VAT_RATE") is null)
+    {
+        throw new Exception("STANDARD_VAT_RATE env var must be set");
+    }
+
+    var standardVatRate = int.Parse(Environment.GetEnvironmentVariable("STANDARD_VAT_RATE"));
+
+
     if (args.Length < 2 || !supportedCommands.Contains(currentCommand))
     {
         Console.Write($"""
