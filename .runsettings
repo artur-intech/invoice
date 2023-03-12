@@ -13,6 +13,7 @@
       <PG_DATABASE>test</PG_DATABASE>
       <TIME_ZONE>utc</TIME_ZONE>
       <SHOW_DETAILED_EXCEPTIONS>false</SHOW_DETAILED_EXCEPTIONS>
+      <STANDARD_VAT_RATE>20</STANDARD_VAT_RATE>
     </EnvironmentVariables>
   </RunConfiguration>
 </RunSettings>
