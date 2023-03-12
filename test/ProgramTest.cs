@@ -400,6 +400,20 @@ class ConsoleTest : Base
         Assert.AreEqual(fixtures["clients"].Count - 1, (long)pgDataSource.CreateCommand("SELECT COUNT(*) FROM clients").ExecuteScalar(), "Client should have been deleted.");
     }
 
+    [Test]
+    [Property("SkipFixtureCreation", "true")]
+    public void RequiresVatRateEnv()
+    {
+        Environment.SetEnvironmentVariable("STANDARD_VAT_RATE", null);
+
+        var capturedStdOut = CapturedStdOut(() =>
+        {
+            RunApp();
+        });
+
+        Assert.AreEqual("STANDARD_VAT_RATE env var must be set", capturedStdOut);
+    }
+
     IImmutableSet<string> SupportedCommands()
     {
         return ImmutableHashSet.Create("supplier create", "client create", "invoice create",
