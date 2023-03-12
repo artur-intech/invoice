@@ -8,7 +8,7 @@ class VatRateInputTest
     public void ReturnsReverseChargedVatRate()
     {
         var vatRateInput = new VatRateInput("reverse-charged");
-        Assert.AreEqual(new ReverseChargedVatRate().IntValue(), vatRateInput.VatRate().IntValue());
+        Assert.AreEqual(new ReverseChargedVatRate(), vatRateInput.VatRate());
     }
 
     [Test]
