@@ -23,7 +23,8 @@
 		"PG_DATABASE": "postgres",
 		"TIME_ZONE": "Europe/Moscow",
 		"CULTURE": "ru-RU",
-		"SHOW_DETAILED_EXCEPTIONS": "true"
+		"SHOW_DETAILED_EXCEPTIONS": "true",
+		"STANDARD_VAT_RATE": "20"
 	}
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},

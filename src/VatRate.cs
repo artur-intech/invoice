@@ -2,8 +2,6 @@ namespace Intech.Invoice;
 
 interface VatRate
 {
-    const int standardRate = 20;
-
     class Fake : VatRate
     {
         readonly int value;
@@ -26,6 +24,7 @@ interface VatRate
 
     public static VatRate Standard()
     {
+        var standardRate = int.Parse(Environment.GetEnvironmentVariable("STANDARD_VAT_RATE"));
         return new DefaultVatRate(standardRate);
     }
 
