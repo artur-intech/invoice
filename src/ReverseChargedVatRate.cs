@@ -1,8 +1,23 @@
 namespace Intech.Invoice;
 
-// TODO Implement VatRate identity
 sealed class ReverseChargedVatRate : VatRate
 {
+    public static bool operator ==(ReverseChargedVatRate a, ReverseChargedVatRate b)
+    {
+        if (ReferenceEquals(a, b))
+            return true;
+
+        if ((object)a == null || (object)b == null)
+            return false;
+
+        return true;
+    }
+
+    public static bool operator !=(ReverseChargedVatRate a, ReverseChargedVatRate b)
+    {
+        return !(a == b);
+    }
+
     public int IntValue()
     {
         return 0;
@@ -11,5 +26,15 @@ sealed class ReverseChargedVatRate : VatRate
     public int VatAmount(int amountWithoutVat)
     {
         return 0;
+    }
+
+    public override bool Equals(object? obj)
+    {
+        return obj is ReverseChargedVatRate other && GetHashCode() == other.GetHashCode();
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(IntValue());
     }
 }

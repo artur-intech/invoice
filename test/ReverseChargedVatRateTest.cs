@@ -17,4 +17,19 @@ public class ReverseChargedVatRateTest
         var reverseChargedVatRate = new ReverseChargedVatRate();
         Assert.Zero(reverseChargedVatRate.VatAmount(100));
     }
+
+    [Test]
+    public void Equality()
+    {
+        var one = new ReverseChargedVatRate();
+        var other = new ReverseChargedVatRate();
+
+        Assert.True(one.Equals(other));
+#pragma warning disable CS1718 // Comparison made to same variable
+        Assert.True(one == other);
+        Assert.False(one != other);
+#pragma warning restore CS1718 // Comparison made to same variable
+
+        Assert.AreEqual(HashCode.Combine(one.IntValue()), one.GetHashCode());
+    }
 }
