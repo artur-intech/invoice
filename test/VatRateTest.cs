@@ -2,16 +2,8 @@ using NUnit.Framework;
 
 namespace Intech.Invoice.Test;
 
-class VatRateTest
+class VatRateTest : Base
 {
-    string? originalEnvVatRate;
-
-    [SetUp]
-    protected void SaveOriginalEnvValue()
-    {
-        originalEnvVatRate = Environment.GetEnvironmentVariable("STANDARD_VAT_RATE");
-    }
-
     [Test]
     public void CreatesStandardVatRateFromEnv()
     {
@@ -22,11 +14,5 @@ class VatRateTest
         var standard = VatRate.Standard();
 
         Assert.AreEqual(int.Parse(envRate), standard.IntValue());
-    }
-
-    [TearDown]
-    protected void RestoreOriginalEnvValue()
-    {
-        Environment.SetEnvironmentVariable("STANDARD_VAT_RATE", originalEnvVatRate);
     }
 }

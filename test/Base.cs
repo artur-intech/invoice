@@ -7,6 +7,7 @@ class Base
 {
     protected NpgsqlDataSource? pgDataSource;
     protected Dictionary<string, Dictionary<string, object>>? fixtures;
+    protected string? originalEnvVatRate;
 
     [OneTimeSetUp]
     protected void SetupPgDataSource()
@@ -55,6 +56,12 @@ class Base
         };
     }
 
+    [SetUp]
+    protected void SaveOriginalEnvValues()
+    {
+        originalEnvVatRate = Environment.GetEnvironmentVariable("STANDARD_VAT_RATE");
+    }
+
     // TODO Remove duplication
     protected void CreateSupplierFixtures()
     {
@@ -75,6 +82,12 @@ class Base
     protected void CleanUpDb()
     {
         pgDataSource.CreateCommand("TRUNCATE suppliers, clients, invoices, line_items RESTART IDENTITY CASCADE").ExecuteNonQuery();
+    }
+
+    [TearDown]
+    protected void RestoreOriginalEnvValues()
+    {
+        Environment.SetEnvironmentVariable("STANDARD_VAT_RATE", originalEnvVatRate);
     }
 
     [OneTimeTearDown]
