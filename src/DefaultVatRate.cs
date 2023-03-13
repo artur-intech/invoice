@@ -2,7 +2,7 @@ namespace Intech.Invoice;
 
 sealed class DefaultVatRate : VatRate
 {
-    readonly int value;
+    readonly int number;
 
     public static bool operator ==(DefaultVatRate a, DefaultVatRate b)
     {
@@ -20,28 +20,28 @@ sealed class DefaultVatRate : VatRate
         return !(a == b);
     }
 
-    public DefaultVatRate(int value)
+    public DefaultVatRate(int number)
     {
-        this.value = value;
+        this.number = number;
     }
 
     public int IntValue()
     {
-        return value;
+        return number;
     }
 
     public int VatAmount(int amountWithoutVat)
     {
-        return amountWithoutVat * value / 100;
+        return amountWithoutVat * number / 100;
     }
 
     public override bool Equals(object? obj)
     {
-        return obj is DefaultVatRate other && value == other.value;
+        return obj is DefaultVatRate other && number == other.number;
     }
 
     public override int GetHashCode()
     {
-        return HashCode.Combine(value);
+        return HashCode.Combine(number);
     }
 }
