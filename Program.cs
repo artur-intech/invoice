@@ -85,10 +85,10 @@ try
                 }
             case "invoice create":
                 {
-                    Console.WriteLine($"Enter supplier id{new SupplierHint(new PgSuppliers(pgDataSource))}:");
+                    Console.WriteLine($"Enter supplier id{new ListHint<Supplier>(new PgSuppliers(pgDataSource))}:");
                     int supplierId = int.Parse(Console.ReadLine());
 
-                    Console.WriteLine($"Enter client id{new ClientHint(new PgClients(pgDataSource))}:");
+                    Console.WriteLine($"Enter client id{new ListHint<Client>(new PgClients(pgDataSource))}:");
                     int clientId = int.Parse(Console.ReadLine());
 
                     Console.WriteLine($"Enter VAT rate as positive integer, \"reverse-charged\" string or leave blank to apply the standard rate of {standardVatRate}%:");
