@@ -12,7 +12,8 @@
 				"mathematic.vscode-pdf",
 				"streetsidesoftware.code-spell-checker",
 				"gruntfuggly.todo-tree",
-				"eamodio.gitlens"
+				"eamodio.gitlens",
+				"sleistner.vscode-fileutils"
 			]
 		}
 	},
