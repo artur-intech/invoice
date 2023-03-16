@@ -1,3 +1,4 @@
+using Intech.Invoice.DbMigration;
 using Npgsql;
 using NUnit.Framework;
 
@@ -8,6 +9,7 @@ class Base
     protected NpgsqlDataSource? pgDataSource;
     protected Dictionary<string, Dictionary<string, object>>? fixtures;
     protected string? originalEnvVatRate;
+    protected string? migrationsPath;
 
     [OneTimeSetUp]
     protected void SetupPgDataSource()
@@ -81,7 +83,7 @@ class Base
     [TearDown]
     protected void CleanUpDb()
     {
-        pgDataSource.CreateCommand("TRUNCATE suppliers, clients, invoices, line_items RESTART IDENTITY CASCADE").ExecuteNonQuery();
+        pgDataSource.CreateCommand("TRUNCATE suppliers, clients, invoices, line_items, applied_migrations RESTART IDENTITY CASCADE").ExecuteNonQuery();
     }
 
     [TearDown]
@@ -94,6 +96,12 @@ class Base
     protected void DisposePgDataSource()
     {
         pgDataSource.Dispose();
+    }
+
+    [SetUp]
+    protected void SetUp()
+    {
+        migrationsPath = Path.Combine(Path.GetTempPath(), new Random().Next().ToString());
     }
 
     protected void RunApp(string[]? arguments = default)
@@ -147,5 +155,13 @@ class Base
     protected string ValidIban()
     {
         return "iban";
+    }
+
+    protected Migration Migration(string id = "test", string sql = "whatever")
+    {
+        var path = Path.Combine(migrationsPath, $"{id}.pgsql");
+        File.WriteAllText(path, sql);
+
+        return new FileMigration(path, pgDataSource);
     }
 }

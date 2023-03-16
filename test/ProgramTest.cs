@@ -414,10 +414,57 @@ class ConsoleTest : Base
         Assert.AreEqual("STANDARD_VAT_RATE env var must be set", capturedStdOut);
     }
 
+    [Test, Ignore("It's not clear how to fully isolate original db/migrations path in integration tests")]
+    public void InitializesMigrations()
+    {
+        var capturedStdOut = CapturedStdOut(() =>
+        {
+            RunApp(arguments: new string[] { "migration", "init" });
+        });
+
+        Assert.AreEqual("Migrations have been initialized.", capturedStdOut);
+    }
+
+    [Test, Ignore("See above")]
+    public void CreatesEmptyMigration()
+    {
+        var capturedStdOut = CapturedStdOut(() =>
+        {
+            RunApp(arguments: new string[] { "migration", "create", "test name" });
+        });
+
+        Assert.AreEqual("Migration has been created.", capturedStdOut);
+    }
+
+    [Test, Ignore("See above")]
+    public void NoPendingMigrations()
+    {
+        var capturedStdOut = CapturedStdOut(() =>
+        {
+            RunApp(arguments: new string[] { "migration", "apply" });
+        });
+
+        Assert.AreEqual("There are no pending migrations.", capturedStdOut);
+    }
+
+    // [SetUp]
+    // protected void SetUp()
+    // {
+    //     migrationsPath = Path.Combine(Path.GetTempPath(), new Random().Next().ToString());
+    //     Directory.CreateDirectory(migrationsPath);
+    //     Environment.CurrentDirectory = migrationsPath;
+    // }
+
+    // [TearDown]
+    // protected void DeleteMigrationsRootDirectory()
+    // {
+    //     new DirectoryInfo(migrationsPath).Delete(recursive: true);
+    // }
+
     IImmutableSet<string> SupportedCommands()
     {
         return ImmutableHashSet.Create("supplier create", "client create", "invoice create",
-            "invoice pdf", "invoice details", "invoice list", "supplier modify", "supplier list", "client list", "client modify", "supplier delete", "client delete");
+            "invoice pdf", "invoice details", "invoice list", "supplier modify", "supplier list", "client list", "client modify", "supplier delete", "client delete", "migration init", "migration create", "migration apply");
     }
 
     ExpandoObject LastInvoiceDbRow()

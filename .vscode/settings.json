@@ -32,6 +32,7 @@
         "iban",
         "Intech",
         "Npgsql",
+        "pgsql",
         "Uninvoiced"
     ],
 }
