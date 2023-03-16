@@ -24,7 +24,7 @@
       <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.4.1" />
       <PackageReference Include="nunit" Version="3.13.3" />
       <PackageReference Include="NUnit3TestAdapter" Version="4.3.1" />
-      <Content Include="assets/intech_logo.svg">
+      <Content Include="assets/*.*">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </Content>
     </ItemGroup>
