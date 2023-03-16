@@ -105,9 +105,9 @@ try
                     int lineItemQuantity = int.Parse(Console.ReadLine());
 
                     var invoiceDate = systemClock.TodayInAppTimeZone();
-                    using var pgConnection = pgDataSource.OpenConnection();
 
-                    using var pgTransaction = pgConnection.BeginTransaction();
+                    new PgTransaction(pgDataSource).Wrap(() =>
+                    {
                     var invoice = new PgInvoices(pgDataSource).Add(
                         number: new TimestampedNumber(systemClock).ToString(),
                         date: invoiceDate,
@@ -116,9 +116,10 @@ try
                         supplierId: supplierId,
                         clientId: clientId);
                     new PgLineItems(pgDataSource).Add(invoice.Id(), lineItemName, lineItemPrice, lineItemQuantity);
-                    pgTransaction.Commit();
 
                     Console.Write($"Invoice {invoice} has been issued.");
+                    });
+
                     break;
                 }
             case "invoice pdf":
