@@ -1,6 +1,7 @@
 using System.Collections.Immutable;
 using System.Globalization;
 using Intech.Invoice;
+using Intech.Invoice.DbMigration;
 using Npgsql;
 
 var envPgHost = Environment.GetEnvironmentVariable("PG_HOST");
@@ -23,8 +24,10 @@ var timeZone = envTimeZone is not null ? TimeZoneInfo.FindSystemTimeZoneById(env
 var systemClock = new SystemClock(timeZone);
 
 var supportedCommands = ImmutableHashSet.Create("supplier create", "client create", "invoice create",
-    "invoice pdf", "invoice details", "invoice list", "supplier modify", "supplier list", "client list", "client modify", "supplier delete", "client delete");
+    "invoice pdf", "invoice details", "invoice list", "supplier modify", "supplier list", "client list", "client modify", "supplier delete", "client delete", "migration init", "migration create", "migration apply");
 var currentCommand = string.Join(" ", args.Take(2));
+
+var migrations = new Migrations(Path.Combine(Environment.CurrentDirectory, "db", "migrations"), pgDataSource);
 
 try
 {
@@ -108,16 +111,16 @@ try
 
                     new PgTransaction(pgDataSource).Wrap(() =>
                     {
-                    var invoice = new PgInvoices(pgDataSource).Add(
-                        number: new TimestampedNumber(systemClock).ToString(),
-                        date: invoiceDate,
-                        dueDate: DueDate.Standard(invoiceDate).Date(),
-                        vatRate: vatRate.IntValue(),
-                        supplierId: supplierId,
-                        clientId: clientId);
-                    new PgLineItems(pgDataSource).Add(invoice.Id(), lineItemName, lineItemPrice, lineItemQuantity);
+                        var invoice = new PgInvoices(pgDataSource).Add(
+                               number: new TimestampedNumber(systemClock).ToString(),
+                               date: invoiceDate,
+                               dueDate: DueDate.Standard(invoiceDate).Date(),
+                               vatRate: vatRate.IntValue(),
+                               supplierId: supplierId,
+                               clientId: clientId);
+                        new PgLineItems(pgDataSource).Add(invoice.Id(), lineItemName, lineItemPrice, lineItemQuantity);
 
-                    Console.Write($"Invoice {invoice} has been issued.");
+                        Console.Write($"Invoice {invoice} has been issued.");
                     });
 
                     break;
@@ -219,6 +222,45 @@ try
                     client.Delete();
 
                     Console.Write($"Client {name} has been deleted.");
+
+                    break;
+                }
+            case "migration init":
+                {
+                    new FileMigration(Path.Combine("assets", "initial_migration.pgsql"), pgDataSource).Apply();
+                    migrations.Init();
+
+                    // Remove duplication
+                    var connectionUri = $"postgres://{envPgUser}:{envPgPassword}@{envPgHost}/{envPgDatabase}";
+                    new PgDump(connectionUri, pgDataSource).DumpToFile(Path.Combine("db", "schema.sql"));
+
+                    Console.WriteLine("Migrations have been initialized.");
+
+                    break;
+                }
+            case "migration create":
+                {
+                    var name = args[2];
+
+                    migrations.CreateEmpty(new TimestampedId(name, systemClock));
+                    Console.WriteLine("Migration has been created.");
+
+                    break;
+                }
+            case "migration apply":
+                {
+                    new Pending(migrations).Apply((applied) =>
+                    {
+                        foreach (var migration in applied)
+                        {
+                            Console.WriteLine($"Migration {migration} has been applied.");
+                        }
+
+                        // Remove duplication
+                        var connectionUri = $"postgres://{envPgUser}:{envPgPassword}@{envPgHost}/{envPgDatabase}";
+                        new PgDump(connectionUri, pgDataSource).DumpToFile(Path.Combine("db", "schema.sql"));
+                    },
+                    () => Console.WriteLine("There are no pending migrations."));
 
                     break;
                 }
