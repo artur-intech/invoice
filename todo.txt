@@ -3,6 +3,17 @@ TODO
 - Find SQL manipulation library
 - Invoice supplier and client id validation
 - Allow a client to be deleted even if it has invoices. Nullify foreign id.
-- Database migrations.
 - Do not print subtotal and vat amount in invoice list
 - Limit database-aware tests to integration and Pg family ones.
+- Fixtures requirements:
+    - client.name() must return live data from database to be able to test client modification.
+    - Load into dev env
+- Supplier vat number is optional. Check tests.
+- invoice paid state
+- validate empty supplier/client name
+- generalize NpgsqlDataSource
+- add migration sql to "migration create"
+- sanitize migration id name
+    https://learn.microsoft.com/en-us/dotnet/api/system.io.path.getinvalidfilenamechars?view=net-7.0
+    https://stackoverflow.com/questions/309485/c-sharp-sanitize-file-name
+- add .gitkeep to db/migrations during initialization. Consider redoing process.
