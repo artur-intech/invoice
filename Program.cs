@@ -18,10 +18,8 @@ if (envCulture is not null)
     CultureInfo.CurrentCulture = new CultureInfo(envCulture);
 }
 
-var envTimeZone = Environment.GetEnvironmentVariable("TIME_ZONE");
-var timeZone = envTimeZone is not null ? TimeZoneInfo.FindSystemTimeZoneById(envTimeZone) : TimeZoneInfo.Local;
-
-var systemClock = new SystemClock(timeZone);
+var timezone = Timezone.Default();
+var systemClock = new SystemClock(timezone);
 
 var supportedCommands = ImmutableHashSet.Create("supplier create", "client create", "invoice create",
     "invoice pdf", "invoice details", "invoice list", "supplier modify", "supplier list", "client list", "client modify", "supplier delete", "client delete", "migration init", "migration create", "migration apply");
