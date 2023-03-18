@@ -4,10 +4,11 @@ interface Clock
 {
     class Fake : Clock
     {
+        const string defaultIso8601Now = "1970-01-01 07:00:00";
         private readonly string iso8601Now;
         private readonly TimeZoneInfo timeZone;
 
-        public Fake() : this("1970-01-01 07:00:00", Timezone.Fake()) { }
+        public Fake() : this(defaultIso8601Now, Timezone.Fake()) { }
 
         public Fake(string iso8601Time) : this(iso8601Time, Timezone.Fake()) { }
 
