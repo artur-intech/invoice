@@ -7,6 +7,10 @@ interface Clock
         private readonly string currentTime;
         private readonly TimeZoneInfo timeZone;
 
+        public Fake() : this("1970-01-01 07:00:00", Timezone.Fake()) { }
+
+        public Fake(string currentTime) : this(currentTime, Timezone.Fake()) { }
+
         public Fake(string currentTime, TimeZoneInfo timeZone)
         {
             this.currentTime = currentTime;
