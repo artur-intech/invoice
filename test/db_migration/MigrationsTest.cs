@@ -11,6 +11,7 @@ class MigrationsTest : Base
         Directory.Delete(migrationsPath, recursive: true);
         new Migrations(migrationsPath, pgDataSource).Init();
         DirectoryAssert.Exists(migrationsPath);
+        FileAssert.Exists(Path.Combine(migrationsPath, ".gitkeep"));
     }
 
     [Test]

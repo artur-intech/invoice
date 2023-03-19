@@ -18,6 +18,7 @@ sealed class Migrations : IEnumerable<Migration>
     public void Init()
     {
         Directory.CreateDirectory(path);
+        using (File.Create(Path.Combine(path, ".gitkeep"))) { };
     }
 
     public void CreateEmpty(Id id)
