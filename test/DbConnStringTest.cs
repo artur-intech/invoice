@@ -19,7 +19,7 @@ class DbConnStringTest
         var connString = new DbConnString(ValidHost(), ValidUser(), ValidPassword(), ValidDb());
         var expected = connString.PgDump();
 
-        Assert.AreEqual($"postgres://{ValidHost()}:{ValidPassword()}@{ValidHost()}/{ValidDb()}", expected);
+        Assert.AreEqual($"postgres://{ValidUser()}:{ValidPassword()}@{ValidHost()}/{ValidDb()}", expected);
     }
 
     string ValidHost() => "host";
