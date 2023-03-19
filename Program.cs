@@ -4,12 +4,11 @@ using Intech.Invoice;
 using Intech.Invoice.DbMigration;
 using Npgsql;
 
-var envPgHost = Environment.GetEnvironmentVariable("PG_HOST");
-var envPgUser = Environment.GetEnvironmentVariable("PG_USER");
-var envPgPassword = Environment.GetEnvironmentVariable("PG_PASSWORD");
-var envPgDatabase = Environment.GetEnvironmentVariable("PG_DATABASE");
-var dbConnectionString = $"Server={envPgHost}; User Id={envPgUser}; Password={envPgPassword}; Database={envPgDatabase}";
-using var pgDataSource = NpgsqlDataSource.Create(dbConnectionString);
+var dbConnectionString = new DbConnString(host: Environment.GetEnvironmentVariable("PG_HOST"),
+    user: Environment.GetEnvironmentVariable("PG_USER"),
+    password: Environment.GetEnvironmentVariable("PG_PASSWORD"),
+    db: Environment.GetEnvironmentVariable("PG_DATABASE"));
+using var pgDataSource = NpgsqlDataSource.Create(dbConnectionString.Npgsql());
 
 var envCulture = Environment.GetEnvironmentVariable("CULTURE");
 
@@ -229,8 +228,7 @@ try
                     migrations.Init();
 
                     // Remove duplication
-                    var connectionUri = $"postgres://{envPgUser}:{envPgPassword}@{envPgHost}/{envPgDatabase}";
-                    new PgDump(connectionUri, pgDataSource).DumpToFile(Path.Combine("db", "schema.sql"));
+                    new PgDump(dbConnectionString.PgDump(), pgDataSource).DumpToFile(Path.Combine("db", "schema.sql"));
 
                     Console.WriteLine("Migrations have been initialized.");
 
@@ -255,8 +253,7 @@ try
                         }
 
                         // Remove duplication
-                        var connectionUri = $"postgres://{envPgUser}:{envPgPassword}@{envPgHost}/{envPgDatabase}";
-                        new PgDump(connectionUri, pgDataSource).DumpToFile(Path.Combine("db", "schema.sql"));
+                        new PgDump(dbConnectionString.PgDump(), pgDataSource).DumpToFile(Path.Combine("db", "schema.sql"));
                     },
                     () => Console.WriteLine("There are no pending migrations."));
 
