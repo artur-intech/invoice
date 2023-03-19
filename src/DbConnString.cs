@@ -22,6 +22,6 @@ class DbConnString
 
     public string PgDump()
     {
-        return $"postgres://{host}:{password}@{host}/{db}";
+        return $"postgres://{user}:{password}@{host}/{db}";
     }
 }
