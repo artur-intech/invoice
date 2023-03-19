@@ -8,18 +8,14 @@ class DbConnStringTest
     public void ReturnsNpgsqlFormat()
     {
         var connString = new DbConnString(ValidHost(), ValidUser(), ValidPassword(), ValidDb());
-        var expected = connString.Npgsql();
-
-        Assert.AreEqual($"Server={ValidHost()}; User Id={ValidUser()}; Password={ValidPassword()}; Database={ValidDb()}", expected);
+        Assert.AreEqual($"Server={ValidHost()}; User Id={ValidUser()}; Password={ValidPassword()}; Database={ValidDb()}", connString.Npgsql());
     }
 
     [Test]
     public void ReturnsPgdumpFormat()
     {
         var connString = new DbConnString(ValidHost(), ValidUser(), ValidPassword(), ValidDb());
-        var expected = connString.PgDump();
-
-        Assert.AreEqual($"postgres://{ValidUser()}:{ValidPassword()}@{ValidHost()}/{ValidDb()}", expected);
+        Assert.AreEqual($"postgres://{ValidUser()}:{ValidPassword()}@{ValidHost()}/{ValidDb()}", connString.PgDump());
     }
 
     string ValidHost() => "host";
