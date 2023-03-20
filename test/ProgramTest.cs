@@ -150,6 +150,7 @@ class ConsoleTest : Base
             Subtotal: {new Money(invoice.Subtotal)}
             VAT amount: {new Money(invoice.VatAmount)}
             Total: {new Money(invoice.Total)}
+            State: {invoice.State}
             """, capturedStdOut);
     }
     [Test]
@@ -175,6 +176,7 @@ class ConsoleTest : Base
             Subtotal: {new Money(secondInvoice.Subtotal)}
             VAT amount: {new Money(secondInvoice.VatAmount)}
             Total: {new Money(secondInvoice.Total)}
+            State: {secondInvoice.State}
             {ListDelimiter()}
             Id: {firstInvoice.Id}
             Client: {client.Name}
@@ -184,6 +186,7 @@ class ConsoleTest : Base
             Subtotal: {new Money(firstInvoice.Subtotal)}
             VAT amount: {new Money(firstInvoice.VatAmount)}
             Total: {new Money(firstInvoice.Total)}
+            State: {firstInvoice.State}
 
             """, capturedStdOut);
     }

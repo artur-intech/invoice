@@ -228,6 +228,7 @@ sealed class PgInvoice : Invoice
         var clientName = reader["client_name"];
         var clientAddress = reader["client_address"];
         var clientVatNumber = reader["client_vat_number"];
+        var state = (string)reader["state"];
 
         return media.With("Id", id)
                     .With("Client", clientName)
@@ -236,6 +237,7 @@ sealed class PgInvoice : Invoice
                     .With("Due date", dueDate)
                     .With("Subtotal", subtotal)
                     .With("VAT amount", vatAmount)
-                    .With("Total", total);
+                    .With("Total", total)
+                    .With("State", state);
     }
 }
