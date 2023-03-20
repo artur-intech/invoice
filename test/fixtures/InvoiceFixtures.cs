@@ -97,7 +97,8 @@ class InvoiceFixtures
         var vatAmount = (long)reader["vat_amount"];
         var total = (long)reader["total"];
         var supplierName = (string)reader["supplier_name"];
+        var state = (string)reader["state"];
 
-        return new InvoiceFixture() { Id = id, Number = number, Date = date, DueDate = dueDate, VatRate = vatRate, Subtotal = subtotal, VatAmount = vatAmount, Total = total, SupplierName = supplierName };
+        return new InvoiceFixture() { Id = id, Number = number, Date = date, DueDate = dueDate, VatRate = vatRate, Subtotal = subtotal, VatAmount = vatAmount, Total = total, SupplierName = supplierName, State = state };
     }
 }

@@ -104,8 +104,9 @@ sealed class PgInvoices : Invoices
             var subtotal = new Money((long)reader["subtotal"]);
             var vatAmount = new Money((long)reader["vat_amount"]);
             var total = new Money((long)reader["total"]);
+            var state = (string)reader["state"];
 
-            yield return new ConstInvoice(new PgInvoice(id, pgDataSource), clientName, number, date, dueDate, subtotal, vatAmount, total);
+            yield return new ConstInvoice(new PgInvoice(id, pgDataSource), clientName, number, date, dueDate, subtotal, vatAmount, total, state);
         }
     }
 

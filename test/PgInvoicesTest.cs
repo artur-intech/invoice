@@ -19,6 +19,7 @@ class PgInvoicesTest : Base
         var date = ValidDate();
         var dueDate = ValidDueDate();
         var vatRate = ValidVatRate();
+        var defaultState = "outstanding";
 
         var createdInvoiceId = new PgInvoices(pgDataSource).Add(number, date, dueDate, vatRate, supplier.Id, client.Id).Id();
 
@@ -36,6 +37,7 @@ class PgInvoicesTest : Base
         Assert.AreEqual(client.Name, dbRow.ClientName);
         Assert.AreEqual(client.Address, dbRow.ClientAddress);
         Assert.AreEqual(client.VatNumber, dbRow.ClientVatNumber);
+        Assert.AreEqual(defaultState, dbRow.State);
     }
 
     [Test]
@@ -128,6 +130,7 @@ class PgInvoicesTest : Base
         row.ClientName = reader["client_name"];
         row.ClientAddress = reader["client_address"];
         row.ClientVatNumber = reader["client_vat_number"];
+        row.State = reader["state"];
 
         return row;
     }
