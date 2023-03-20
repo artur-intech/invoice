@@ -11,4 +11,5 @@ readonly struct InvoiceFixture
     public readonly long VatAmount { get; init; }
     public readonly long Total { get; init; }
     public readonly string SupplierName { get; init; }
+    public readonly string State { get; init; }
 }
