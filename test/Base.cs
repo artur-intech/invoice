@@ -1,3 +1,4 @@
+using System.Dynamic;
 using Intech.Invoice.DbMigration;
 using Npgsql;
 using NUnit.Framework;
@@ -35,27 +36,17 @@ class Base
         var skipFixtures = (skipFixturesProperty is not null) ? bool.Parse(skipFixturesProperty.ToString()) : false;
         if (skipFixtures) return;
 
-        var firstSupplier = new SupplierFixtures(pgDataSource).Create();
-        var secondSupplier = new SupplierFixtures(pgDataSource).Create(name: "best supplier");
-        var firstClient = new ClientFixtures(pgDataSource).Create();
-        var secondClient = new ClientFixtures(pgDataSource).Create(name: "best client");
-        var invoices = new InvoiceFixtures(pgDataSource);
+        CreateSupplierFixtures();
+        CreateClientFixtures();
 
-        var invoiceId = invoices.Create(firstSupplier.Id, firstClient.Id, date: new DateOnly(1970, 01, 01), dueDate: new DateOnly(1970, 01, 01));
-        var lineItem = new LineItemFixtures(pgDataSource).Create(invoiceId);
+        dynamic firstInvoiceFixture = CreateInvoiceFixture();
+        dynamic secondInvoiceFixture = CreateInvoiceFixture();
 
-        var firstInvoice = invoices.Fetch(invoiceId);
-        var secondInvoiceId = invoices.Create(firstSupplier.Id, firstClient.Id, date: new DateOnly(1970, 01, 02), dueDate: new DateOnly(1970, 01, 02), paidDate: new DateOnly(1970, 01, 03));
-        new LineItemFixtures(pgDataSource).Create(secondInvoiceId);
-        var secondInvoice = invoices.Fetch(secondInvoiceId);
+        CreateLineItemFixture(firstInvoiceFixture.Id);
+        CreateLineItemFixture(secondInvoiceFixture.Id);
 
-        fixtures = new Dictionary<string, Dictionary<string, object>>
-        {
-            { "suppliers", new Dictionary<string, object> { { "one", firstSupplier }, { "two", secondSupplier } } },
-            { "clients", new Dictionary<string, object> { { "one", firstClient }, { "two", secondClient } } },
-            { "invoices", new Dictionary<string, object> { { "one", firstInvoice }, { "two", secondInvoice } } },
-            { "line_items", new Dictionary<string, object> { { "one", lineItem } } }
-        };
+        fixtures.Add("invoices", new Dictionary<string, object> { { "one", InvoiceFixture(firstInvoiceFixture.Id) },
+                                                                  { "two", InvoiceFixture(secondInvoiceFixture.Id) } });
     }
 
     [SetUp]
@@ -64,20 +55,20 @@ class Base
         originalEnvVatRate = Environment.GetEnvironmentVariable("STANDARD_VAT_RATE");
     }
 
-    // TODO Remove duplication
     protected void CreateSupplierFixtures()
     {
-        var firstFixture = new SupplierFixtures(pgDataSource).Create();
-        var secondFixture = new SupplierFixtures(pgDataSource).Create(name: "best supplier");
-        fixtures.Add("suppliers", new Dictionary<string, object> { { "one", firstFixture }, { "two", secondFixture } });
+        var first = CreateSupplierFixture();
+        var second = CreateSupplierFixture();
+
+        fixtures.Add("suppliers", new Dictionary<string, object> { { "one", first }, { "two", second } });
     }
 
-    // TODO Remove duplication
     protected void CreateClientFixtures()
     {
-        var firstFixture = new ClientFixtures(pgDataSource).Create();
-        var secondFixture = new ClientFixtures(pgDataSource).Create(name: "best client");
-        fixtures.Add("clients", new Dictionary<string, object> { { "one", firstFixture }, { "two", secondFixture } });
+        var first = CreateClientFixture();
+        var second = CreateClientFixture();
+
+        fixtures.Add("clients", new Dictionary<string, object> { { "one", first }, { "two", second } });
     }
 
     [TearDown]
@@ -137,9 +128,153 @@ class Base
         Console.SetIn(originalStdIn);
     }
 
+    protected Migration Migration(string id = "test", string sql = "whatever")
+    {
+        var path = Path.Combine(migrationsPath, $"{id}.pgsql");
+        File.WriteAllText(path, sql);
+
+        return new FileMigration(path, pgDataSource);
+    }
+
+    protected ExpandoObject CreateInvoiceFixture()
+    {
+        return CreateInvoiceFixture(ValidDate());
+    }
+
+    protected ExpandoObject CreateInvoiceFixture(DateOnly date)
+    {
+        var pgInvoices = new PgInvoices(pgDataSource);
+        var pgInvoice = pgInvoices.Add(number: ValidNumber(),
+            date: date,
+            dueDate: date,
+            vatRate: ValidVatRate(),
+            supplierId: ValidSupplierId(),
+            clientId: ValidClientId());
+
+        return InvoiceFixture(pgInvoice.Id());
+    }
+
+    protected ExpandoObject InvoiceFixture(int id)
+    {
+        DateOnly? PaidDate(NpgsqlDataReader reader)
+        {
+            return !reader.IsDBNull(reader.GetOrdinal("paid_date")) ? Date(reader, "paid_date") : null;
+        }
+
+        DateOnly Date(NpgsqlDataReader reader, string column)
+        {
+            return reader.GetFieldValue<DateOnly>(reader.GetOrdinal(column));
+        }
+
+        var sql = $"""
+            SELECT
+            invoices.*,
+            COALESCE(SUM(price * quantity::int), 0) AS subtotal,
+            COALESCE((SUM(price * quantity::int) * vat_rate) / 100, 0) AS vat_amount,
+            COALESCE(SUM(price * quantity::int) + ((SUM(price * quantity::int) * vat_rate) / 100), 0) AS total
+            FROM
+            invoices
+            LEFT JOIN
+            line_items ON invoices.id = line_items.invoice_id
+            WHERE
+            invoices.id = {id}
+            GROUP BY
+            invoices.id
+            """;
+        using var cmd = pgDataSource.CreateCommand(sql);
+        using var reader = cmd.ExecuteReader();
+        reader.Read();
+
+        dynamic invoice = new ExpandoObject();
+        invoice.Id = id;
+        invoice.Number = reader["number"];
+        invoice.Date = Date(reader, "date");
+        invoice.DueDate = Date(reader, "due_date");
+        invoice.VatRate = reader["vat_rate"];
+        invoice.ClientId = reader["client_id"];
+        invoice.SupplierName = reader["supplier_name"];
+        invoice.SupplierAddress = reader["supplier_address"];
+        invoice.SupplierVatNumber = reader["supplier_vat_number"];
+        invoice.SupplierIban = reader["supplier_iban"];
+        invoice.ClientName = reader["client_name"];
+        invoice.ClientAddress = reader["client_address"];
+        invoice.ClientVatNumber = reader["client_vat_number"];
+        invoice.Paid = reader["paid"];
+        invoice.Subtotal = (long)reader["subtotal"];
+        invoice.VatAmount = (long)reader["vat_amount"];
+        invoice.Total = (long)reader["total"];
+        invoice.PaidDate = PaidDate(reader);
+
+        return invoice;
+    }
+
+    protected ExpandoObject CreateLineItemFixture(int invoiceId)
+    {
+        var pgLineItems = new PgLineItems(pgDataSource);
+        var pgLineItemId = pgLineItems.Add(invoiceId: invoiceId, name: "test", price: 100, quantity: 1);
+
+        using var cmd = pgDataSource.CreateCommand($"SELECT * FROM line_items WHERE id = {pgLineItemId}");
+        using var reader = cmd.ExecuteReader();
+        reader.Read();
+
+        dynamic lineItem = new ExpandoObject();
+        lineItem.Name = reader["name"];
+        lineItem.Price = reader["price"];
+        lineItem.Quantity = reader["quantity"];
+
+        return lineItem;
+    }
+
+    protected ExpandoObject CreateSupplierFixture()
+    {
+        var pgSuppliers = new PgSuppliers(pgDataSource);
+        var pgSupplier = pgSuppliers.Add(ValidName(), ValidAddress(), ValidVatNumber(), ValidIban());
+
+        return SupplierFixture(pgSupplier.Id());
+    }
+
+    protected ExpandoObject SupplierFixture(int id)
+    {
+        using var cmd = pgDataSource.CreateCommand($"SELECT * FROM suppliers WHERE id = {id}");
+        using var reader = cmd.ExecuteReader();
+        reader.Read();
+
+        dynamic supplier = new ExpandoObject();
+        supplier.Id = id;
+        supplier.Name = reader["name"];
+        supplier.Address = reader["address"];
+        supplier.VatNumber = reader["vat_number"];
+        supplier.Iban = reader["iban"];
+
+        return supplier;
+    }
+
+    protected ExpandoObject CreateClientFixture()
+    {
+        var pgClients = new PgClients(pgDataSource);
+        var pgClient = pgClients.Add(ValidName(), ValidAddress(), ValidVatNumber());
+
+        return ClientFixture(pgClient.Id());
+    }
+
+    protected ExpandoObject ClientFixture(int id)
+    {
+        using var cmd = pgDataSource.CreateCommand($"SELECT * FROM clients WHERE id = {id}");
+        using var reader = cmd.ExecuteReader();
+        reader.Read();
+
+        dynamic client = new ExpandoObject();
+        client.Id = id;
+        client.Name = reader["name"];
+        client.Address = reader["address"];
+        client.VatNumber = reader["vat_number"];
+
+        return client;
+    }
+
     protected string ValidName()
     {
-        return "name";
+        return new Random().Next().ToString();
     }
 
     protected string ValidAddress()
@@ -157,11 +292,30 @@ class Base
         return "iban";
     }
 
-    protected Migration Migration(string id = "test", string sql = "whatever")
+    protected string ValidNumber()
     {
-        var path = Path.Combine(migrationsPath, $"{id}.pgsql");
-        File.WriteAllText(path, sql);
+        return new Random().Next().ToString();
+    }
 
-        return new FileMigration(path, pgDataSource);
+    protected int ValidVatRate()
+    {
+        return 20;
+    }
+
+    protected int ValidSupplierId()
+    {
+        dynamic supplier = fixtures["suppliers"]["one"];
+        return supplier.Id;
+    }
+
+    protected int ValidClientId()
+    {
+        dynamic client = fixtures["clients"]["one"];
+        return client.Id;
+    }
+
+    protected DateOnly ValidDate()
+    {
+        return new DateOnly(1970, 01, 01);
     }
 }

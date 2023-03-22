@@ -15,7 +15,7 @@ class PgInvoiceTest : Base
     [Test]
     public void MarksPaid()
     {
-        var paidDate = new DateOnly(1970, 1, 3);
+        var paidDate = ValidDate();
         dynamic fixture = fixtures["invoices"]["one"];
         Assert.False(fixture.Paid);
         Assert.Null(fixture.PaidDate);
@@ -23,7 +23,7 @@ class PgInvoiceTest : Base
 
         pgInvoice.MarkPaid(paidDate);
 
-        fixture = new InvoiceFixtures(pgDataSource).Fetch(fixture.Id);
+        fixture = InvoiceFixture(fixture.Id);
         Assert.True(fixture.Paid, "Invoice should be paid");
         Assert.AreEqual(paidDate, fixture.PaidDate, "Invoice should have given paid date");
     }

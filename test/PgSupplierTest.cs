@@ -23,25 +23,25 @@ class PgSupplierTest : Base
     [Test]
     public void ModifiesItself()
     {
-        dynamic supplierFixture = fixtures["suppliers"]["one"];
+        dynamic fixture = fixtures["suppliers"]["one"];
         var newName = "new name";
         var newAddress = "new address";
         var newVatNumber = "new vat";
         var newIban = "new iban";
 
-        Assert.AreNotEqual(newName, supplierFixture.Name);
-        Assert.AreNotEqual(newAddress, supplierFixture.Address);
-        Assert.AreNotEqual(newVatNumber, supplierFixture.VatNumber);
-        Assert.AreNotEqual(newIban, supplierFixture.Iban);
+        Assert.AreNotEqual(newName, fixture.Name);
+        Assert.AreNotEqual(newAddress, fixture.Address);
+        Assert.AreNotEqual(newVatNumber, fixture.VatNumber);
+        Assert.AreNotEqual(newIban, fixture.Iban);
 
-        var pgSupplier = new PgSupplier(supplierFixture.Id, pgDataSource);
+        var pgSupplier = new PgSupplier(fixture.Id, pgDataSource);
         pgSupplier.Modify(newName, newAddress, newVatNumber, newIban);
 
-        supplierFixture = new SupplierFixtures(pgDataSource).Fetch(supplierFixture.Id);
-        Assert.AreEqual(newName, supplierFixture.Name);
-        Assert.AreEqual(newAddress, supplierFixture.Address);
-        Assert.AreEqual(newVatNumber, supplierFixture.VatNumber);
-        Assert.AreEqual(newIban, supplierFixture.Iban);
+        fixture = SupplierFixture(fixture.Id);
+        Assert.AreEqual(newName, fixture.Name);
+        Assert.AreEqual(newAddress, fixture.Address);
+        Assert.AreEqual(newVatNumber, fixture.VatNumber);
+        Assert.AreEqual(newIban, fixture.Iban);
     }
 
     [Test]

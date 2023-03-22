@@ -11,7 +11,7 @@ sealed class PgLineItems : LineItems
         this.pgDataSource = pgDataSource;
     }
 
-    public void Add(int invoiceId, string name, int price, int quantity)
+    public int Add(int invoiceId, string name, int price, int quantity)
     {
         var sql = """
             INSERT INTO line_items(
@@ -24,13 +24,21 @@ sealed class PgLineItems : LineItems
             $2,
             $3,
             $4)
+            RETURNING id
             """;
 
-        using var command = pgDataSource.CreateCommand(sql);
-        command.Parameters.AddWithValue(invoiceId);
-        command.Parameters.AddWithValue(name);
-        command.Parameters.AddWithValue(price);
-        command.Parameters.AddWithValue(quantity);
-        command.ExecuteScalar();
+        using var cmd = pgDataSource.CreateCommand(sql);
+        cmd.Parameters.AddWithValue(invoiceId);
+        cmd.Parameters.AddWithValue(name);
+        cmd.Parameters.AddWithValue(price);
+        cmd.Parameters.AddWithValue(quantity);
+        object result = cmd.ExecuteScalar();
+
+        if (result is null)
+        {
+            throw new Exception("Database query didn't return line item id.");
+        }
+
+        return (int)result;
     }
 }

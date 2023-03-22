@@ -1,4 +1,3 @@
-using System.Dynamic;
 using NUnit.Framework;
 
 namespace Intech.Invoice.Test;
@@ -23,20 +22,20 @@ class PgInvoicesTest : Base
         var createdInvoiceId = new PgInvoices(pgDataSource).Add(number, date, dueDate, vatRate, supplier.Id, client.Id).Id();
 
         Assert.AreEqual(1, pgDataSource.CreateCommand("SELECT COUNT(*) FROM invoices").ExecuteScalar());
-        dynamic dbRow = DbRow(createdInvoiceId);
-        Assert.AreEqual(number, dbRow.Number);
-        Assert.AreEqual(date, dbRow.Date);
-        Assert.AreEqual(dueDate, dbRow.DueDate);
-        Assert.AreEqual(vatRate, dbRow.VatRate);
-        Assert.AreEqual(client.Id, dbRow.ClientId);
-        Assert.AreEqual(supplier.Name, dbRow.SupplierName);
-        Assert.AreEqual(supplier.Address, dbRow.SupplierAddress);
-        Assert.AreEqual(supplier.VatNumber, dbRow.SupplierVatNumber);
-        Assert.AreEqual(supplier.Iban, dbRow.SupplierIban);
-        Assert.AreEqual(client.Name, dbRow.ClientName);
-        Assert.AreEqual(client.Address, dbRow.ClientAddress);
-        Assert.AreEqual(client.VatNumber, dbRow.ClientVatNumber);
-        Assert.False(dbRow.Paid);
+        dynamic fixture = InvoiceFixture(createdInvoiceId);
+        Assert.AreEqual(number, fixture.Number);
+        Assert.AreEqual(date, fixture.Date);
+        Assert.AreEqual(dueDate, fixture.DueDate);
+        Assert.AreEqual(vatRate, fixture.VatRate);
+        Assert.AreEqual(client.Id, fixture.ClientId);
+        Assert.AreEqual(supplier.Name, fixture.SupplierName);
+        Assert.AreEqual(supplier.Address, fixture.SupplierAddress);
+        Assert.AreEqual(supplier.VatNumber, fixture.SupplierVatNumber);
+        Assert.AreEqual(supplier.Iban, fixture.SupplierIban);
+        Assert.AreEqual(client.Name, fixture.ClientName);
+        Assert.AreEqual(client.Address, fixture.ClientAddress);
+        Assert.AreEqual(client.VatNumber, fixture.ClientVatNumber);
+        Assert.False(fixture.Paid);
     }
 
     [Test]
@@ -98,89 +97,22 @@ class PgInvoicesTest : Base
     {
         CreateSupplierFixtures();
         CreateClientFixtures();
-        var thirdInvoiceId = Invoice(new DateOnly(1970, 01, 01)).Id;
-        var firstInvoiceId = Invoice(new DateOnly(1970, 01, 03)).Id;
-        var secondInvoiceId = Invoice(new DateOnly(1970, 01, 02)).Id;
+        dynamic thirdInvoiceFixture = CreateInvoiceFixture(new DateOnly(1970, 1, 1));
+        dynamic firstInvoiceFixture = CreateInvoiceFixture(new DateOnly(1970, 1, 3));
+        dynamic secondInvoiceFixture = CreateInvoiceFixture(new DateOnly(1970, 1, 2));
+        CreateLineItemFixture(thirdInvoiceFixture.Id);
+        CreateLineItemFixture(firstInvoiceFixture.Id);
+        CreateLineItemFixture(secondInvoiceFixture.Id);
 
         var pgInvoices = new PgInvoices(pgDataSource).ToList();
 
-        CollectionAssert.AreEqual(new List<int> { firstInvoiceId, secondInvoiceId, thirdInvoiceId },
+        CollectionAssert.AreEqual(new List<int> { firstInvoiceFixture.Id, secondInvoiceFixture.Id, thirdInvoiceFixture.Id },
             pgInvoices.Select(i => i.Id()).ToList(),
             "Invoices should be sorted by date in the descending order.");
     }
 
-    ExpandoObject DbRow(int id)
-    {
-        using var command = pgDataSource.CreateCommand("SELECT * FROM invoices WHERE id = $1");
-        command.Parameters.AddWithValue(id);
-        using var reader = command.ExecuteReader();
-        reader.Read();
-
-        dynamic row = new ExpandoObject();
-        row.Number = reader["number"];
-        row.Date = reader.GetFieldValue<DateOnly>(reader.GetOrdinal("date"));
-        row.DueDate = reader.GetFieldValue<DateOnly>(reader.GetOrdinal("due_date"));
-        row.VatRate = reader["vat_rate"];
-        row.ClientId = reader["client_id"];
-        row.SupplierName = reader["supplier_name"];
-        row.SupplierAddress = reader["supplier_address"];
-        row.SupplierVatNumber = reader["supplier_vat_number"];
-        row.SupplierIban = reader["supplier_iban"];
-        row.ClientName = reader["client_name"];
-        row.ClientAddress = reader["client_address"];
-        row.ClientVatNumber = reader["client_vat_number"];
-        row.Paid = reader["paid"];
-
-        if (!reader.IsDBNull(reader.GetOrdinal("paid_date")))
-        {
-            row.PaidDate = reader.GetFieldValue<DateOnly>(reader.GetOrdinal("paid_date"));
-        }
-        else
-        {
-            row.PaidDate = null;
-        }
-
-        return row;
-    }
-
-    string ValidNumber()
-    {
-        return "1234";
-    }
-
-    DateOnly ValidDate()
-    {
-        return new DateOnly(1970, 01, 01);
-    }
-
     DateOnly ValidDueDate()
     {
-        return new DateOnly(1970, 01, 02);
-    }
-
-    int ValidVatRate()
-    {
-        return 20;
-    }
-
-    int ValidSupplierId()
-    {
-        dynamic supplier = fixtures["suppliers"]["one"];
-        return supplier.Id;
-    }
-
-    int ValidClientId()
-    {
-        dynamic client = fixtures["clients"]["one"];
-        return client.Id;
-    }
-
-    InvoiceFixture Invoice(DateOnly date)
-    {
-        var fixtures = new InvoiceFixtures(pgDataSource);
-        var id = fixtures.Create(ValidSupplierId(), ValidClientId(), date);
-        new LineItemFixtures(pgDataSource).Create(id);
-
-        return fixtures.Fetch(id);
+        return ValidDate();
     }
 }
