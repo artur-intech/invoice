@@ -45,7 +45,7 @@ class Base
         var lineItem = new LineItemFixtures(pgDataSource).Create(invoiceId);
 
         var firstInvoice = invoices.Fetch(invoiceId);
-        var secondInvoiceId = invoices.Create(firstSupplier.Id, firstClient.Id, date: new DateOnly(1970, 01, 02), dueDate: new DateOnly(1970, 01, 02));
+        var secondInvoiceId = invoices.Create(firstSupplier.Id, firstClient.Id, date: new DateOnly(1970, 01, 02), dueDate: new DateOnly(1970, 01, 02), paidDate: new DateOnly(1970, 01, 03));
         new LineItemFixtures(pgDataSource).Create(secondInvoiceId);
         var secondInvoice = invoices.Fetch(secondInvoiceId);
 

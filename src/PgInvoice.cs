@@ -228,7 +228,18 @@ sealed class PgInvoice : Invoice
         var clientName = reader["client_name"];
         var clientAddress = reader["client_address"];
         var clientVatNumber = reader["client_vat_number"];
-        var state = (string)reader["state"];
+        var paid = (bool)reader["paid"];
+
+        DateOnly? paidDate;
+
+        if (!reader.IsDBNull(reader.GetOrdinal("paid_date")))
+        {
+            paidDate = reader.GetFieldValue<DateOnly>(reader.GetOrdinal("paid_date"));
+        }
+        else
+        {
+            paidDate = null;
+        }
 
         return media.With("Id", id)
                     .With("Client", clientName)
@@ -238,6 +249,15 @@ sealed class PgInvoice : Invoice
                     .With("Subtotal", subtotal)
                     .With("VAT amount", vatAmount)
                     .With("Total", total)
-                    .With("State", state);
+                    .With("Paid", paid)
+                    .With("Paid on", paidDate);
+    }
+
+    public void MarkPaid(DateOnly paidDate)
+    {
+        using var cmd = pgDataSource.CreateCommand("UPDATE invoices SET paid = true, paid_date = $1 WHERE id = $2");
+        cmd.Parameters.AddWithValue(paidDate);
+        cmd.Parameters.AddWithValue(id);
+        cmd.ExecuteNonQuery();
     }
 }

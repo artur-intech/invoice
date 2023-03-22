@@ -21,7 +21,8 @@ var timezone = Timezone.Default();
 var systemClock = new SystemClock(timezone);
 
 var supportedCommands = ImmutableHashSet.Create("supplier create", "client create", "invoice create",
-    "invoice pdf", "invoice details", "invoice list", "supplier modify", "supplier list", "client list", "client modify", "supplier delete", "client delete", "migration init", "migration create", "migration apply");
+    "invoice pdf", "invoice details", "invoice list", "supplier modify", "supplier list", "client list", "client modify", "supplier delete", "client delete", "migration init", "migration create", "migration apply",
+    "invoice paid");
 var currentCommand = string.Join(" ", args.Take(2));
 
 var migrations = new Migrations(Path.Combine(Environment.CurrentDirectory, "db", "migrations"), pgDataSource);
@@ -256,6 +257,17 @@ try
                         new PgDump(dbConnectionString.PgDump(), pgDataSource).DumpToFile(Path.Combine("db", "schema.sql"));
                     },
                     () => Console.WriteLine("There are no pending migrations."));
+
+                    break;
+                }
+            case "invoice paid":
+                {
+                    int id = int.Parse(args[2]);
+
+                    var pgInvoice = new PgInvoice(id, pgDataSource);
+                    pgInvoice.MarkPaid(systemClock.TodayInAppTimeZone());
+
+                    Console.WriteLine($"Invoice {pgInvoice} has been marked as paid.");
 
                     break;
                 }

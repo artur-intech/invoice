@@ -150,7 +150,8 @@ class ConsoleTest : Base
             Subtotal: {new Money(invoice.Subtotal)}
             VAT amount: {new Money(invoice.VatAmount)}
             Total: {new Money(invoice.Total)}
-            State: {invoice.State}
+            Paid: {invoice.Paid}
+            Paid on:
             """, capturedStdOut);
     }
     [Test]
@@ -176,7 +177,8 @@ class ConsoleTest : Base
             Subtotal: {new Money(secondInvoice.Subtotal)}
             VAT amount: {new Money(secondInvoice.VatAmount)}
             Total: {new Money(secondInvoice.Total)}
-            State: {secondInvoice.State}
+            Paid: {secondInvoice.Paid}
+            Paid on: {secondInvoice.PaidDate}
             {ListDelimiter()}
             Id: {firstInvoice.Id}
             Client: {client.Name}
@@ -186,7 +188,8 @@ class ConsoleTest : Base
             Subtotal: {new Money(firstInvoice.Subtotal)}
             VAT amount: {new Money(firstInvoice.VatAmount)}
             Total: {new Money(firstInvoice.Total)}
-            State: {firstInvoice.State}
+            Paid: {firstInvoice.Paid}
+            Paid on:
 
             """, capturedStdOut);
     }
@@ -450,6 +453,23 @@ class ConsoleTest : Base
         Assert.AreEqual("There are no pending migrations.", capturedStdOut);
     }
 
+    [Test]
+    public void MarksInvoicePaid()
+    {
+        dynamic fixture = fixtures["invoices"]["one"];
+        Assert.False(fixture.Paid);
+
+        var capturedStdOut = CapturedStdOut(() =>
+        {
+            RunApp(arguments: new string[] { "invoice", "paid", fixture.Id.ToString() });
+        });
+
+        fixture = new InvoiceFixtures(pgDataSource).Fetch(fixture.Id);
+        Assert.True(fixture.Paid, "Invoice should be paid");
+        Assert.NotNull(fixture.PaidDate);
+        Assert.AreEqual($"Invoice {fixture.Number} has been marked as paid.{Environment.NewLine}", capturedStdOut);
+    }
+
     // [SetUp]
     // protected void SetUp()
     // {
@@ -467,7 +487,8 @@ class ConsoleTest : Base
     IImmutableSet<string> SupportedCommands()
     {
         return ImmutableHashSet.Create("supplier create", "client create", "invoice create",
-            "invoice pdf", "invoice details", "invoice list", "supplier modify", "supplier list", "client list", "client modify", "supplier delete", "client delete", "migration init", "migration create", "migration apply");
+            "invoice pdf", "invoice details", "invoice list", "supplier modify", "supplier list", "client list", "client modify", "supplier delete", "client delete", "migration init", "migration create", "migration apply",
+            "invoice paid");
     }
 
     ExpandoObject LastInvoiceDbRow()
