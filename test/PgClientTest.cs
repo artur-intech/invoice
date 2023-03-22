@@ -49,22 +49,22 @@ class PgClientTest : Base
     [Test]
     public void ModifiesItself()
     {
-        dynamic clientFixture = fixtures["clients"]["one"];
+        dynamic fixture = fixtures["clients"]["one"];
         var newName = "new name";
         var newAddress = "new address";
         var newVatNumber = "new vat";
 
-        Assert.AreNotEqual(newName, clientFixture.Name);
-        Assert.AreNotEqual(newAddress, clientFixture.Address);
-        Assert.AreNotEqual(newVatNumber, clientFixture.VatNumber);
+        Assert.AreNotEqual(newName, fixture.Name);
+        Assert.AreNotEqual(newAddress, fixture.Address);
+        Assert.AreNotEqual(newVatNumber, fixture.VatNumber);
 
-        var pgClient = new PgClient(clientFixture.Id, pgDataSource);
+        var pgClient = new PgClient(fixture.Id, pgDataSource);
         pgClient.Modify(newName, newAddress, newVatNumber);
 
-        clientFixture = new ClientFixtures(pgDataSource).Fetch(clientFixture.Id);
-        Assert.AreEqual(newName, clientFixture.Name);
-        Assert.AreEqual(newAddress, clientFixture.Address);
-        Assert.AreEqual(newVatNumber, clientFixture.VatNumber);
+        fixture = ClientFixture(fixture.Id);
+        Assert.AreEqual(newName, fixture.Name);
+        Assert.AreEqual(newAddress, fixture.Address);
+        Assert.AreEqual(newVatNumber, fixture.VatNumber);
     }
 
     [Test]

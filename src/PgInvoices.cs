@@ -18,7 +18,8 @@ sealed class PgInvoices : Invoices
                        DateOnly dueDate,
                        int vatRate,
                        int supplierId,
-                       int clientId)
+                       int clientId,
+                       DateOnly? paidDate = null)
     {
         var sql = """
             INSERT INTO invoices(
@@ -33,7 +34,8 @@ sealed class PgInvoices : Invoices
             supplier_iban,
             client_name,
             client_address,
-            client_vat_number)
+            client_vat_number,
+            paid_date)
             SELECT
             $1,
             $2,
@@ -46,7 +48,8 @@ sealed class PgInvoices : Invoices
             s.iban,
             c.name,
             c.address,
-            c.vat_number
+            c.vat_number,
+            $7
             FROM
             suppliers s,
             clients c
@@ -62,6 +65,7 @@ sealed class PgInvoices : Invoices
         command.Parameters.AddWithValue(dueDate);
         command.Parameters.AddWithValue(vatRate);
         command.Parameters.AddWithValue(supplierId);
+        command.Parameters.AddWithValue(paidDate is not null ? paidDate : DBNull.Value);
         object result = command.ExecuteScalar();
 
         if (result is null)

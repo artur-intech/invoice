@@ -1,5 +1,4 @@
 using System.Collections.Immutable;
-using System.Dynamic;
 using NUnit.Framework;
 
 namespace Intech.Invoice.Test;
@@ -98,7 +97,8 @@ class ConsoleTest : Base
             });
         });
 
-        dynamic createdDbRow = LastInvoiceDbRow();
+        var lastInvoiceId = (int)pgDataSource.CreateCommand("SELECT id FROM invoices ORDER BY id DESC LIMIT 1").ExecuteScalar();
+        dynamic fixture = InvoiceFixture(lastInvoiceId);
         Assert.AreEqual($"""
             Enter supplier id ({firstSupplier.Id} - "{firstSupplier.Name}", {secondSupplier.Id} - "{secondSupplier.Name}"):
             Enter client id ({firstClient.Id} - "{firstClient.Name}", {secondClient.Id} - "{secondClient.Name}"):
@@ -106,7 +106,7 @@ class ConsoleTest : Base
             Enter line item name:
             Enter line item price:
             Enter line item quantity:
-            Invoice {createdDbRow.Number} has been issued.
+            Invoice {fixture.Number} has been issued.
             """, capturedStdOut);
         Assert.AreEqual(1, pgDataSource.CreateCommand("SELECT COUNT(*) FROM invoices").ExecuteScalar());
         Assert.AreEqual(1, pgDataSource.CreateCommand("SELECT COUNT(*) FROM line_items").ExecuteScalar());
@@ -115,13 +115,13 @@ class ConsoleTest : Base
     [Test]
     public void SavesInvoicePdf()
     {
-        dynamic invoice = fixtures["invoices"]["one"];
-        var invoicePdfFilePath = $"{invoice.SupplierName}_invoice_{invoice.Number}.pdf";
+        dynamic fixture = fixtures["invoices"]["one"];
+        var invoicePdfFilePath = $"{fixture.SupplierName}_invoice_{fixture.Number}.pdf";
         FileAssert.DoesNotExist(invoicePdfFilePath);
 
         var capturedStdOut = CapturedStdOut(() =>
         {
-            RunApp(arguments: new string[] { "invoice", "pdf", invoice.Id.ToString() });
+            RunApp(arguments: new string[] { "invoice", "pdf", fixture.Id.ToString() });
         });
 
         Assert.AreEqual("Invoice PDF has been saved.", capturedStdOut);
@@ -133,33 +133,33 @@ class ConsoleTest : Base
     [Test]
     public void PrintsInvoiceDetails()
     {
-        dynamic client = fixtures["clients"]["one"];
-        dynamic invoice = fixtures["invoices"]["one"];
+        dynamic clientFixture = fixtures["clients"]["one"];
+        dynamic fixture = fixtures["invoices"]["one"];
 
         var capturedStdOut = CapturedStdOut(() =>
         {
-            RunApp(arguments: new string[] { "invoice", "details", invoice.Id.ToString() });
+            RunApp(arguments: new string[] { "invoice", "details", fixture.Id.ToString() });
         });
 
         Assert.AreEqual($"""
-            Id: {invoice.Id}
-            Client: {client.Name}
-            Number: {invoice.Number}
-            Date: {invoice.Date}
-            Due date: {invoice.DueDate}
-            Subtotal: {new Money(invoice.Subtotal)}
-            VAT amount: {new Money(invoice.VatAmount)}
-            Total: {new Money(invoice.Total)}
-            Paid: {invoice.Paid}
+            Id: {fixture.Id}
+            Client: {clientFixture.Name}
+            Number: {fixture.Number}
+            Date: {fixture.Date}
+            Due date: {fixture.DueDate}
+            Subtotal: {new Money(fixture.Subtotal)}
+            VAT amount: {new Money(fixture.VatAmount)}
+            Total: {new Money(fixture.Total)}
+            Paid: {fixture.Paid}
             Paid on:
             """, capturedStdOut);
     }
     [Test]
     public void PrintsAllInvoices()
     {
-        dynamic client = fixtures["clients"]["one"];
-        dynamic firstInvoice = fixtures["invoices"]["one"];
-        dynamic secondInvoice = fixtures["invoices"]["two"];
+        dynamic clientFixture = fixtures["clients"]["one"];
+        dynamic firstFixture = fixtures["invoices"]["one"];
+        dynamic secondFixture = fixtures["invoices"]["two"];
 
         var capturedStdOut = CapturedStdOut(() =>
         {
@@ -169,26 +169,26 @@ class ConsoleTest : Base
         Assert.AreEqual($"""
             Records total: {fixtures["invoices"].Count}
             {ListDelimiter()}
-            Id: {secondInvoice.Id}
-            Client: {client.Name}
-            Number: {secondInvoice.Number}
-            Date: {secondInvoice.Date}
-            Due date: {secondInvoice.DueDate}
-            Subtotal: {new Money(secondInvoice.Subtotal)}
-            VAT amount: {new Money(secondInvoice.VatAmount)}
-            Total: {new Money(secondInvoice.Total)}
-            Paid: {secondInvoice.Paid}
-            Paid on: {secondInvoice.PaidDate}
+            Id: {secondFixture.Id}
+            Client: {clientFixture.Name}
+            Number: {secondFixture.Number}
+            Date: {secondFixture.Date}
+            Due date: {secondFixture.DueDate}
+            Subtotal: {new Money(secondFixture.Subtotal)}
+            VAT amount: {new Money(secondFixture.VatAmount)}
+            Total: {new Money(secondFixture.Total)}
+            Paid: {secondFixture.Paid}
+            Paid on:
             {ListDelimiter()}
-            Id: {firstInvoice.Id}
-            Client: {client.Name}
-            Number: {firstInvoice.Number}
-            Date: {firstInvoice.Date}
-            Due date: {firstInvoice.DueDate}
-            Subtotal: {new Money(firstInvoice.Subtotal)}
-            VAT amount: {new Money(firstInvoice.VatAmount)}
-            Total: {new Money(firstInvoice.Total)}
-            Paid: {firstInvoice.Paid}
+            Id: {firstFixture.Id}
+            Client: {clientFixture.Name}
+            Number: {firstFixture.Number}
+            Date: {firstFixture.Date}
+            Due date: {firstFixture.DueDate}
+            Subtotal: {new Money(firstFixture.Subtotal)}
+            VAT amount: {new Money(firstFixture.VatAmount)}
+            Total: {new Money(firstFixture.Total)}
+            Paid: {firstFixture.Paid}
             Paid on:
 
             """, capturedStdOut);
@@ -251,15 +251,15 @@ class ConsoleTest : Base
     [Test]
     public void ModifiesSupplier()
     {
-        dynamic supplier = fixtures["suppliers"]["one"];
+        dynamic fixture = fixtures["suppliers"]["one"];
         var newName = "new name";
         var newAddress = "new address";
         var newVatNumber = "new vat";
         var newIban = "new iban";
-        Assert.AreNotEqual(newName, supplier.Name);
-        Assert.AreNotEqual(newAddress, supplier.Address);
-        Assert.AreNotEqual(newVatNumber, supplier.VatNumber);
-        Assert.AreNotEqual(newIban, supplier.Iban);
+        Assert.AreNotEqual(newName, fixture.Name);
+        Assert.AreNotEqual(newAddress, fixture.Address);
+        Assert.AreNotEqual(newVatNumber, fixture.VatNumber);
+        Assert.AreNotEqual(newIban, fixture.Iban);
 
         var stdIn = $"""
             {newName}
@@ -272,7 +272,7 @@ class ConsoleTest : Base
         {
             SubstituteStdIn(stdIn, () =>
             {
-                RunApp(arguments: new string[] { "supplier", "modify", supplier.Id.ToString() });
+                RunApp(arguments: new string[] { "supplier", "modify", fixture.Id.ToString() });
             });
         });
 
@@ -283,15 +283,15 @@ class ConsoleTest : Base
             Enter new supplier IBAN:
             Supplier {newName} has been modified.
             """, capturedStdOut);
-        supplier = new SupplierFixtures(pgDataSource).Fetch(supplier.Id);
-        Assert.AreEqual(newName, supplier.Name);
+        fixture = SupplierFixture(fixture.Id);
+        Assert.AreEqual(newName, fixture.Name);
     }
 
     [Test]
     public void PrintsAllSuppliers()
     {
-        dynamic firstSupplier = fixtures["suppliers"]["one"];
-        dynamic secondSupplier = fixtures["suppliers"]["two"];
+        dynamic firstFixture = fixtures["suppliers"]["one"];
+        dynamic secondFixture = fixtures["suppliers"]["two"];
 
         var capturedStdOut = CapturedStdOut(() =>
         {
@@ -301,25 +301,25 @@ class ConsoleTest : Base
         Assert.AreEqual($"""
             Records total: {fixtures["suppliers"].Count}
             {ListDelimiter()}
-            Id: {firstSupplier.Id}
-            Name: {firstSupplier.Name}
-            Address: {firstSupplier.Address}
-            VAT number: {firstSupplier.VatNumber}
-            IBAN: {firstSupplier.Iban}
+            Id: {firstFixture.Id}
+            Name: {firstFixture.Name}
+            Address: {firstFixture.Address}
+            VAT number: {firstFixture.VatNumber}
+            IBAN: {firstFixture.Iban}
             {ListDelimiter()}
-            Id: {secondSupplier.Id}
-            Name: {secondSupplier.Name}
-            Address: {secondSupplier.Address}
-            VAT number: {secondSupplier.VatNumber}
-            IBAN: {secondSupplier.Iban}{Environment.NewLine}
+            Id: {secondFixture.Id}
+            Name: {secondFixture.Name}
+            Address: {secondFixture.Address}
+            VAT number: {secondFixture.VatNumber}
+            IBAN: {secondFixture.Iban}{Environment.NewLine}
             """, capturedStdOut);
     }
 
     [Test]
     public void PrintsAllClients()
     {
-        dynamic firstClient = fixtures["clients"]["one"];
-        dynamic secondClient = fixtures["clients"]["two"];
+        dynamic firstFixture = fixtures["clients"]["one"];
+        dynamic secondFixture = fixtures["clients"]["two"];
 
         var capturedStdOut = CapturedStdOut(() =>
         {
@@ -329,28 +329,28 @@ class ConsoleTest : Base
         Assert.AreEqual($"""
             Records total: {fixtures["clients"].Count}
             {ListDelimiter()}
-            Id: {firstClient.Id}
-            Name: {firstClient.Name}
-            Address: {firstClient.Address}
-            VAT number: {firstClient.VatNumber}
+            Id: {firstFixture.Id}
+            Name: {firstFixture.Name}
+            Address: {firstFixture.Address}
+            VAT number: {firstFixture.VatNumber}
             {ListDelimiter()}
-            Id: {secondClient.Id}
-            Name: {secondClient.Name}
-            Address: {secondClient.Address}
-            VAT number: {secondClient.VatNumber}{Environment.NewLine}
+            Id: {secondFixture.Id}
+            Name: {secondFixture.Name}
+            Address: {secondFixture.Address}
+            VAT number: {secondFixture.VatNumber}{Environment.NewLine}
             """, capturedStdOut);
     }
 
     [Test]
     public void ModifiesClient()
     {
-        dynamic client = fixtures["clients"]["one"];
+        dynamic fixture = fixtures["clients"]["one"];
         var newName = "new name";
         var newAddress = "new address";
         var newVatNumber = "new vat";
-        Assert.AreNotEqual(newName, client.Name);
-        Assert.AreNotEqual(newAddress, client.Address);
-        Assert.AreNotEqual(newVatNumber, client.VatNumber);
+        Assert.AreNotEqual(newName, fixture.Name);
+        Assert.AreNotEqual(newAddress, fixture.Address);
+        Assert.AreNotEqual(newVatNumber, fixture.VatNumber);
 
         var stdIn = $"""
             {newName}
@@ -362,7 +362,7 @@ class ConsoleTest : Base
         {
             SubstituteStdIn(stdIn, () =>
             {
-                RunApp(arguments: new string[] { "client", "modify", client.Id.ToString() });
+                RunApp(arguments: new string[] { "client", "modify", fixture.Id.ToString() });
             });
         });
 
@@ -372,21 +372,21 @@ class ConsoleTest : Base
             Enter new client VAT number:
             Client {newName} has been modified.
             """, capturedStdOut);
-        client = new ClientFixtures(pgDataSource).Fetch(client.Id);
-        Assert.AreEqual(newName, client.Name);
+        fixture = ClientFixture(fixture.Id);
+        Assert.AreEqual(newName, fixture.Name);
     }
 
     [Test]
     public void DeletesSupplier()
     {
-        dynamic supplier = fixtures["suppliers"]["one"];
+        dynamic fixture = fixtures["suppliers"]["one"];
 
         var capturedStdOut = CapturedStdOut(() =>
         {
-            RunApp(arguments: new string[] { "supplier", "delete", supplier.Id.ToString() });
+            RunApp(arguments: new string[] { "supplier", "delete", fixture.Id.ToString() });
         });
 
-        Assert.AreEqual($"Supplier {supplier.Name} has been deleted.", capturedStdOut);
+        Assert.AreEqual($"Supplier {fixture.Name} has been deleted.", capturedStdOut);
         Assert.AreEqual(fixtures["suppliers"].Count - 1, (long)pgDataSource.CreateCommand("SELECT COUNT(*) FROM suppliers").ExecuteScalar(), "Supplier should have been deleted.");
     }
 
@@ -464,7 +464,7 @@ class ConsoleTest : Base
             RunApp(arguments: new string[] { "invoice", "paid", fixture.Id.ToString() });
         });
 
-        fixture = new InvoiceFixtures(pgDataSource).Fetch(fixture.Id);
+        fixture = InvoiceFixture(fixture.Id);
         Assert.True(fixture.Paid, "Invoice should be paid");
         Assert.NotNull(fixture.PaidDate);
         Assert.AreEqual($"Invoice {fixture.Number} has been marked as paid.{Environment.NewLine}", capturedStdOut);
@@ -491,25 +491,8 @@ class ConsoleTest : Base
             "invoice paid");
     }
 
-    ExpandoObject LastInvoiceDbRow()
-    {
-        using var command = pgDataSource.CreateCommand("SELECT * FROM invoices ORDER BY id DESC LIMIT 1");
-        using var reader = command.ExecuteReader();
-        reader.Read();
-
-        dynamic invoice = new ExpandoObject();
-        invoice.Number = reader["number"];
-
-        return invoice;
-    }
-
     string ListDelimiter()
     {
         return new string('-', 50);
-    }
-
-    int ValidVatRate()
-    {
-        return 20;
     }
 }
