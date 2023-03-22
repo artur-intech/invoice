@@ -33,7 +33,7 @@ class Base
     protected void CreateFixtures()
     {
         object? skipFixturesProperty = TestContext.CurrentContext.Test.Properties.Get("SkipFixtureCreation");
-        var skipFixtures = (skipFixturesProperty is not null) ? bool.Parse(skipFixturesProperty.ToString()) : false;
+        var skipFixtures = (skipFixturesProperty is not null) && bool.Parse(skipFixturesProperty.ToString());
         if (skipFixtures) return;
 
         CreateSupplierFixtures();
