@@ -11,7 +11,7 @@ class InvoiceFixtures
         this.pgDataSource = pgDataSource;
     }
 
-    public int Create(int supplierId, int clientId, DateOnly date = default, DateOnly? dueDate = null, string? number = null, int vatRate = 20)
+    public int Create(int supplierId, int clientId, DateOnly date = default, DateOnly? dueDate = null, string? number = null, int vatRate = 20, DateOnly? paidDate = null)
     {
         var sql = """
             INSERT INTO invoices(
@@ -26,7 +26,8 @@ class InvoiceFixtures
             supplier_iban,
             client_name,
             client_address,
-            client_vat_number)
+            client_vat_number,
+            paid_date)
             SELECT
             $1,
             $2,
@@ -39,7 +40,8 @@ class InvoiceFixtures
             s.iban,
             c.name,
             c.address,
-            c.vat_number
+            c.vat_number,
+            $7
             FROM
             suppliers s,
             clients c
@@ -63,6 +65,7 @@ class InvoiceFixtures
         command.Parameters.AddWithValue(dueDate ?? new DateOnly(1970, 01, 02));
         command.Parameters.AddWithValue(vatRate);
         command.Parameters.AddWithValue(supplierId);
+        command.Parameters.AddWithValue(paidDate is not null ? paidDate : DBNull.Value);
         var createdId = (int)command.ExecuteScalar();
 
         return createdId;
@@ -97,8 +100,19 @@ class InvoiceFixtures
         var vatAmount = (long)reader["vat_amount"];
         var total = (long)reader["total"];
         var supplierName = (string)reader["supplier_name"];
-        var state = (string)reader["state"];
+        var paid = (bool)reader["paid"];
 
-        return new InvoiceFixture() { Id = id, Number = number, Date = date, DueDate = dueDate, VatRate = vatRate, Subtotal = subtotal, VatAmount = vatAmount, Total = total, SupplierName = supplierName, State = state };
+        DateOnly? paidDate;
+
+        if (!reader.IsDBNull(reader.GetOrdinal("paid_date")))
+        {
+            paidDate = reader.GetFieldValue<DateOnly>(reader.GetOrdinal("paid_date"));
+        }
+        else
+        {
+            paidDate = null;
+        }
+
+        return new InvoiceFixture() { Id = id, Number = number, Date = date, DueDate = dueDate, VatRate = vatRate, Subtotal = subtotal, VatAmount = vatAmount, Total = total, SupplierName = supplierName, Paid = paid, PaidDate = paidDate };
     }
 }

@@ -10,9 +10,10 @@ sealed class ConstInvoice : Invoice
     readonly Money subtotal;
     readonly Money vatAmount;
     readonly Money total;
-    readonly string state;
+    readonly bool paid;
+    readonly DateOnly? paidDate;
 
-    public ConstInvoice(Invoice origin, string clientName, string number, DateOnly date, DateOnly dueDate, Money subtotal, Money vatAmount, Money total, string state)
+    public ConstInvoice(Invoice origin, string clientName, string number, DateOnly date, DateOnly dueDate, Money subtotal, Money vatAmount, Money total, bool paid, DateOnly? paidDate)
     {
         this.origin = origin;
         this.clientName = clientName;
@@ -22,7 +23,8 @@ sealed class ConstInvoice : Invoice
         this.subtotal = subtotal;
         this.vatAmount = vatAmount;
         this.total = total;
-        this.state = state;
+        this.paid = paid;
+        this.paidDate = paidDate;
     }
 
     public int Id()
@@ -45,6 +47,7 @@ sealed class ConstInvoice : Invoice
                     .With("Subtotal", subtotal)
                     .With("VAT amount", vatAmount)
                     .With("Total", total)
-                    .With("State", state);
+                    .With("Paid", paid)
+                    .With("Paid on", paidDate);
     }
 }

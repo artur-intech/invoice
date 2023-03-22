@@ -104,9 +104,20 @@ sealed class PgInvoices : Invoices
             var subtotal = new Money((long)reader["subtotal"]);
             var vatAmount = new Money((long)reader["vat_amount"]);
             var total = new Money((long)reader["total"]);
-            var state = (string)reader["state"];
+            var paid = (bool)reader["paid"];
 
-            yield return new ConstInvoice(new PgInvoice(id, pgDataSource), clientName, number, date, dueDate, subtotal, vatAmount, total, state);
+            DateOnly? paidDate;
+
+            if (!reader.IsDBNull(reader.GetOrdinal("paid_date")))
+            {
+                paidDate = reader.GetFieldValue<DateOnly>(reader.GetOrdinal("paid_date"));
+            }
+            else
+            {
+                paidDate = null;
+            }
+
+            yield return new ConstInvoice(new PgInvoice(id, pgDataSource), clientName, number, date, dueDate, subtotal, vatAmount, total, paid, paidDate);
         }
     }
 

@@ -16,19 +16,6 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
---
--- Name: invoice_state; Type: TYPE; Schema: public; Owner: postgres
---
-
-CREATE TYPE public.invoice_state AS ENUM (
-    'outstanding',
-    'overdue',
-    'paid'
-);
-
-
-ALTER TYPE public.invoice_state OWNER TO postgres;
-
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
@@ -91,7 +78,7 @@ CREATE TABLE public.invoices (
     client_address character varying NOT NULL,
     client_vat_number character varying,
     paid_date date,
-    state public.invoice_state DEFAULT 'outstanding'::public.invoice_state NOT NULL,
+    paid boolean DEFAULT false NOT NULL,
     CONSTRAINT later_invoice_due_date CHECK ((due_date >= date)),
     CONSTRAINT nonnegative_invoice_vat_rate CHECK ((vat_rate >= 0))
 );
@@ -180,6 +167,9 @@ COPY public.applied_migrations (id) FROM stdin;
 20230317131943_add_invoices_paid_date
 20230318170111_create_invoice_state
 20230320133338_add_invoices_state
+20230321142337_add_invoices_paid
+20230321142810_drop_invoices_state
+20230321143825_drop_invoice_state
 \.
 
 
