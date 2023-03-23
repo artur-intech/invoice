@@ -1,24 +1,21 @@
 using System.Diagnostics;
-using Npgsql;
 
 namespace Intech.Invoice.DbMigration;
 
-class PgDump
+class PgDump : DumpUtil
 {
-    readonly string connectionUri;
-    readonly NpgsqlDataSource pgDataSource;
+    readonly string connUri;
 
-    public PgDump(string connectionUri, NpgsqlDataSource pgDataSource)
+    public PgDump(string connUri)
     {
-        this.connectionUri = connectionUri;
-        this.pgDataSource = pgDataSource;
+        this.connUri = connUri;
     }
 
-    public void DumpToFile(string path)
+    public void DumpToFile(string path, IEnumerable<string> excludedDataTables)
     {
         var process = new Process();
         process.StartInfo.FileName = "pg_dump";
-        process.StartInfo.Arguments = $"-d {connectionUri} -f {path} {ExcludedTablesArguments()}";
+        process.StartInfo.Arguments = $"-d {connUri} -f {path} {ExcludedDataTablesArguments(excludedDataTables)}";
         process.StartInfo.UseShellExecute = false;
         process.StartInfo.RedirectStandardOutput = true;
         process.Start();
@@ -28,22 +25,8 @@ class PgDump
         process.WaitForExit();
     }
 
-    string ExcludedTablesArguments()
+    string ExcludedDataTablesArguments(IEnumerable<string> excludedDataTables)
     {
-        return string.Join(' ', ExcludedTables().Select(table => $"--exclude-table-data={table}"));
-    }
-
-    IEnumerable<string> ExcludedTables()
-    {
-        using var reader = pgDataSource.CreateCommand("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'").ExecuteReader();
-        var tables = new List<string>();
-
-        while (reader.Read())
-        {
-            tables.Add((string)reader["table_name"]);
-        }
-
-        tables.Remove("applied_migrations");
-        return tables;
+        return string.Join(' ', excludedDataTables.Select(table => $"--exclude-table-data={table}"));
     }
 }

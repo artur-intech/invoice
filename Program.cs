@@ -26,6 +26,8 @@ var supportedCommands = ImmutableHashSet.Create("supplier create", "client creat
 var currentCommand = string.Join(" ", args.Take(2));
 
 var migrations = new Migrations(Path.Combine(Environment.CurrentDirectory, "db", "migrations"), pgDataSource);
+var pgDump = new PgDump(dbConnectionString.PgDump());
+var pgSchema = new PgSchema(Path.Combine("db", "schema.sql"), pgDataSource, pgDump);
 
 try
 {
@@ -227,9 +229,7 @@ try
                 {
                     new FileMigration(Path.Combine("assets", "initial_migration.pgsql"), pgDataSource).Apply();
                     migrations.Init();
-
-                    // Remove duplication
-                    new PgDump(dbConnectionString.PgDump(), pgDataSource).DumpToFile(Path.Combine("db", "schema.sql"));
+                    pgSchema.Generate();
 
                     Console.WriteLine("Migrations have been initialized.");
 
@@ -253,8 +253,7 @@ try
                             Console.WriteLine($"Migration {migration} has been applied.");
                         }
 
-                        // Remove duplication
-                        new PgDump(dbConnectionString.PgDump(), pgDataSource).DumpToFile(Path.Combine("db", "schema.sql"));
+                        pgSchema.Regenerate();
                     },
                     () => Console.WriteLine("There are no pending migrations."));
 
