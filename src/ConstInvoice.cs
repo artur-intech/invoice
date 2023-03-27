@@ -50,4 +50,9 @@ sealed class ConstInvoice : Invoice
                     .With("Paid", paid)
                     .With("Paid on", paidDate);
     }
+
+    public void MarkPaid(DateOnly paidDate)
+    {
+        origin.MarkPaid(paidDate);
+    }
 }
