@@ -279,10 +279,10 @@ catch (Exception e)
 
     if (showDetailedExceptions)
     {
-        Console.Write(e);
+        Console.WriteLine(e);
     }
     else
     {
-        Console.Write(e.Message);
+        Console.WriteLine(e.Message);
     }
 }
