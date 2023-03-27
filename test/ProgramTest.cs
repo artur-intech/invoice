@@ -243,7 +243,7 @@ class ConsoleTest : Base
             Enter supplier address:
             Enter supplier VAT number:
             Enter supplier IBAN:
-            Supplier name cannot be empty.
+            Supplier name cannot be empty.{Environment.NewLine}
             """, capturedStdOut);
         Assert.Zero((long)pgDataSource.CreateCommand("SELECT COUNT(*) FROM suppliers").ExecuteScalar());
     }
@@ -417,7 +417,7 @@ class ConsoleTest : Base
             RunApp();
         });
 
-        Assert.AreEqual("STANDARD_VAT_RATE env var must be set", capturedStdOut);
+        Assert.AreEqual($"STANDARD_VAT_RATE env var must be set{Environment.NewLine}", capturedStdOut);
     }
 
     [Test, Ignore("It's not clear how to fully isolate original db/migrations path in integration tests")]
