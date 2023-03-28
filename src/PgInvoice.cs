@@ -255,9 +255,26 @@ sealed class PgInvoice : Invoice
 
     public void MarkPaid(DateOnly paidDate)
     {
+        if (Nonexistent()) throw new Exception("Nonexistent invoice.");
+        if (Paid()) throw new Exception("Cannot mark paid invoice as paid again.");
+
         using var cmd = pgDataSource.CreateCommand("UPDATE invoices SET paid = true, paid_date = $1 WHERE id = $2");
         cmd.Parameters.AddWithValue(paidDate);
         cmd.Parameters.AddWithValue(id);
         cmd.ExecuteNonQuery();
+    }
+
+    bool Nonexistent()
+    {
+        var cmd = pgDataSource.CreateCommand("SELECT id FROM invoices WHERE id = $1");
+        cmd.Parameters.AddWithValue(id);
+        return cmd.ExecuteScalar() is null;
+    }
+
+    bool Paid()
+    {
+        var cmd = pgDataSource.CreateCommand("SELECT paid FROM invoices WHERE id = $1");
+        cmd.Parameters.AddWithValue(id);
+        return (bool)cmd.ExecuteScalar();
     }
 }
