@@ -261,7 +261,23 @@ try
                 }
             case "invoice paid":
                 {
-                    int id = int.Parse(args[2]);
+                    var invalidArgs = args.Length < 3;
+
+                    if (invalidArgs)
+                    {
+                        throw new Exception("Please provide invoice id.");
+                    }
+
+                    int id;
+
+                    try
+                    {
+                        id = int.Parse(args[2]);
+                    }
+                    catch (FormatException e)
+                    {
+                        throw new Exception("Invalid invoice id.", e);
+                    }
 
                     var pgInvoice = new PgInvoice(id, pgDataSource);
                     pgInvoice.MarkPaid(systemClock.TodayInAppTimeZone());

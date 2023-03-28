@@ -470,6 +470,28 @@ class ConsoleTest : Base
         Assert.AreEqual($"Invoice {fixture.Number} has been marked as paid.{Environment.NewLine}", capturedStdOut);
     }
 
+    [Test]
+    public void InvoicePaidCommandNoId()
+    {
+        var capturedStdOut = CapturedStdOut(() =>
+        {
+            RunApp(arguments: new string[] { "invoice", "paid" });
+        });
+
+        Assert.AreEqual($"Please provide invoice id.{Environment.NewLine}", capturedStdOut);
+    }
+
+    [Test]
+    public void InvoicePaidCommandInvalidId()
+    {
+        var capturedStdOut = CapturedStdOut(() =>
+        {
+            RunApp(arguments: new string[] { "invoice", "paid", "invalid_id" });
+        });
+
+        Assert.AreEqual($"Invalid invoice id.{Environment.NewLine}", capturedStdOut);
+    }
+
     // [SetUp]
     // protected void SetUp()
     // {
