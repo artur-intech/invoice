@@ -246,7 +246,7 @@ try
                 }
             case "migration apply":
                 {
-                    new Pending(migrations).Apply((applied) =>
+                    new Pending(migrations).Apply(whenAny: (applied) =>
                     {
                         foreach (var migration in applied)
                         {
@@ -255,7 +255,7 @@ try
 
                         pgSchema.Regenerate();
                     },
-                    () => Console.WriteLine("There are no pending migrations."));
+                    whenNone: () => Console.WriteLine("There are no pending migrations."));
 
                     break;
                 }

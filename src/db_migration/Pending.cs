@@ -11,7 +11,7 @@ sealed class Pending
         this.origin = origin;
     }
 
-    public void Apply(Action<IEnumerable<Migration>> anyCallback, Action nothingCallback)
+    public void Apply(Action<IEnumerable<Migration>> whenAny, Action whenNone)
     {
         if (Filtered().Any())
         {
@@ -23,9 +23,9 @@ sealed class Pending
                 applied = applied.Add(migration);
             });
 
-            anyCallback(applied);
+            whenAny(applied);
         }
-        else nothingCallback();
+        else whenNone();
     }
 
     IEnumerable<Migration> Filtered()
