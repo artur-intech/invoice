@@ -26,9 +26,9 @@ sealed class UniqPgClients : Clients
 
     bool NameExists(string name)
     {
-        var cmd = pgDataSource.CreateCommand("SELECT COUNT(*) FROM clients WHERE name = $1");
+        var cmd = pgDataSource.CreateCommand("SELECT id FROM clients WHERE name = $1");
         cmd.Parameters.AddWithValue(name);
-        return (long)cmd.ExecuteScalar() > 0;
+        return cmd.ExecuteScalar() is not null;
     }
 
     public IEnumerator<Client> GetEnumerator()
