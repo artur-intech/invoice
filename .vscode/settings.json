@@ -1,5 +1,4 @@
 {
-    "files.eol": "\n",
     "files.defaultLanguage": "csharp",
     "csharp.referencesCodeLens.enabled": false,
     "omnisharp.enableRoslynAnalyzers": true,
