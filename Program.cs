@@ -53,18 +53,18 @@ try
             case "supplier create":
                 {
                     Console.WriteLine("Enter supplier name:");
-                    var supplierName = Console.ReadLine();
+                    var supplierName = new Nonblank(new UserInput(Console.ReadLine())).ToString();
 
                     Console.WriteLine("Enter supplier address:");
-                    var supplierAddress = Console.ReadLine();
+                    var supplierAddress = new Nonblank(new UserInput(Console.ReadLine())).ToString();
 
                     Console.WriteLine("Enter supplier VAT number:");
-                    var supplierVatNumber = Console.ReadLine();
+                    var supplierVatNumber = new Nonblank(new UserInput(Console.ReadLine())).ToString();
 
                     Console.WriteLine("Enter supplier IBAN:");
-                    var supplierIban = Console.ReadLine();
+                    var supplierIban = new Nonblank(new UserInput(Console.ReadLine())).ToString();
 
-                    var supplier = new StrictPgSuppliers(new UniqPgSuppliers(new PgSuppliers(pgDataSource), pgDataSource)).Add(supplierName, supplierAddress, supplierVatNumber, supplierIban);
+                    var supplier = new UniqPgSuppliers(new PgSuppliers(pgDataSource), pgDataSource).Add(supplierName, supplierAddress, supplierVatNumber, supplierIban);
 
                     Console.Write($"Supplier {supplier} has been created.");
                     break;
@@ -72,15 +72,15 @@ try
             case "client create":
                 {
                     Console.WriteLine("Enter client name:");
-                    var clientName = Console.ReadLine();
+                    var clientName = new Nonblank(new UserInput(Console.ReadLine())).ToString();
 
                     Console.WriteLine("Enter client address:");
-                    var clientAddress = Console.ReadLine();
+                    var clientAddress = new Nonblank(new UserInput(Console.ReadLine())).ToString();
 
                     Console.WriteLine("Enter client VAT number:");
-                    var clientVatNumber = Console.ReadLine();
+                    var clientVatNumber = new Nonblank(new UserInput(Console.ReadLine())).ToString();
 
-                    var pgClients = new StrictPgClients(new UniqPgClients(new PgClients(pgDataSource), pgDataSource));
+                    var pgClients = new UniqPgClients(new PgClients(pgDataSource), pgDataSource);
                     var client = pgClients.Add(clientName, clientAddress, clientVatNumber);
 
                     Console.Write($"Client {client} has been created.");
@@ -99,7 +99,7 @@ try
                     var vatRate = vatRateInput.VatRate();
 
                     Console.WriteLine("Enter line item name:");
-                    string lineItemName = Console.ReadLine();
+                    string lineItemName = new Nonblank(new UserInput(Console.ReadLine())).ToString();
 
                     Console.WriteLine("Enter line item price:");
                     int lineItemPrice = int.Parse(Console.ReadLine());

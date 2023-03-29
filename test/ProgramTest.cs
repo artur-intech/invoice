@@ -223,32 +223,6 @@ class ConsoleTest : Base
     }
 
     [Test]
-    [Property("SkipFixtureCreation", "true")]
-    public void ValidatesUserInput()
-    {
-        Assert.Zero((long)pgDataSource.CreateCommand("SELECT COUNT(*) FROM suppliers").ExecuteScalar());
-
-        var stdIn = " ";
-
-        var capturedStdOut = CapturedStdOut(() =>
-        {
-            SubstituteStdIn(stdIn, () =>
-            {
-                RunApp(arguments: new string[] { "supplier", "create" });
-            });
-        });
-
-        Assert.AreEqual($"""
-            Enter supplier name:
-            Enter supplier address:
-            Enter supplier VAT number:
-            Enter supplier IBAN:
-            Supplier name cannot be empty.{Environment.NewLine}
-            """, capturedStdOut);
-        Assert.Zero((long)pgDataSource.CreateCommand("SELECT COUNT(*) FROM suppliers").ExecuteScalar());
-    }
-
-    [Test]
     public void ModifiesSupplier()
     {
         dynamic fixture = fixtures["suppliers"]["one"];
@@ -501,6 +475,46 @@ class ConsoleTest : Base
         });
 
         Assert.AreEqual($"Please provide migration name.{Environment.NewLine}", capturedStdOut);
+    }
+
+    [Test]
+    [Property("SkipFixtureCreation", "true")]
+    public void ValidatesUserInputOnSupplierCreation()
+    {
+        var stdIn = " ";
+
+        var capturedStdOut = CapturedStdOut(() =>
+        {
+            SubstituteStdIn(stdIn, () =>
+            {
+                RunApp(arguments: new string[] { "supplier", "create" });
+            });
+        });
+
+        Assert.AreEqual($"""
+            Enter supplier name:
+            Value cannot be empty.{Environment.NewLine}
+            """, capturedStdOut);
+    }
+
+    [Test]
+    [Property("SkipFixtureCreation", "true")]
+    public void ValidatesUserInputOnClientCreation()
+    {
+        var stdOut = " ";
+
+        var capturedStdOut = CapturedStdOut(() =>
+        {
+            SubstituteStdIn(stdOut, () =>
+            {
+                RunApp(arguments: new string[] { "client", "create" });
+            });
+        });
+
+        Assert.AreEqual($"""
+            Enter client name:
+            Value cannot be empty.{Environment.NewLine}
+            """, capturedStdOut);
     }
 
     // [SetUp]
