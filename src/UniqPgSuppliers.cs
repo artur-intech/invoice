@@ -16,7 +16,7 @@ sealed class UniqPgSuppliers : Suppliers
 
     public Supplier Add(string name, string address, string vatNumber, string iban)
     {
-        if (NameExists(name))
+        if (NameTaken(name))
         {
             throw new Exception("Supplier name has already been taken.");
         }
@@ -34,7 +34,7 @@ sealed class UniqPgSuppliers : Suppliers
         return ((IEnumerable)origin).GetEnumerator();
     }
 
-    bool NameExists(string name)
+    bool NameTaken(string name)
     {
         var cmd = pgDataSource.CreateCommand("SELECT id FROM suppliers WHERE name = $1");
         cmd.Parameters.AddWithValue(name);
