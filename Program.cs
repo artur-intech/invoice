@@ -237,6 +237,13 @@ try
                 }
             case "migration create":
                 {
+                    var invalidArgs = args.Length < 3;
+
+                    if (invalidArgs)
+                    {
+                        throw new Exception("Please provide migration name.");
+                    }
+
                     var name = args[2];
 
                     migrations.CreateEmpty(new TimestampedId(name, systemClock));

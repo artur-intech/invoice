@@ -492,6 +492,17 @@ class ConsoleTest : Base
         Assert.AreEqual($"Invalid invoice id.{Environment.NewLine}", capturedStdOut);
     }
 
+    [Test]
+    public void MigrationCreateCommandNoName()
+    {
+        var capturedStdOut = CapturedStdOut(() =>
+        {
+            RunApp(arguments: new string[] { "migration", "create" });
+        });
+
+        Assert.AreEqual($"Please provide migration name.{Environment.NewLine}", capturedStdOut);
+    }
+
     // [SetUp]
     // protected void SetUp()
     // {
