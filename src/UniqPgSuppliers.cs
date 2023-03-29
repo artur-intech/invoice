@@ -36,8 +36,8 @@ sealed class UniqPgSuppliers : Suppliers
 
     bool NameExists(string name)
     {
-        var cmd = pgDataSource.CreateCommand("SELECT COUNT(*) FROM suppliers WHERE name = $1");
+        var cmd = pgDataSource.CreateCommand("SELECT id FROM suppliers WHERE name = $1");
         cmd.Parameters.AddWithValue(name);
-        return (long)cmd.ExecuteScalar() > 0;
+        return cmd.ExecuteScalar() is not null;
     }
 }
