@@ -3,6 +3,7 @@ using Npgsql;
 
 namespace Intech.Invoice;
 
+// Having separate class enables to test database constraints
 sealed class UniqPgSuppliers : Suppliers
 {
     readonly Suppliers origin;
