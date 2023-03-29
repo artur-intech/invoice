@@ -16,7 +16,7 @@ sealed class UniqPgClients : Clients
 
     public Client Add(string name, string address, string vatNumber)
     {
-        if (NameExists(name))
+        if (NameTaken(name))
         {
             throw new Exception("Client name has already been taken.");
         }
@@ -24,7 +24,7 @@ sealed class UniqPgClients : Clients
         return origin.Add(name: name, address: address, vatNumber: vatNumber);
     }
 
-    bool NameExists(string name)
+    bool NameTaken(string name)
     {
         var cmd = pgDataSource.CreateCommand("SELECT id FROM clients WHERE name = $1");
         cmd.Parameters.AddWithValue(name);
