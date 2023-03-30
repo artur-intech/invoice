@@ -1,6 +1,6 @@
 namespace Intech.Invoice;
 
-sealed class Nonblank
+sealed class Nonblank : UserInput
 {
     readonly UserInput origin;
 
