@@ -5,5 +5,7 @@
     <Rule Id="IDE1006" Action="None" />
     <!-- Mark members as static -->
     <Rule Id="CA1822" Action="None" />
+    <!-- Compiled Regexp -->
+    <Rule Id="SYSLIB1045" Action="None" />
   </Rules>
 </RuleSet>

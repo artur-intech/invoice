@@ -62,7 +62,7 @@ try
                     var supplierVatNumber = new Nonblank(new ConsoleInput(Console.ReadLine())).ToString();
 
                     Console.WriteLine("Enter supplier IBAN:");
-                    var supplierIban = new Nonblank(new ConsoleInput(Console.ReadLine())).ToString();
+                    var supplierIban = new StrictInputIban(new Nonblank(new ConsoleInput(Console.ReadLine()))).ToString();
 
                     var supplier = new UniqPgSuppliers(new PgSuppliers(pgDataSource), pgDataSource).Add(supplierName, supplierAddress, supplierVatNumber, supplierIban);
 
