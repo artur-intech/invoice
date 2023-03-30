@@ -289,7 +289,8 @@ class Base
 
     protected string ValidIban()
     {
-        return "iban";
+        // Proper validation is not relevant, so this is considered valid.
+        return "DE12a";
     }
 
     protected string ValidNumber()
