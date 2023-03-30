@@ -9,7 +9,7 @@ class NonblankTest
     [TestCase(" ")]
     public void ProhibitsBlank(string userInput)
     {
-        var nonblank = new Nonblank(new UserInput(userInput));
+        var nonblank = new Nonblank(new UserInput.Fake(userInput));
 
         var exception = Assert.Throws(typeof(Exception), () =>
         {

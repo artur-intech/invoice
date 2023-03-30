@@ -1,16 +1,21 @@
 namespace Intech.Invoice;
 
-sealed class UserInput
+interface UserInput
 {
-    readonly string str;
-
-    public UserInput(string str)
+    class Fake : UserInput
     {
-        this.str = str;
+        readonly string value;
+
+        public Fake(string value)
+        {
+            this.value = value;
+        }
+
+        public override string ToString()
+        {
+            return value;
+        }
     }
 
-    public override string ToString()
-    {
-        return str;
-    }
+    string ToString();
 }
