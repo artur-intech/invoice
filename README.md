@@ -3,15 +3,15 @@
 ## Overview
 
 INTECH Invoice is a simple PDF invoice generation application. This is a console program written
-in C# using NET 7 framework with minimal dependencies. It includes unit, integration
-(mostly database-related) and [end-to-end tests](test/ProgramTest.cs) written using NUnit testing
-framework.
+in C# using NET 7 framework with minimal dependencies. The app is fully dockerized for both development
+and production environments. It includes unit, integration (mostly database-related) and
+[end-to-end tests](test/ProgramTest.cs) written using NUnit testing framework.
 
 ## Description
 
+- All monetary unit input and output values are assumed to be in euros.
 - Invoice numbers have the format of yyyyMMddHHmmss where each letter corresponds to the current
 year, month, day, hours, minutes and seconds respectively.
-- Currency symbol printed on invoices is euro.
 
 ## Configuration
 
