@@ -3,8 +3,8 @@
 ## Overview
 
 INTECH Invoice is a simple PDF invoice generation application. This is a console program written
-in C# using NET 7 framework with minimal dependencies. The app is fully dockerized for both development
-and production environments. It includes unit, integration (mostly database-related) and
+in C# using NET 7 framework with minimal dependencies. The app is fully dockerized to be used in
+both development and production environments. It includes unit, integration (mostly database-related) and
 [end-to-end tests](test/ProgramTest.cs) written using NUnit testing framework.
 
 ## Description
