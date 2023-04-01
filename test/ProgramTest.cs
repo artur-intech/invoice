@@ -104,8 +104,8 @@ class ConsoleTest : Base
             Enter client id ({firstClient.Id} - "{firstClient.Name}", {secondClient.Id} - "{secondClient.Name}"):
             Enter VAT rate as positive integer, "reverse-charged" string or leave blank to apply the standard rate of {Environment.GetEnvironmentVariable("STANDARD_VAT_RATE")}%:
             Enter line item name:
-            Enter line item price:
-            Enter line item quantity:
+            Enter line item price (integer):
+            Enter line item quantity (integer):
             Invoice {fixture.Number} has been issued.
             """, capturedStdOut);
         Assert.AreEqual(1, pgDataSource.CreateCommand("SELECT COUNT(*) FROM invoices").ExecuteScalar());
