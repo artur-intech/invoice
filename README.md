@@ -15,7 +15,7 @@ year, month, day, hours, minutes and seconds respectively.
 
 ## Configuration
 
-- Standard VAT rate is 20% by default. Can be charged using `STANDARD_VAT_RATE` environment variable.
+- Standard VAT rate is 20% by default. Can be changed using `STANDARD_VAT_RATE` environment variable.
 - Time zone affects timestamps that constitute invoice numbers. It is configured as a
 case-insensitive string via `TIME_ZONE` environment variable. For example, `Europe/Munich`,
 `Europe/Moscow` are valid values. Local (system) time zone is used by default.
