@@ -101,10 +101,10 @@ try
                     Console.WriteLine("Enter line item name:");
                     string lineItemName = new Nonblank(new ConsoleInput(Console.ReadLine())).ToString();
 
-                    Console.WriteLine("Enter line item price:");
+                    Console.WriteLine("Enter line item price (integer):");
                     int lineItemPrice = int.Parse(Console.ReadLine());
 
-                    Console.WriteLine("Enter line item quantity:");
+                    Console.WriteLine("Enter line item quantity (integer):");
                     int lineItemQuantity = int.Parse(Console.ReadLine());
 
                     var invoiceDate = systemClock.TodayInAppTimeZone();
