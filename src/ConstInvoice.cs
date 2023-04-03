@@ -7,13 +7,13 @@ sealed class ConstInvoice : Invoice
     readonly string number;
     readonly DateOnly date;
     readonly DateOnly dueDate;
-    readonly Money subtotal;
-    readonly Money vatAmount;
-    readonly Money total;
+    readonly long subtotal;
+    readonly long vatAmount;
+    readonly long total;
     readonly bool paid;
     readonly DateOnly? paidDate;
 
-    public ConstInvoice(Invoice origin, string clientName, string number, DateOnly date, DateOnly dueDate, Money subtotal, Money vatAmount, Money total, bool paid, DateOnly? paidDate)
+    public ConstInvoice(Invoice origin, string clientName, string number, DateOnly date, DateOnly dueDate, long subtotal, long vatAmount, long total, bool paid, DateOnly? paidDate)
     {
         this.origin = origin;
         this.clientName = clientName;
