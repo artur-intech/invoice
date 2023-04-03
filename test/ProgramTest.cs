@@ -147,9 +147,9 @@ class ConsoleTest : Base
             Number: {fixture.Number}
             Date: {fixture.Date}
             Due date: {fixture.DueDate}
-            Subtotal: {new Money(fixture.Subtotal)}
-            VAT amount: {new Money(fixture.VatAmount)}
-            Total: {new Money(fixture.Total)}
+            Subtotal: {fixture.Subtotal}
+            VAT amount: {fixture.VatAmount}
+            Total: {fixture.Total}
             Paid: {fixture.Paid}
             Paid on:
             """, capturedStdOut);
@@ -174,9 +174,9 @@ class ConsoleTest : Base
             Number: {secondFixture.Number}
             Date: {secondFixture.Date}
             Due date: {secondFixture.DueDate}
-            Subtotal: {new Money(secondFixture.Subtotal)}
-            VAT amount: {new Money(secondFixture.VatAmount)}
-            Total: {new Money(secondFixture.Total)}
+            Subtotal: {secondFixture.Subtotal}
+            VAT amount: {secondFixture.VatAmount}
+            Total: {secondFixture.Total}
             Paid: {secondFixture.Paid}
             Paid on:
             {ListDelimiter()}
@@ -185,9 +185,9 @@ class ConsoleTest : Base
             Number: {firstFixture.Number}
             Date: {firstFixture.Date}
             Due date: {firstFixture.DueDate}
-            Subtotal: {new Money(firstFixture.Subtotal)}
-            VAT amount: {new Money(firstFixture.VatAmount)}
-            Total: {new Money(firstFixture.Total)}
+            Subtotal: {firstFixture.Subtotal}
+            VAT amount: {firstFixture.VatAmount}
+            Total: {firstFixture.Total}
             Paid: {firstFixture.Paid}
             Paid on:
 

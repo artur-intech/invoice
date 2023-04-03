@@ -218,9 +218,9 @@ sealed class PgInvoice : Invoice
         var date = reader.GetFieldValue<DateOnly>(reader.GetOrdinal("date"));
         var dueDate = reader.GetFieldValue<DateOnly>(reader.GetOrdinal("due_date"));
         var vatRate = (short)reader["vat_rate"];
-        var subtotal = new Money((long)reader["subtotal"]);
-        var vatAmount = new Money((long)reader["vat_amount"]);
-        var total = new Money((long)reader["total"]);
+        var subtotal = (long)reader["subtotal"];
+        var vatAmount = (long)reader["vat_amount"];
+        var total = (long)reader["total"];
         var supplierName = reader["supplier_name"];
         var supplierAddress = reader["supplier_address"];
         var supplierVatNumber = reader["supplier_vat_number"];

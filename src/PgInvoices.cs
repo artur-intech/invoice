@@ -105,9 +105,9 @@ sealed class PgInvoices : Invoices
             var number = (string)reader["number"];
             var date = reader.GetFieldValue<DateOnly>(reader.GetOrdinal("date"));
             var dueDate = reader.GetFieldValue<DateOnly>(reader.GetOrdinal("due_date"));
-            var subtotal = new Money((long)reader["subtotal"]);
-            var vatAmount = new Money((long)reader["vat_amount"]);
-            var total = new Money((long)reader["total"]);
+            var subtotal = (long)reader["subtotal"];
+            var vatAmount = (long)reader["vat_amount"];
+            var total = (long)reader["total"];
             var paid = (bool)reader["paid"];
 
             DateOnly? paidDate;
