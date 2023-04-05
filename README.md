@@ -19,7 +19,7 @@ year, month, day, hours, minutes and seconds respectively.
 - No static methods
 - No DTOs
 - No ORM
-- Np `null`s
+- No `null`s
 - No getters and setters
 - No public constants
 - No controllers (and MVC)
