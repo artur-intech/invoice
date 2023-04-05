@@ -13,7 +13,7 @@ both development and production environments. It includes unit, integration (mos
 - Invoice numbers have the format of yyyyMMddHHmmss where each letter corresponds to the current
 year, month, day, hours, minutes and seconds respectively.
 
-## Design goals:
+## Design goals
 
 - Immutability
 - No static methods
