@@ -13,6 +13,18 @@ both development and production environments. It includes unit, integration (mos
 - Invoice numbers have the format of yyyyMMddHHmmss where each letter corresponds to the current
 year, month, day, hours, minutes and seconds respectively.
 
+## Design goals:
+
+- Immutability
+- No static methods
+- No DTOs
+- No ORM
+- Np `null`s
+- No getters and setters
+- No public constants
+- No controllers (and MVC)
+- Unit and end-to-end tests
+
 ## Configuration
 
 - Standard VAT rate is 20% by default. It can be changed using `STANDARD_VAT_RATE` environment variable.
