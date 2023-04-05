@@ -23,7 +23,7 @@ year, month, day, hours, minutes and seconds respectively.
 - No getters and setters
 - No public constants
 - No controllers (and MVC)
-- Unit and end-to-end tests
+- Unit, integration and end-to-end tests
 
 ## Configuration
 
