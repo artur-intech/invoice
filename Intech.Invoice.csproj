@@ -21,6 +21,7 @@
       </PackageReference>
       <PackageReference Include="itext7" Version="7.2.5" />
       <PackageReference Include="MailKit" Version="3.6.0" />
+      <PackageReference Include="netDumbster" Version="3.0.1" />
       <PackageReference Include="Npgsql" Version="7.0.1" />
       <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.4.1" />
       <PackageReference Include="nunit" Version="3.13.3" />
