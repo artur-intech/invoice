@@ -35,5 +35,12 @@ services:
     # Add "forwardPorts": ["5432"] to **devcontainer.json** to forward PostgreSQL locally.
     # (Adding the "ports" property to this file will not forward from a Codespace.)
 
+  mailcrab:
+    image: marlonb/mailcrab
+    ports:
+      - "1080:1080"
+    # environment:
+    #   ENABLE_TLS_AUTH: true
+
 volumes:
   postgres-data:
