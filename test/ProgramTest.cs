@@ -48,6 +48,7 @@ class ConsoleTest : Base
             {name}
             {ValidAddress()}
             {ValidVatNumber()}
+            {ValidEmail()}
             """;
 
         var capturedStdOut = CapturedStdOut(() =>
@@ -62,6 +63,7 @@ class ConsoleTest : Base
             Enter client name:
             Enter client address:
             Enter client VAT number:
+            Enter client email:
             Client {name} has been created.
             """, capturedStdOut);
         Assert.AreEqual(1, pgDataSource.CreateCommand("SELECT COUNT(*) FROM clients").ExecuteScalar());
@@ -307,11 +309,13 @@ class ConsoleTest : Base
             Name: {firstFixture.Name}
             Address: {firstFixture.Address}
             VAT number: {firstFixture.VatNumber}
+            Email: {firstFixture.Email}
             {ListDelimiter()}
             Id: {secondFixture.Id}
             Name: {secondFixture.Name}
             Address: {secondFixture.Address}
-            VAT number: {secondFixture.VatNumber}{Environment.NewLine}
+            VAT number: {secondFixture.VatNumber}
+            Email: {secondFixture.Email}{Environment.NewLine}
             """, capturedStdOut);
     }
 
@@ -517,6 +521,28 @@ class ConsoleTest : Base
             """, capturedStdOut);
     }
 
+
+    [Test]
+    [Property("SkipFixtureCreation", "true")]
+    public void ClientCreateCommandInvalidEmail()
+    {
+        var stdIn = $"""
+            {ValidName()}
+            {ValidAddress()}
+            {ValidVatNumber()}
+            invalid email
+            """;
+
+        var capturedStdOut = CapturedStdOut(() =>
+        {
+            SubstituteStdIn(stdIn, () =>
+            {
+                RunApp(arguments: new string[] { "client", "create" });
+            });
+        });
+
+        StringAssert.Contains("Email has invalid format.", capturedStdOut);
+    }
     // [SetUp]
     // protected void SetUp()
     // {

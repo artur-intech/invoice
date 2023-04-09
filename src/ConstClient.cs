@@ -6,13 +6,15 @@ sealed class ConstClient : Client
     readonly string name;
     readonly string address;
     readonly string vatNumber;
+    readonly string email;
 
-    public ConstClient(Client origin, string name, string address, string vatNumber)
+    public ConstClient(Client origin, string name, string address, string vatNumber, string email)
     {
         this.origin = origin;
         this.name = name;
         this.address = address;
         this.vatNumber = vatNumber;
+        this.email = email;
     }
 
     public int Id()
@@ -35,7 +37,8 @@ sealed class ConstClient : Client
         return media.With("Id", origin.Id())
                     .With("Name", name)
                     .With("Address", address)
-                    .With("VAT number", vatNumber);
+                    .With("VAT number", vatNumber)
+                    .With("Email", email);
     }
 
     public void Modify(string newName, string newAddress, string newVatNumber)

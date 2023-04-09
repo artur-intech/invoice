@@ -80,8 +80,11 @@ try
                     Console.WriteLine("Enter client VAT number:");
                     var clientVatNumber = new Nonblank(new ConsoleInput(Console.ReadLine())).ToString();
 
+                    Console.WriteLine("Enter client email:");
+                    var email = new StrictInputEmail(new Nonblank(new ConsoleInput(Console.ReadLine()))).ToString();
+
                     var pgClients = new UniqPgClients(new PgClients(pgDataSource), pgDataSource);
-                    var client = pgClients.Add(clientName, clientAddress, clientVatNumber);
+                    var client = pgClients.Add(clientName, clientAddress, clientVatNumber, email);
 
                     Console.Write($"Client {client} has been created.");
                     break;

@@ -12,17 +12,19 @@ sealed class PgClients : Clients
         this.pgDataSource = pgDataSource;
     }
 
-    public Client Add(string name, string address, string vatNumber)
+    public Client Add(string name, string address, string vatNumber, string email)
     {
         var sql = """
             INSERT INTO clients(
             name,
             address,
-            vat_number)
+            vat_number,
+            email)
             VALUES(
             $1,
             $2,
-            $3)
+            $3,
+            $4)
             RETURNING id;
             """;
 
@@ -30,6 +32,7 @@ sealed class PgClients : Clients
         command.Parameters.AddWithValue(name);
         command.Parameters.AddWithValue(address);
         command.Parameters.AddWithValue(vatNumber);
+        command.Parameters.AddWithValue(email);
         int id = (int)command.ExecuteScalar();
 
         return new PgClient(id, pgDataSource);
@@ -46,8 +49,9 @@ sealed class PgClients : Clients
             var name = (string)reader["name"];
             var address = (string)reader["address"];
             var vatNumber = (string)reader["vat_number"];
+            var email = (string)reader["email"];
 
-            yield return new ConstClient(new PgClient(id, pgDataSource), name, address, vatNumber);
+            yield return new ConstClient(new PgClient(id, pgDataSource), name, address, vatNumber, email);
         }
     }
 
