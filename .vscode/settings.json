@@ -1,5 +1,6 @@
 {
     "files.defaultLanguage": "csharp",
+    "files.eol": "\n",
     "csharp.referencesCodeLens.enabled": false,
     "omnisharp.enableRoslynAnalyzers": true,
     "omnisharp.disableMSBuildDiagnosticWarning": true,
