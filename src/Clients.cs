@@ -6,7 +6,7 @@ interface Clients : IEnumerable<Client>
 {
     class Fake : Clients
     {
-        public Client Add(string name, string address, string vatNumber)
+        public Client Add(string name, string address, string vatNumber, string email)
         {
             return new Client.Fake();
         }
@@ -22,5 +22,5 @@ interface Clients : IEnumerable<Client>
         }
     }
 
-    Client Add(string name, string address, string vatNumber);
+    Client Add(string name, string address, string vatNumber, string email);
 }

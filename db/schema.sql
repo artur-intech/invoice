@@ -39,7 +39,9 @@ CREATE TABLE public.clients (
     id integer NOT NULL,
     name character varying NOT NULL,
     address character varying NOT NULL,
-    vat_number character varying
+    vat_number character varying,
+    email character varying,
+    CONSTRAINT non_empty_clients_email CHECK ((((email)::text = ''::text) IS NOT TRUE))
 );
 
 
@@ -170,6 +172,8 @@ COPY public.applied_migrations (id) FROM stdin;
 20230321142337_add_invoices_paid
 20230321142810_drop_invoices_state
 20230321143825_drop_invoice_state
+20230405135128_add_clients_email
+20230405161039_fix_clients_email_constraint
 \.
 
 
@@ -284,4 +288,3 @@ ALTER TABLE ONLY public.line_items
 --
 -- PostgreSQL database dump complete
 --
-

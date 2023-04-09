@@ -15,14 +15,14 @@ sealed class UniqPgClients : Clients
         this.pgDataSource = pgDataSource;
     }
 
-    public Client Add(string name, string address, string vatNumber)
+    public Client Add(string name, string address, string vatNumber, string email)
     {
         if (NameTaken(name))
         {
             throw new Exception("Client name has already been taken.");
         }
 
-        return origin.Add(name: name, address: address, vatNumber: vatNumber);
+        return origin.Add(name: name, address: address, vatNumber: vatNumber, email);
     }
 
     bool NameTaken(string name)

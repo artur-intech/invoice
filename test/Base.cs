@@ -252,7 +252,7 @@ class Base
     protected ExpandoObject CreateClientFixture()
     {
         var pgClients = new PgClients(pgDataSource);
-        var pgClient = pgClients.Add(ValidName(), ValidAddress(), ValidVatNumber());
+        var pgClient = pgClients.Add(ValidName(), ValidAddress(), ValidVatNumber(), ValidEmail());
 
         return ClientFixture(pgClient.Id());
     }
@@ -268,6 +268,7 @@ class Base
         client.Name = reader["name"];
         client.Address = reader["address"];
         client.VatNumber = reader["vat_number"];
+        client.Email = reader["email"];
 
         return client;
     }
@@ -318,5 +319,11 @@ class Base
     protected DateOnly ValidDate()
     {
         return new DateOnly(1970, 01, 01);
+    }
+
+    protected string ValidEmail()
+    {
+        var localPart = new Random().Next().ToString();
+        return $"{localPart}@inbox.test";
     }
 }
