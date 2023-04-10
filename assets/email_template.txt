@@ -1,0 +1,8 @@
+Dear {0},
+
+Here is your latest invoice to the total amount of {1} EUR and the due date of {2}.
+
+The majority do not allow overdue invoices.
+
+Artur Beljajev
+INTECH OÜ

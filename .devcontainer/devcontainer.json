@@ -25,7 +25,10 @@
 		"TIME_ZONE": "Europe/Moscow",
 		"CULTURE": "ru-RU",
 		"SHOW_DETAILED_EXCEPTIONS": "true",
-		"STANDARD_VAT_RATE": "20"
+		"STANDARD_VAT_RATE": "20",
+		"SMTP_HOST": "mailcrab",
+		"SMTP_PORT": "1025",
+		"SMTP_SECURE": "false"
 	}
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},

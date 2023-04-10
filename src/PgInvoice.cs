@@ -6,6 +6,8 @@ using iText.Layout.Borders;
 using iText.Layout.Element;
 using iText.Layout.Properties;
 using iText.Svg.Converter;
+using MailKit.Net.Smtp;
+using MimeKit;
 using Npgsql;
 
 namespace Intech.Invoice;
@@ -262,6 +264,52 @@ sealed class PgInvoice : Invoice
         cmd.Parameters.AddWithValue(paidDate);
         cmd.Parameters.AddWithValue(id);
         cmd.ExecuteNonQuery();
+    }
+
+    public void Send(ISmtpClient smtpClient)
+    {
+        var sql = """
+            SELECT
+                number,
+                due_date,
+                supplier_name,
+                client_name,
+                SUM(price * quantity::int) + ((SUM(price * quantity::int) * vat_rate) / 100) AS total,
+                supplier_name,
+                client_name,
+                (SELECT email FROM clients WHERE id = client_id) AS client_email
+            FROM
+                invoices
+            LEFT JOIN
+                line_items ON invoices.id = line_items.invoice_id
+            WHERE
+                invoices.id = $1
+            GROUP BY
+                invoices.id
+            """;
+
+        using var cmd = pgDataSource.CreateCommand(sql);
+        cmd.Parameters.AddWithValue(id);
+        using var reader = cmd.ExecuteReader();
+        reader.Read();
+        var number = reader["number"];
+        var dueDate = reader.GetFieldValue<DateOnly>(reader.GetOrdinal("due_date"));
+        var total = (long)reader["total"];
+        var supplierName = reader["supplier_name"];
+        var clientName = (string)reader["client_name"];
+        var clientEmail = (string)reader["client_email"];
+
+        var message = new MimeMessage();
+        message.From.Add(new MailboxAddress(name: "John Doe", address: "invoice@intech.ee"));
+        message.To.Add(MailboxAddress.Parse(clientEmail));
+        message.Subject = $"Invoice no. {number} from {supplierName}";
+
+        var bodyBuilder = new BodyBuilder();
+        bodyBuilder.Attachments.Add($"invoice_{number}_from_{supplierName}.pdf", new byte[] { 0 }, ContentType.Parse("application/pdf"));
+        bodyBuilder.TextBody = new InterpolatedEmailTemplate(new InFileEmailTemplate("assets/email_template.txt"), dueDate, total, clientName).ToString();
+        message.Body = bodyBuilder.ToMessageBody();
+
+        smtpClient.Send(message);
     }
 
     bool Nonexistent()

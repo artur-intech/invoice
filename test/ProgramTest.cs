@@ -1,4 +1,5 @@
 using System.Collections.Immutable;
+using netDumbster.smtp;
 using NUnit.Framework;
 
 namespace Intech.Invoice.Test;
@@ -521,6 +522,20 @@ class ConsoleTest : Base
             """, capturedStdOut);
     }
 
+    [Test]
+    public void SendsEmailWithInvoice()
+    {
+        dynamic fixture = fixtures["invoices"]["one"];
+        using var fakeSmtpServer = SimpleSmtpServer.Start(port: 1024);
+
+        var capturedStdOut = CapturedStdOut(() =>
+        {
+            RunApp(arguments: new string[] { "invoice", "send", fixture.Id.ToString() });
+        });
+
+        Assert.AreEqual(1, fakeSmtpServer.ReceivedEmailCount, "Should send an email");
+        Assert.AreEqual($"Invoice has been sent to the client.{Environment.NewLine}", capturedStdOut);
+    }
 
     [Test]
     [Property("SkipFixtureCreation", "true")]
@@ -543,6 +558,7 @@ class ConsoleTest : Base
 
         StringAssert.Contains("Email has invalid format.", capturedStdOut);
     }
+
     // [SetUp]
     // protected void SetUp()
     // {
@@ -561,7 +577,7 @@ class ConsoleTest : Base
     {
         return ImmutableHashSet.Create("supplier create", "client create", "invoice create",
             "invoice pdf", "invoice details", "invoice list", "supplier modify", "supplier list", "client list", "client modify", "supplier delete", "client delete", "migration init", "migration create", "migration apply",
-            "invoice paid");
+            "invoice paid", "invoice send");
     }
 
     string ListDelimiter()
