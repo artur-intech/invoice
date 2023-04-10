@@ -1,3 +1,4 @@
+using MimeKit;
 using NUnit.Framework;
 
 namespace Intech.Invoice.Test;
@@ -54,5 +55,22 @@ class PgInvoiceTest : Base
             pgInvoice.MarkPaid(ValidDate());
         });
         StringAssert.Contains("Nonexistent invoice.", exception.Message);
+    }
+
+    [Test]
+    public void Sends()
+    {
+        dynamic fixture = fixtures["invoices"]["one"];
+        dynamic clientFixture = fixtures["clients"]["one"];
+        var pgInvoice = new PgInvoice(fixture.Id, pgDataSource);
+        var smtpClient = new FakeSmtpClient();
+
+        pgInvoice.Send(smtpClient);
+
+        var sentEmail = smtpClient.Deliveries().First();
+        var expected_body = new InterpolatedEmailTemplate(new InFileEmailTemplate("assets/email_template.txt"), fixture.DueDate, fixture.Total, clientFixture.Name).ToString();
+        Assert.AreEqual(InternetAddressList.Parse(clientFixture.Email), sentEmail.To);
+        Assert.AreEqual($"Invoice no. {fixture.Number} from {fixture.SupplierName}", sentEmail.Subject);
+        Assert.AreEqual(expected_body, sentEmail.TextBody);
     }
 }

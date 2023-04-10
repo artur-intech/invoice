@@ -2,6 +2,8 @@ using System.Collections.Immutable;
 using System.Globalization;
 using Intech.Invoice;
 using Intech.Invoice.DbMigration;
+using MailKit.Net.Smtp;
+using MailKit.Security;
 using Npgsql;
 
 var dbConnectionString = new DbConnString(host: Environment.GetEnvironmentVariable("PG_HOST"),
@@ -22,7 +24,7 @@ var systemClock = new SystemClock(timezone);
 
 var supportedCommands = ImmutableHashSet.Create("supplier create", "client create", "invoice create",
     "invoice pdf", "invoice details", "invoice list", "supplier modify", "supplier list", "client list", "client modify", "supplier delete", "client delete", "migration init", "migration create", "migration apply",
-    "invoice paid");
+    "invoice paid", "invoice send");
 var currentCommand = string.Join(" ", args.Take(2));
 
 var migrations = new Migrations(Path.Combine(Environment.CurrentDirectory, "db", "migrations"), pgDataSource);
@@ -296,6 +298,29 @@ try
 
                     break;
                 }
+            case "invoice send":
+                {
+                    var id = int.Parse(args[2]);
+
+                    var host = Environment.GetEnvironmentVariable("SMTP_HOST");
+                    var port = int.Parse(Environment.GetEnvironmentVariable("SMTP_PORT"));
+                    var username = Environment.GetEnvironmentVariable("SMTP_USERNAME");
+                    var password = Environment.GetEnvironmentVariable("SMTP_PASSWORD");
+                    var secure = bool.Parse(Environment.GetEnvironmentVariable("SMTP_SECURE"));
+                    using var smtpClient = new SmtpClient();
+                    // TODO Get rid of the conditions.
+                    smtpClient.Connect(host: host, port: port, secure ? SecureSocketOptions.Auto : SecureSocketOptions.None);
+                    if (secure) smtpClient.Authenticate(userName: username, password: password);
+
+                    var pgInvoice = new PgInvoice(id, pgDataSource);
+                    pgInvoice.Send(smtpClient);
+
+                    smtpClient.Disconnect(quit: true);
+
+                    Console.WriteLine($"Invoice has been sent to the client.");
+
+                    break;
+                }
         }
     }
 }
@@ -311,4 +336,6 @@ catch (Exception e)
     {
         Console.WriteLine(e.Message);
     }
+
+    // Console.Error.WriteLine(e.Message);
 }
