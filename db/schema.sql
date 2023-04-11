@@ -40,7 +40,7 @@ CREATE TABLE public.clients (
     name character varying NOT NULL,
     address character varying NOT NULL,
     vat_number character varying,
-    email character varying,
+    email character varying NOT NULL,
     CONSTRAINT non_empty_clients_email CHECK ((((email)::text = ''::text) IS NOT TRUE))
 );
 
@@ -174,6 +174,7 @@ COPY public.applied_migrations (id) FROM stdin;
 20230321143825_drop_invoice_state
 20230405135128_add_clients_email
 20230405161039_fix_clients_email_constraint
+20230411112222_change_clients_email_to_not_null
 \.
 
 
