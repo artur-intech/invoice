@@ -38,6 +38,16 @@ class PgClientsTest : Base
         StringAssert.Contains("violates unique constraint \"uniq_client_name\"", exception.Message);
     }
 
+    [Test]
+    public void NonEmptyEmailDbConstraint()
+    {
+        var exception = Assert.Throws(typeof(Npgsql.PostgresException), () =>
+        {
+            new PgClients(pgDataSource).Add(ValidName(), ValidAddress(), ValidVatNumber(), "");
+        });
+        StringAssert.Contains("violates check constraint \"non_empty_clients_email\"", exception.Message);
+    }
+
     ExpandoObject DbRow(int id)
     {
         using var command = pgDataSource.CreateCommand("SELECT * FROM clients WHERE id = $1");
