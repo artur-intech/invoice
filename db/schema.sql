@@ -41,7 +41,8 @@ CREATE TABLE public.clients (
     address character varying NOT NULL,
     vat_number character varying,
     email character varying NOT NULL,
-    CONSTRAINT non_empty_clients_email CHECK ((((email)::text = ''::text) IS NOT TRUE))
+    CONSTRAINT non_empty_clients_email CHECK ((((email)::text = ''::text) IS NOT TRUE)),
+    CONSTRAINT non_empty_clients_name CHECK ((((name)::text = ''::text) IS NOT TRUE))
 );
 
 
@@ -175,6 +176,7 @@ COPY public.applied_migrations (id) FROM stdin;
 20230405135128_add_clients_email
 20230405161039_fix_clients_email_constraint
 20230411112222_change_clients_email_to_not_null
+20230411201823_add_non_empty_clients_name_constraint
 \.
 
 
