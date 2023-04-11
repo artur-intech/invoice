@@ -1,11 +1,6 @@
 {
     "files.defaultLanguage": "csharp",
     "files.eol": "\n",
-    "csharp.referencesCodeLens.enabled": false,
-    "omnisharp.enableRoslynAnalyzers": true,
-    "omnisharp.disableMSBuildDiagnosticWarning": true,
-    "omnisharp.organizeImportsOnFormat": true,
-    "omnisharp.testRunSettings": ".runsettings",
     "vscode-postgres.defaultConnection": "db",
     "vscode-postgres.defaultDatabase": "postgres",
     // Used by vscode "Debug test" feature.
