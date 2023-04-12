@@ -16,6 +16,17 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
+--
+-- Name: string_non_empty(text); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.string_non_empty(string text) RETURNS boolean
+    LANGUAGE sql IMMUTABLE STRICT
+    RETURN ((string = ''::text) IS NOT TRUE);
+
+
+ALTER FUNCTION public.string_non_empty(string text) OWNER TO postgres;
+
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
@@ -177,6 +188,7 @@ COPY public.applied_migrations (id) FROM stdin;
 20230405161039_fix_clients_email_constraint
 20230411112222_change_clients_email_to_not_null
 20230411201823_add_non_empty_clients_name_constraint
+20230412112817_add_string_non_empty_function
 \.
 
 
