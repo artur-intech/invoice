@@ -8,10 +8,11 @@ class StrictInputEmailTest
     public void ValidatesFormat()
     {
         AssertInvalid("invalid");
-        AssertInvalid("john@");
+        AssertInvalid("a@");
 
-        AssertValid("a@b.c");
+        AssertValid("a@b");
         AssertValid("john@inbox.test");
+        AssertValid("JOHN@INBOX.TEST");
     }
 
     void AssertInvalid(string value)

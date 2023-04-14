@@ -4,6 +4,7 @@ namespace Intech.Invoice.Test;
 
 class StrictInputIbanTest
 {
+    // https://en.wikipedia.org/wiki/International_Bank_Account_Number#Structure
     [Test]
     public void ValidatesFormat()
     {
@@ -11,11 +12,13 @@ class StrictInputIbanTest
         AssertInvalid("d12a");
         AssertInvalid("de1");
         AssertInvalid("de12");
+        AssertInvalid("de12" + new string('1', 31));
 
         AssertValid("de12a");
         AssertValid("DE12a");
         AssertValid("de121");
-    }
+        AssertValid("de12" + new string('1', 30));
+    }   
 
     void AssertInvalid(string value)
     {
