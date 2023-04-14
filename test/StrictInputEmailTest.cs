@@ -7,18 +7,24 @@ class StrictInputEmailTest
     [Test]
     public void ValidatesFormat()
     {
-        var invalidValues = new List<string>() { "invalid", "john@" };
+        AssertInvalid("invalid");
+        AssertInvalid("john@");
 
-        foreach (var invalidValue in invalidValues)
+        AssertValid("a@b.c");
+        AssertValid("john@inbox.test");
+    }
+
+    void AssertInvalid(string value)
+    {
+        var exception = Assert.Throws(typeof(Exception), () =>
         {
-            var exception = Assert.Throws(typeof(Exception), () =>
-            {
-                new StrictInputEmail(new UserInput.Fake(invalidValue)).ToString();
-            });
-            Assert.AreEqual("Email has invalid format.", exception.Message);
-        }
+            new StrictInputEmail(new UserInput.Fake(value)).ToString();
+        }, $"""Value "{value}" should be invalid.""");
+        Assert.AreEqual("Email has invalid format.", exception.Message);
+    }
 
-        Assert.DoesNotThrow(() => { new StrictInputEmail(new UserInput.Fake("a@b.c")).ToString(); });
-        Assert.DoesNotThrow(() => { new StrictInputEmail(new UserInput.Fake("john@inbox.test")).ToString(); });
+    void AssertValid(string value)
+    {
+        Assert.DoesNotThrow(() => { new StrictInputEmail(new UserInput.Fake(value)).ToString(); }, $"""Value "{value}" should be valid.""");
     }
 }
