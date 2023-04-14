@@ -10,7 +10,7 @@ class StrictInputVatNumberTest
     {
         AssertInvalid("D12");
         AssertInvalid("DE1");
-        AssertInvalid("DE" + new string('a', 14));
+        AssertInvalid("DE_more_than_max");
 
         AssertValid("de12");
         AssertValid("DE12");
