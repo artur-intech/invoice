@@ -559,6 +559,28 @@ class ConsoleTest : Base
         StringAssert.Contains("Email has invalid format.", capturedStdOut);
     }
 
+    [Test]
+    [Property("SkipFixtureCreation", "true")]
+    public void SupplierCreateCommandInvalidVatNumber()
+    {
+        var stdIn = $"""
+            {ValidName()}
+            {ValidAddress()}
+            invalid_vat_number
+            {ValidIban()}
+            """;
+
+        var capturedStdOut = CapturedStdOut(() =>
+        {
+            SubstituteStdIn(stdIn, () =>
+            {
+                RunApp(arguments: new string[] { "supplier", "create" });
+            });
+        });
+
+        StringAssert.Contains("VAT number has invalid format.", capturedStdOut);
+    }
+
     // [SetUp]
     // protected void SetUp()
     // {
