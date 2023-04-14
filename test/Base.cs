@@ -285,7 +285,7 @@ class Base
 
     protected string ValidVatNumber()
     {
-        return "vat_number";
+        return "DE12";
     }
 
     protected string ValidIban()

@@ -61,7 +61,7 @@ try
                     var supplierAddress = new Nonblank(new ConsoleInput(Console.ReadLine())).ToString();
 
                     Console.WriteLine("Enter supplier VAT number:");
-                    var supplierVatNumber = new Nonblank(new ConsoleInput(Console.ReadLine())).ToString();
+                    var supplierVatNumber = new StrictInputVatNumber(new Nonblank(new ConsoleInput(Console.ReadLine()))).ToString();
 
                     Console.WriteLine("Enter supplier IBAN:");
                     var supplierIban = new StrictInputIban(new Nonblank(new ConsoleInput(Console.ReadLine()))).ToString();
