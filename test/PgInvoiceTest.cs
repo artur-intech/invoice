@@ -72,5 +72,8 @@ class PgInvoiceTest : Base
         Assert.AreEqual(InternetAddressList.Parse(clientFixture.Email), sentEmail.To);
         Assert.AreEqual($"Invoice no. {fixture.Number} from {fixture.SupplierName}", sentEmail.Subject);
         Assert.AreEqual(expected_body, sentEmail.TextBody);
+        Assert.AreEqual(ContentType.Parse($"application/pdf; name=invoice_{fixture.Number}_from_{fixture.SupplierName}.pdf").ToString(),
+        sentEmail.Attachments.First().ContentType.ToString());
+        Assert.True(sentEmail.Attachments.First().IsAttachment);
     }
 }
