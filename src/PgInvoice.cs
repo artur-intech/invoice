@@ -102,14 +102,15 @@ sealed class PgInvoice : Invoice
         var clientAddress = (string)reader["client_address"];
         var clientVatNumber = (string)reader["client_vat_number"];
 
-        var stream = new MemoryStream();
-        var writer = new PdfWriter(stream);
-        var pdf = new PdfDocument(writer);
-        var document = new Document(pdf);
+        using var stream = new MemoryStream();
+        using var writer = new PdfWriter(stream);
+        using var pdf = new PdfDocument(writer);
+        using var document = new Document(pdf);
         var helveticaBold = PdfFontFactory.CreateRegisteredFont("helvetica-bold");
         var dimgray = WebColors.GetRGBColor("dimgray");
 
-        var intechLogo = SvgConverter.ConvertToImage(File.Open(Path.Join("assets", "intech_logo.svg"), FileMode.Open), pdf);
+        using var intechLogoFile = File.Open(Path.Join("assets", "intech_logo.svg"), FileMode.Open);
+        var intechLogo = SvgConverter.ConvertToImage(intechLogoFile, pdf);
 
         var details = new Table(2);
         details.SetHorizontalAlignment(HorizontalAlignment.RIGHT);
@@ -215,8 +216,6 @@ sealed class PgInvoice : Invoice
         document.Add(lineItems);
 
         document.Add(new Paragraph("Reverse charge"));
-
-        document.Close();
 
         return stream;
     }
