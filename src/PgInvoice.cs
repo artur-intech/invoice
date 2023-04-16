@@ -332,7 +332,7 @@ sealed class PgInvoice : Invoice
         message.Subject = $"Invoice no. {number} from {supplierName}";
 
         var bodyBuilder = new BodyBuilder();
-        bodyBuilder.Attachments.Add($"invoice_{number}_from_{supplierName}.pdf", new byte[] { 0 }, ContentType.Parse("application/pdf"));
+        bodyBuilder.Attachments.Add($"invoice_{number}_from_{supplierName}.pdf", Pdf().ToArray(), ContentType.Parse("application/pdf"));
         bodyBuilder.TextBody = new InterpolatedEmailTemplate(new InFileEmailTemplate("assets/email_template.txt"), dueDate, total, clientName).ToString();
         message.Body = bodyBuilder.ToMessageBody();
 
