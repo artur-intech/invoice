@@ -78,9 +78,9 @@ sealed class PgInvoice : Invoice
         var clientVatNumber = (string)reader["client_vat_number"];
 
         var pdfFilename = $"{supplierName}_invoice_{number}.pdf";
-        var writer = new PdfWriter(pdfFilename);
-        var pdf = new PdfDocument(writer);
-        var document = new Document(pdf);
+        using var writer = new PdfWriter(pdfFilename);
+        using var pdf = new PdfDocument(writer);
+        using var document = new Document(pdf);
         var helveticaBold = PdfFontFactory.CreateRegisteredFont("helvetica-bold");
         var dimgray = WebColors.GetRGBColor("dimgray");
 
