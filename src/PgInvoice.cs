@@ -325,6 +325,7 @@ sealed class PgInvoice : Invoice
         var clientName = (string)reader["client_name"];
         var clientEmail = (string)reader["client_email"];
 
+        // Needs to be disposed, but then `FakeSmtpClient` fails.
         var message = new MimeMessage();
         message.From.Add(new MailboxAddress(name: "John Doe", address: "invoice@intech.ee"));
         message.To.Add(MailboxAddress.Parse(clientEmail));
