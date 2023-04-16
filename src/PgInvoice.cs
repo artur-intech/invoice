@@ -44,6 +44,31 @@ sealed class PgInvoice : Invoice
     {
         var sql = """
             SELECT
+                number,
+                supplier_name
+            FROM
+                invoices
+            WHERE
+                invoices.id = $1
+            """;
+
+        using var cmd = pgDataSource.CreateCommand(sql);
+        cmd.Parameters.AddWithValue(id);
+        using var reader = cmd.ExecuteReader();
+        reader.Read();
+        var number = (string)reader["number"];
+        var supplierName = (string)reader["supplier_name"];
+
+        var filename = $"{supplierName}_invoice_{number}.pdf";
+
+
+        File.WriteAllBytes(filename, Pdf().ToArray());
+    }
+
+    MemoryStream Pdf()
+    {
+        var sql = """
+            SELECT
             invoices.*,
             SUM(price * quantity::int) AS subtotal,
             (SUM(price * quantity::int) * vat_rate) / 100 AS vat_amount,
@@ -77,10 +102,10 @@ sealed class PgInvoice : Invoice
         var clientAddress = (string)reader["client_address"];
         var clientVatNumber = (string)reader["client_vat_number"];
 
-        var pdfFilename = $"{supplierName}_invoice_{number}.pdf";
-        using var writer = new PdfWriter(pdfFilename);
-        using var pdf = new PdfDocument(writer);
-        using var document = new Document(pdf);
+        var stream = new MemoryStream();
+        var writer = new PdfWriter(stream);
+        var pdf = new PdfDocument(writer);
+        var document = new Document(pdf);
         var helveticaBold = PdfFontFactory.CreateRegisteredFont("helvetica-bold");
         var dimgray = WebColors.GetRGBColor("dimgray");
 
@@ -192,6 +217,8 @@ sealed class PgInvoice : Invoice
         document.Add(new Paragraph("Reverse charge"));
 
         document.Close();
+
+        return stream;
     }
 
     public ConsoleMedia Print(ConsoleMedia media)
