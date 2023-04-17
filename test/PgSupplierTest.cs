@@ -28,20 +28,23 @@ class PgSupplierTest : Base
         var newAddress = "new address";
         var newVatNumber = "new vat";
         var newIban = "new iban";
+        var newEmail = "new email";
 
         Assert.AreNotEqual(newName, fixture.Name);
         Assert.AreNotEqual(newAddress, fixture.Address);
         Assert.AreNotEqual(newVatNumber, fixture.VatNumber);
         Assert.AreNotEqual(newIban, fixture.Iban);
+        Assert.AreNotEqual(newEmail, fixture.Email);
 
         var pgSupplier = new PgSupplier(fixture.Id, pgDataSource);
-        pgSupplier.Modify(newName, newAddress, newVatNumber, newIban);
+        pgSupplier.Modify(newName, newAddress, newVatNumber, newIban, newEmail);
 
         fixture = SupplierFixture(fixture.Id);
         Assert.AreEqual(newName, fixture.Name);
         Assert.AreEqual(newAddress, fixture.Address);
         Assert.AreEqual(newVatNumber, fixture.VatNumber);
         Assert.AreEqual(newIban, fixture.Iban);
+        Assert.AreEqual(newEmail, fixture.Email);
     }
 
     [Test]

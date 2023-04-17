@@ -6,7 +6,7 @@ interface Suppliers : IEnumerable<Supplier>
 {
     class Fake : Suppliers
     {
-        public Supplier Add(string name, string address, string vatNumber, string iban)
+        public Supplier Add(string name, string address, string vatNumber, string iban, string email)
         {
             return new Supplier.Fake();
         }
@@ -22,5 +22,5 @@ interface Suppliers : IEnumerable<Supplier>
         }
     }
 
-    Supplier Add(string name, string address, string vatNumber, string iban);
+    Supplier Add(string name, string address, string vatNumber, string iban, string email);
 }

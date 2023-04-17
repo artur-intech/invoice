@@ -7,14 +7,16 @@ sealed class ConstSupplier : Supplier
     readonly string address;
     readonly string vatNumber;
     readonly string iban;
+    readonly string email;
 
-    public ConstSupplier(Supplier origin, string name, string address, string vatNumber, string iban)
+    public ConstSupplier(Supplier origin, string name, string address, string vatNumber, string iban, string email)
     {
         this.origin = origin;
         this.name = name;
         this.address = address;
         this.vatNumber = vatNumber;
         this.iban = iban;
+        this.email = email;
     }
 
     public int Id()
@@ -38,10 +40,11 @@ sealed class ConstSupplier : Supplier
                     .With("Name", name)
                     .With("Address", address)
                     .With("VAT number", vatNumber)
-                    .With("IBAN", iban);
+                    .With("IBAN", iban)
+                    .With("Email", email);
     }
 
-    public void Modify(string newName, string newAddress, string newVatNumber, string newIban)
+    public void Modify(string newName, string newAddress, string newVatNumber, string newIban, string newEmail)
     {
         throw new NotImplementedException();
     }

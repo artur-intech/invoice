@@ -18,6 +18,7 @@ class ConsoleTest : Base
             {ValidAddress()}
             {ValidVatNumber()}
             {ValidIban()}
+            {ValidEmail()}
             """;
 
         var capturedStdOut = CapturedStdOut(() =>
@@ -33,6 +34,7 @@ class ConsoleTest : Base
             Enter supplier address:
             Enter supplier VAT number:
             Enter supplier IBAN:
+            Enter supplier email:
             Supplier {name} has been created.
             """, capturedStdOut);
         Assert.AreEqual(1, pgDataSource.CreateCommand("SELECT COUNT(*) FROM suppliers").ExecuteScalar());
@@ -233,16 +235,19 @@ class ConsoleTest : Base
         var newAddress = "new address";
         var newVatNumber = "new vat";
         var newIban = "new iban";
+        var newEmail = "new email";
         Assert.AreNotEqual(newName, fixture.Name);
         Assert.AreNotEqual(newAddress, fixture.Address);
         Assert.AreNotEqual(newVatNumber, fixture.VatNumber);
         Assert.AreNotEqual(newIban, fixture.Iban);
+        Assert.AreNotEqual(newEmail, fixture.Email);
 
         var stdIn = $"""
             {newName}
             {newAddress}
             {newVatNumber}
             {newIban}
+            {newEmail}
             """;
 
         var capturedStdOut = CapturedStdOut(() =>
@@ -258,6 +263,7 @@ class ConsoleTest : Base
             Enter new supplier address:
             Enter new supplier VAT number:
             Enter new supplier IBAN:
+            Enter new supplier email:
             Supplier {newName} has been modified.
             """, capturedStdOut);
         fixture = SupplierFixture(fixture.Id);
@@ -283,12 +289,14 @@ class ConsoleTest : Base
             Address: {firstFixture.Address}
             VAT number: {firstFixture.VatNumber}
             IBAN: {firstFixture.Iban}
+            Email: {firstFixture.Email}
             {ListDelimiter()}
             Id: {secondFixture.Id}
             Name: {secondFixture.Name}
             Address: {secondFixture.Address}
             VAT number: {secondFixture.VatNumber}
-            IBAN: {secondFixture.Iban}{Environment.NewLine}
+            IBAN: {secondFixture.Iban}
+            Email: {secondFixture.Email}{Environment.NewLine}
             """, capturedStdOut);
     }
 
