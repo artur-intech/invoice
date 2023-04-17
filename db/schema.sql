@@ -154,7 +154,9 @@ CREATE TABLE public.suppliers (
     name character varying NOT NULL,
     address character varying NOT NULL,
     vat_number character varying,
-    iban character varying NOT NULL
+    iban character varying NOT NULL,
+    email character varying NOT NULL,
+    CONSTRAINT suppliers_email_check CHECK (public.string_non_empty((email)::text))
 );
 
 
@@ -192,6 +194,8 @@ COPY public.applied_migrations (id) FROM stdin;
 20230412112817_add_string_non_empty_function
 20230412114243_use_string_non_empty_function_in_clients
 20230413131250_add_non_empty_clients_address_constraint
+20230417135856_add_suppliers_email
+20230417160754_change_suppliers_email_to_not_null
 \.
 
 
@@ -306,3 +310,4 @@ ALTER TABLE ONLY public.line_items
 --
 -- PostgreSQL database dump complete
 --
+

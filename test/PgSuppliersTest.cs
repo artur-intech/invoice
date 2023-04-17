@@ -15,8 +15,9 @@ class PgSuppliersTest : Base
         var address = ValidAddress();
         var vatNumber = ValidVatNumber();
         var iban = ValidIban();
+        var email = ValidEmail();
 
-        var createdSupplierId = new PgSuppliers(pgDataSource).Add(name, address, vatNumber, iban).Id();
+        var createdSupplierId = new PgSuppliers(pgDataSource).Add(name, address, vatNumber, iban, email).Id();
 
         Assert.AreEqual(1, pgDataSource.CreateCommand("SELECT COUNT(*) FROM suppliers").ExecuteScalar());
         dynamic dbRow = DbRow(createdSupplierId);
@@ -33,7 +34,7 @@ class PgSuppliersTest : Base
 
         var exception = Assert.Throws(typeof(Npgsql.PostgresException), () =>
         {
-            new PgSuppliers(pgDataSource).Add(existingSupplier.Name, ValidAddress(), ValidVatNumber(), ValidIban());
+            new PgSuppliers(pgDataSource).Add(existingSupplier.Name, ValidAddress(), ValidVatNumber(), ValidIban(), ValidEmail());
         });
         StringAssert.Contains("violates unique constraint \"uniq_supplier_name\"", exception.Message);
     }

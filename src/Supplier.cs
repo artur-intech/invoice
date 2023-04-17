@@ -29,7 +29,7 @@ interface Supplier
             throw new NotImplementedException();
         }
 
-        public void Modify(string newName, string newAddress, string newVatNumber, string newIban)
+        public void Modify(string newName, string newAddress, string newVatNumber, string newIban, string newEmail)
         {
             throw new NotImplementedException();
         }
@@ -40,5 +40,5 @@ interface Supplier
     ConsoleMedia Print(ConsoleMedia media);
     string Name();
     void Delete();
-    void Modify(string newName, string newAddress, string newVatNumber, string newIban);
+    void Modify(string newName, string newAddress, string newVatNumber, string newIban, string newEmail);
 }

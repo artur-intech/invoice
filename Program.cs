@@ -66,7 +66,10 @@ try
                     Console.WriteLine("Enter supplier IBAN:");
                     var supplierIban = new StrictInputIban(new Nonblank(new ConsoleInput(Console.ReadLine()))).ToString();
 
-                    var supplier = new UniqPgSuppliers(new PgSuppliers(pgDataSource), pgDataSource).Add(supplierName, supplierAddress, supplierVatNumber, supplierIban);
+                    Console.WriteLine("Enter supplier email:");
+                    var supplierEmail = new StrictInputEmail(new Nonblank(new ConsoleInput(Console.ReadLine()))).ToString();
+
+                    var supplier = new UniqPgSuppliers(new PgSuppliers(pgDataSource), pgDataSource).Add(supplierName, supplierAddress, supplierVatNumber, supplierIban, supplierEmail);
 
                     Console.Write($"Supplier {supplier} has been created.");
                     break;
@@ -169,8 +172,11 @@ try
                     Console.WriteLine("Enter new supplier IBAN:");
                     var newIban = Console.ReadLine();
 
+                    Console.WriteLine("Enter new supplier email:");
+                    var newEmail = Console.ReadLine();
+
                     var supplier = new PgSupplier(id, pgDataSource);
-                    supplier.Modify(newName, newAddress, newVatNumber, newIban);
+                    supplier.Modify(newName, newAddress, newVatNumber, newIban, newEmail);
 
                     Console.Write($"Supplier {supplier} has been modified.");
 

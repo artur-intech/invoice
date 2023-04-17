@@ -228,7 +228,7 @@ class Base
     protected ExpandoObject CreateSupplierFixture()
     {
         var pgSuppliers = new PgSuppliers(pgDataSource);
-        var pgSupplier = pgSuppliers.Add(ValidName(), ValidAddress(), ValidVatNumber(), ValidIban());
+        var pgSupplier = pgSuppliers.Add(ValidName(), ValidAddress(), ValidVatNumber(), ValidIban(), ValidEmail());
 
         return SupplierFixture(pgSupplier.Id());
     }
@@ -245,6 +245,7 @@ class Base
         supplier.Address = reader["address"];
         supplier.VatNumber = reader["vat_number"];
         supplier.Iban = reader["iban"];
+        supplier.Email = reader["email"];
 
         return supplier;
     }

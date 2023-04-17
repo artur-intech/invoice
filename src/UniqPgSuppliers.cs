@@ -15,14 +15,14 @@ sealed class UniqPgSuppliers : Suppliers
         this.pgDataSource = pgDataSource;
     }
 
-    public Supplier Add(string name, string address, string vatNumber, string iban)
+    public Supplier Add(string name, string address, string vatNumber, string iban, string email)
     {
         if (NameTaken(name))
         {
             throw new Exception("Supplier name has already been taken.");
         }
 
-        return origin.Add(name, address, vatNumber, iban);
+        return origin.Add(name, address, vatNumber, iban, email);
     }
 
     public IEnumerator<Supplier> GetEnumerator()

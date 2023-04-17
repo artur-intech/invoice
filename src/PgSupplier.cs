@@ -23,14 +23,15 @@ sealed class PgSupplier : Supplier
         return Name();
     }
 
-    public void Modify(string newName, string newAddress, string newVatNumber, string newIban)
+    public void Modify(string newName, string newAddress, string newVatNumber, string newIban, string newEmail)
     {
-        var sql = "UPDATE suppliers SET name = $1, address = $2, vat_number = $3, iban = $4 WHERE id = $5";
+        var sql = "UPDATE suppliers SET name = $1, address = $2, vat_number = $3, iban = $4, email = $5 WHERE id = $6";
         using var command = pgDataSource.CreateCommand(sql);
         command.Parameters.AddWithValue(newName);
         command.Parameters.AddWithValue(newAddress);
         command.Parameters.AddWithValue(newVatNumber);
         command.Parameters.AddWithValue(newIban);
+        command.Parameters.AddWithValue(newEmail);
         command.Parameters.AddWithValue(id);
         command.ExecuteNonQuery();
     }
@@ -47,12 +48,14 @@ sealed class PgSupplier : Supplier
         var address = reader["address"];
         var vatNumber = reader["vat_number"];
         var iban = reader["iban"];
+        var email = reader["email"];
 
         return media.With("Id", id)
                     .With("Name", name)
                     .With("Address", address)
                     .With("VAT number", vatNumber)
-                    .With("IBAN", iban);
+                    .With("IBAN", iban)
+                    .With("Email", email);
     }
 
     public void Delete()

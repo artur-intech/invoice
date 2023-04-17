@@ -12,19 +12,21 @@ sealed class PgSuppliers : Suppliers
         this.pgDataSource = pgDataSource;
     }
 
-    public Supplier Add(string name, string address, string vatNumber, string iban)
+    public Supplier Add(string name, string address, string vatNumber, string iban, string email)
     {
         var sql = """
             INSERT INTO suppliers(
             name,
             address,
             vat_number,
-            iban)
+            iban,
+            email)
             VALUES(
             $1,
             $2,
             $3,
-            $4)
+            $4,
+            $5)
             RETURNING id
             """;
 
@@ -33,6 +35,7 @@ sealed class PgSuppliers : Suppliers
         command.Parameters.AddWithValue(address);
         command.Parameters.AddWithValue(vatNumber);
         command.Parameters.AddWithValue(iban);
+        command.Parameters.AddWithValue(email);
         int id = (int)command.ExecuteScalar();
 
         return new PgSupplier(id, pgDataSource);
@@ -50,8 +53,9 @@ sealed class PgSuppliers : Suppliers
             var address = (string)reader["address"];
             var vatNumber = (string)reader["vat_number"];
             var iban = (string)reader["iban"];
+            var email = (string)reader["email"];
 
-            yield return new ConstSupplier(new PgSupplier(id, pgDataSource), name, address, vatNumber, iban);
+            yield return new ConstSupplier(new PgSupplier(id, pgDataSource), name, address, vatNumber, iban, email);
         }
     }
 
