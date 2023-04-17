@@ -321,7 +321,7 @@ sealed class PgInvoice : Invoice
         var number = reader["number"];
         var dueDate = reader.GetFieldValue<DateOnly>(reader.GetOrdinal("due_date"));
         var total = (long)reader["total"];
-        var supplierName = reader["supplier_name"];
+        var supplierName = (string)reader["supplier_name"];
         var clientName = (string)reader["client_name"];
         var clientEmail = (string)reader["client_email"];
 
@@ -333,7 +333,7 @@ sealed class PgInvoice : Invoice
 
         var bodyBuilder = new BodyBuilder();
         bodyBuilder.Attachments.Add($"invoice_{number}_from_{supplierName}.pdf", Pdf().ToArray(), ContentType.Parse("application/pdf"));
-        bodyBuilder.TextBody = new InterpolatedEmailTemplate(new InFileEmailTemplate("assets/email_template.txt"), dueDate, total, clientName).ToString();
+        bodyBuilder.TextBody = new InterpolatedEmailTemplate(new InFileEmailTemplate("assets/email_template.txt"), dueDate, total, clientName, supplierName).ToString();
         message.Body = bodyBuilder.ToMessageBody();
 
         smtpClient.Send(message);

@@ -62,13 +62,14 @@ class PgInvoiceTest : Base
     {
         dynamic fixture = fixtures["invoices"]["one"];
         dynamic clientFixture = fixtures["clients"]["one"];
+        dynamic supplierFixture = fixtures["suppliers"]["one"];
         var pgInvoice = new PgInvoice(fixture.Id, pgDataSource);
         var smtpClient = new FakeSmtpClient();
 
         pgInvoice.Send(smtpClient);
 
         var sentEmail = smtpClient.Deliveries().First();
-        var expected_body = new InterpolatedEmailTemplate(new InFileEmailTemplate("assets/email_template.txt"), fixture.DueDate, fixture.Total, clientFixture.Name).ToString();
+        var expected_body = new InterpolatedEmailTemplate(new InFileEmailTemplate("assets/email_template.txt"), fixture.DueDate, fixture.Total, clientFixture.Name, supplierFixture.Name).ToString();
         Assert.AreEqual(InternetAddressList.Parse(clientFixture.Email), sentEmail.To);
         Assert.AreEqual($"Invoice no. {fixture.Number} from {fixture.SupplierName}", sentEmail.Subject);
         Assert.AreEqual(expected_body, sentEmail.TextBody);
