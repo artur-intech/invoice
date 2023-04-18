@@ -72,9 +72,9 @@ class PgInvoiceTest : Base
         var expected_body = new InterpolatedEmailTemplate(new InFileEmailTemplate("assets/email_template.txt"), fixture.DueDate, fixture.Total, clientFixture.Name, supplierFixture.Name).ToString();
         Assert.AreEqual(InternetAddressList.Parse($"{supplierFixture.Name} <{supplierFixture.Email}>"), sentEmail.From);
         Assert.AreEqual(InternetAddressList.Parse(clientFixture.Email), sentEmail.To);
-        Assert.AreEqual($"Invoice no. {fixture.Number} from {fixture.SupplierName}", sentEmail.Subject);
+        Assert.AreEqual($"Invoice no. {fixture.Number}", sentEmail.Subject);
         Assert.AreEqual(expected_body, sentEmail.TextBody);
-        Assert.AreEqual(ContentType.Parse($"application/pdf; name=invoice_{fixture.Number}_from_{fixture.SupplierName}.pdf").ToString(),
+        Assert.AreEqual(ContentType.Parse($"application/pdf; name=invoice_{fixture.Number}_{fixture.SupplierName}.pdf").ToString(),
         sentEmail.Attachments.First().ContentType.ToString());
         Assert.True(sentEmail.Attachments.First().IsAttachment);
     }

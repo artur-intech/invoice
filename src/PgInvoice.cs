@@ -331,10 +331,10 @@ sealed class PgInvoice : Invoice
         var message = new MimeMessage();
         message.From.Add(new MailboxAddress(name: supplierName, address: supplierEmail));
         message.To.Add(MailboxAddress.Parse(clientEmail));
-        message.Subject = $"Invoice no. {number} from {supplierName}";
+        message.Subject = $"Invoice no. {number}";
 
         var bodyBuilder = new BodyBuilder();
-        bodyBuilder.Attachments.Add($"invoice_{number}_from_{supplierName}.pdf", Pdf().ToArray(), ContentType.Parse("application/pdf"));
+        bodyBuilder.Attachments.Add($"invoice_{number}_{supplierName}.pdf", Pdf().ToArray(), ContentType.Parse("application/pdf"));
         bodyBuilder.TextBody = new InterpolatedEmailTemplate(new InFileEmailTemplate("assets/email_template.txt"), dueDate, total, clientName, supplierName).ToString();
         message.Body = bodyBuilder.ToMessageBody();
 
