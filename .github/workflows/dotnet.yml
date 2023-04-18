@@ -60,3 +60,9 @@ jobs:
       with:
         recreate: true
         path: code-coverage-results.md
+
+    - name: Coveralls GitHub Action
+      uses: coverallsapp/github-action@v2
+      with:
+        format: lcov
+        file: coverage/coverage.info

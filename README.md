@@ -1,5 +1,7 @@
 # INTECH Invoice
 
+[![Coverage Status](https://coveralls.io/repos/github/artur-intech/invoice/badge.svg)](https://coveralls.io/github/artur-intech/invoice)
+
 ## Overview
 
 INTECH Invoice is a simple PDF invoice generation application. This is a console program written
