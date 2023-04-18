@@ -35,7 +35,8 @@ sealed class PgInvoices : Invoices
             client_name,
             client_address,
             client_vat_number,
-            paid_date)
+            paid_date,
+            supplier_id)
             SELECT
             $1,
             $2,
@@ -49,7 +50,8 @@ sealed class PgInvoices : Invoices
             c.name,
             c.address,
             c.vat_number,
-            $7
+            $7,
+            $6
             FROM
             suppliers s,
             clients c

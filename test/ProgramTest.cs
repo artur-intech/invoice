@@ -364,8 +364,10 @@ class ConsoleTest : Base
     }
 
     [Test]
-    public void DeletesSupplier()
+    [Property("SkipFixtureCreation", "true")]
+    public void DeletesUninvoicedSupplier()
     {
+        CreateSupplierFixtures();
         dynamic fixture = fixtures["suppliers"]["one"];
 
         var capturedStdOut = CapturedStdOut(() =>

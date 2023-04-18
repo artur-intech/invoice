@@ -48,14 +48,29 @@ class PgSupplierTest : Base
     }
 
     [Test]
-    public void DeletesItself()
+    [Property("SkipFixtureCreation", "true")]
+    public void DeletesUninvoiced()
     {
+        CreateSupplierFixtures();
         dynamic supplierFixture = fixtures["suppliers"]["one"];
 
         var pgSupplier = new PgSupplier(supplierFixture.Id, pgDataSource);
         pgSupplier.Delete();
 
         Assert.AreEqual(fixtures["suppliers"].Count - 1, (long)pgDataSource.CreateCommand("SELECT COUNT(*) FROM suppliers").ExecuteScalar(), "Supplier should have been deleted.");
+    }
+
+    [Test]
+    public void CannotBeDeletedWhenHavingInvoices()
+    {
+        dynamic fixture = fixtures["suppliers"]["one"];
+
+        var exception = Assert.Throws(typeof(Exception), () =>
+        {
+            var pgSupplier = new PgSupplier(fixture.Id, pgDataSource);
+            pgSupplier.Delete();
+        });
+        StringAssert.Contains("Supplier has invoices and therefore cannot be deleted.", exception.Message);
     }
 
     [Test]
