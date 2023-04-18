@@ -1,0 +1,1 @@
+ALTER TABLE invoices ALTER COLUMN supplier_id SET NOT NULL;

@@ -60,6 +60,8 @@ sealed class PgSupplier : Supplier
 
     public void Delete()
     {
+        if (Invoiced()) throw new Exception("Supplier has invoices and therefore cannot be deleted.");
+
         using var command = pgDataSource.CreateCommand("DELETE FROM suppliers WHERE id = $1");
         command.Parameters.AddWithValue(id);
         command.ExecuteNonQuery();
@@ -70,5 +72,12 @@ sealed class PgSupplier : Supplier
         using var command = pgDataSource.CreateCommand("SELECT name FROM suppliers WHERE id = $1");
         command.Parameters.AddWithValue(id);
         return (string)command.ExecuteScalar();
+    }
+
+    bool Invoiced()
+    {
+        using var cmd = pgDataSource.CreateCommand("SELECT COUNT(*) > 0 FROM invoices WHERE supplier_id = $1");
+        cmd.Parameters.AddWithValue(id);
+        return (bool)cmd.ExecuteScalar();
     }
 }

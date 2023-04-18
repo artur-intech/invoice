@@ -94,6 +94,7 @@ CREATE TABLE public.invoices (
     client_vat_number character varying,
     paid_date date,
     paid boolean DEFAULT false NOT NULL,
+    supplier_id integer NOT NULL,
     CONSTRAINT later_invoice_due_date CHECK ((due_date >= date)),
     CONSTRAINT nonnegative_invoice_vat_rate CHECK ((vat_rate >= 0))
 );
@@ -196,6 +197,8 @@ COPY public.applied_migrations (id) FROM stdin;
 20230413131250_add_non_empty_clients_address_constraint
 20230417135856_add_suppliers_email
 20230417160754_change_suppliers_email_to_not_null
+20230417204545_add_invoice_supplier_id
+20230417215257_change_invoices_supplier_id_to_not_null
 \.
 
 
@@ -203,28 +206,28 @@ COPY public.applied_migrations (id) FROM stdin;
 -- Name: clients_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.clients_id_seq', 1, true);
+SELECT pg_catalog.setval('public.clients_id_seq', 2, true);
 
 
 --
 -- Name: invoices_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.invoices_id_seq', 1, true);
+SELECT pg_catalog.setval('public.invoices_id_seq', 2, true);
 
 
 --
 -- Name: line_items_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.line_items_id_seq', 1, true);
+SELECT pg_catalog.setval('public.line_items_id_seq', 2, true);
 
 
 --
 -- Name: suppliers_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.suppliers_id_seq', 1, true);
+SELECT pg_catalog.setval('public.suppliers_id_seq', 2, true);
 
 
 --
@@ -297,6 +300,14 @@ ALTER TABLE ONLY public.suppliers
 
 ALTER TABLE ONLY public.invoices
     ADD CONSTRAINT invoices_client_id_fkey FOREIGN KEY (client_id) REFERENCES public.clients(id);
+
+
+--
+-- Name: invoices invoices_supplier_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.invoices
+    ADD CONSTRAINT invoices_supplier_id_fkey FOREIGN KEY (supplier_id) REFERENCES public.suppliers(id);
 
 
 --
