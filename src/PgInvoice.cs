@@ -303,7 +303,8 @@ sealed class PgInvoice : Invoice
                 SUM(price * quantity::int) + ((SUM(price * quantity::int) * vat_rate) / 100) AS total,
                 supplier_name,
                 client_name,
-                (SELECT email FROM clients WHERE id = client_id) AS client_email
+                (SELECT email FROM clients WHERE id = client_id) AS client_email,
+                (SELECT email FROM suppliers WHERE id = supplier_id) AS supplier_email
             FROM
                 invoices
             LEFT JOIN
@@ -322,12 +323,13 @@ sealed class PgInvoice : Invoice
         var dueDate = reader.GetFieldValue<DateOnly>(reader.GetOrdinal("due_date"));
         var total = (long)reader["total"];
         var supplierName = (string)reader["supplier_name"];
+        var supplierEmail = (string)reader["supplier_email"];
         var clientName = (string)reader["client_name"];
         var clientEmail = (string)reader["client_email"];
 
         // Needs to be disposed, but then `FakeSmtpClient` fails.
         var message = new MimeMessage();
-        message.From.Add(new MailboxAddress(name: "John Doe", address: "invoice@intech.ee"));
+        message.From.Add(new MailboxAddress(name: supplierName, address: supplierEmail));
         message.To.Add(MailboxAddress.Parse(clientEmail));
         message.Subject = $"Invoice no. {number} from {supplierName}";
 

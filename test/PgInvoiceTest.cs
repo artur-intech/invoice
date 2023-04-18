@@ -70,6 +70,7 @@ class PgInvoiceTest : Base
 
         var sentEmail = smtpClient.Deliveries().First();
         var expected_body = new InterpolatedEmailTemplate(new InFileEmailTemplate("assets/email_template.txt"), fixture.DueDate, fixture.Total, clientFixture.Name, supplierFixture.Name).ToString();
+        Assert.AreEqual(InternetAddressList.Parse($"{supplierFixture.Name} <{supplierFixture.Email}>"), sentEmail.From);
         Assert.AreEqual(InternetAddressList.Parse(clientFixture.Email), sentEmail.To);
         Assert.AreEqual($"Invoice no. {fixture.Number} from {fixture.SupplierName}", sentEmail.Subject);
         Assert.AreEqual(expected_body, sentEmail.TextBody);
