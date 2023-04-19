@@ -324,6 +324,11 @@ class Base
 
     protected string ValidEmail()
     {
+        return RandomEmail();
+    }
+
+    string RandomEmail()
+    {
         var localPart = new Random().Next().ToString();
         return $"{localPart}@inbox.test";
     }
