@@ -36,28 +36,6 @@ sealed class PgSupplier : Supplier
         command.ExecuteNonQuery();
     }
 
-    public ConsoleMedia Print(ConsoleMedia media)
-    {
-        var sql = "SELECT * FROM suppliers WHERE id = $1";
-        using var command = pgDataSource.CreateCommand(sql);
-        command.Parameters.AddWithValue(id);
-        using var reader = command.ExecuteReader();
-
-        reader.Read();
-        var name = reader["name"];
-        var address = reader["address"];
-        var vatNumber = reader["vat_number"];
-        var iban = reader["iban"];
-        var email = reader["email"];
-
-        return media.With("Id", id)
-                    .With("Name", name)
-                    .With("Address", address)
-                    .With("VAT number", vatNumber)
-                    .With("IBAN", iban)
-                    .With("Email", email);
-    }
-
     public void Delete()
     {
         if (Invoiced()) throw new Exception("Supplier has invoices and therefore cannot be deleted.");
@@ -72,6 +50,17 @@ sealed class PgSupplier : Supplier
         using var command = pgDataSource.CreateCommand("SELECT name FROM suppliers WHERE id = $1");
         command.Parameters.AddWithValue(id);
         return (string)command.ExecuteScalar();
+    }
+
+    public void WithDetails(Action<int, string, string, string, string, string> callback)
+    {
+        using var cmd = pgDataSource.CreateCommand("SELECT * FROM suppliers WHERE id = $1");
+        cmd.Parameters.AddWithValue(id);
+        using var reader = cmd.ExecuteReader();
+        reader.Read();
+
+        callback.Invoke((int)reader["id"], (string)reader["name"], (string)reader["address"],
+            (string)reader["vat_number"], (string)reader["iban"], (string)reader["email"]);
     }
 
     bool Invoiced()

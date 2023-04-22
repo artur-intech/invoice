@@ -34,16 +34,6 @@ sealed class ConstSupplier : Supplier
         return origin.ToString();
     }
 
-    public ConsoleMedia Print(ConsoleMedia media)
-    {
-        return media.With("Id", origin.Id())
-                    .With("Name", name)
-                    .With("Address", address)
-                    .With("VAT number", vatNumber)
-                    .With("IBAN", iban)
-                    .With("Email", email);
-    }
-
     public void Modify(string newName, string newAddress, string newVatNumber, string newIban, string newEmail)
     {
         throw new NotImplementedException();
@@ -52,5 +42,10 @@ sealed class ConstSupplier : Supplier
     public void Delete()
     {
         throw new NotImplementedException();
+    }
+
+    public void WithDetails(Action<int, string, string, string, string, string> callback)
+    {
+        callback.Invoke(Id(), Name(), address, vatNumber, iban, email);
     }
 }

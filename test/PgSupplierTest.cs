@@ -80,4 +80,21 @@ class PgSupplierTest : Base
         var pgSupplier = new PgSupplier(supplierFixture.Id, pgDataSource);
         Assert.AreEqual(supplierFixture.Name, pgSupplier.Name());
     }
+
+    [Test]
+    public void ReportsDetails()
+    {
+        dynamic fixture = fixtures["suppliers"]["one"];
+        var pgSupplier = new PgSupplier(fixture.Id, pgDataSource);
+
+        pgSupplier.WithDetails((actualId, actualName, actualAddress, actualVatNumber, actualIban, actualEmail) =>
+        {
+            Assert.AreEqual(fixture.Id, actualId);
+            Assert.AreEqual(fixture.Name, actualName);
+            Assert.AreEqual(fixture.Address, actualAddress);
+            Assert.AreEqual(fixture.VatNumber, actualVatNumber);
+            Assert.AreEqual(fixture.Iban, actualIban);
+            Assert.AreEqual(fixture.Email, actualEmail);
+        });
+    }
 }

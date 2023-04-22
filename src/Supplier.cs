@@ -24,12 +24,12 @@ interface Supplier
             throw new NotImplementedException();
         }
 
-        ConsoleMedia Supplier.Print(ConsoleMedia media)
+        public void Modify(string newName, string newAddress, string newVatNumber, string newIban, string newEmail)
         {
             throw new NotImplementedException();
         }
 
-        public void Modify(string newName, string newAddress, string newVatNumber, string newIban, string newEmail)
+        public void WithDetails(Action<int, string, string, string, string, string> callback)
         {
             throw new NotImplementedException();
         }
@@ -37,8 +37,8 @@ interface Supplier
 
     int Id();
     string ToString();
-    ConsoleMedia Print(ConsoleMedia media);
     string Name();
     void Delete();
     void Modify(string newName, string newAddress, string newVatNumber, string newIban, string newEmail);
+    public void WithDetails(Action<int, string, string, string, string, string> callback);
 }

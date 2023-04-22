@@ -184,7 +184,7 @@ try
                 }
             case "supplier list":
                 {
-                    new ConsoleDelimitedList<Supplier>(new PgSuppliers(pgDataSource)).Print();
+                    new ConsoleDelimitedSupplierList<Supplier>(new PgSuppliers(pgDataSource)).Print();
                     break;
                 }
             case "client list":
