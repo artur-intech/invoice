@@ -40,18 +40,12 @@ sealed class PgClients : Clients
 
     public IEnumerator<Client> GetEnumerator()
     {
-        using var command = pgDataSource.CreateCommand("SELECT * FROM clients");
-        using var reader = command.ExecuteReader();
+        using var cmd = pgDataSource.CreateCommand("SELECT * FROM clients");
+        using var reader = cmd.ExecuteReader();
 
         while (reader.Read())
         {
-            var id = (int)reader["id"];
-            var name = (string)reader["name"];
-            var address = (string)reader["address"];
-            var vatNumber = (string)reader["vat_number"];
-            var email = (string)reader["email"];
-
-            yield return new ConstClient(new PgClient(id, pgDataSource), name, address, vatNumber, email);
+            yield return new ConstClient(reader);
         }
     }
 
