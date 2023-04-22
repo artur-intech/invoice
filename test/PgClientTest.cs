@@ -79,8 +79,9 @@ class PgClientTest : Base
     public void ReportsDetails()
     {
         dynamic fixture = fixtures["clients"]["one"];
+        var pgClient = new PgClient(fixture.Id, pgDataSource);
 
-        new PgClient(fixture.Id, pgDataSource).WithDetails((actualId, actualName, actualAddress, actualVatNumber, actualEmail) =>
+        pgClient.WithDetails((actualId, actualName, actualAddress, actualVatNumber, actualEmail) =>
         {
             Assert.AreEqual(fixture.Id, actualId);
             Assert.AreEqual(fixture.Name, actualName);
