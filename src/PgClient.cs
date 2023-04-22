@@ -23,23 +23,6 @@ sealed class PgClient : Client
         return Name();
     }
 
-    public ConsoleMedia Print(ConsoleMedia media)
-    {
-        using var command = pgDataSource.CreateCommand("SELECT * FROM clients WHERE id = $1");
-        command.Parameters.AddWithValue(id);
-        using var reader = command.ExecuteReader();
-
-        reader.Read();
-        var name = reader["name"];
-        var address = reader["address"];
-        var vatNumber = reader["vat_number"];
-
-        return media.With("Id", id)
-                    .With("Name", name)
-                    .With("Address", address)
-                    .With("VAT number", vatNumber);
-    }
-
     public void Modify(string newName, string newAddress, string newVatNumber)
     {
         var sql = "UPDATE clients SET name = $1, address = $2, vat_number = $3 WHERE id = $4";
@@ -68,6 +51,17 @@ sealed class PgClient : Client
         using var command = pgDataSource.CreateCommand("DELETE FROM clients WHERE id = $1");
         command.Parameters.AddWithValue(id);
         command.ExecuteNonQuery();
+    }
+
+    public void WithDetails(Action<int, string, string, string, string> callback)
+    {
+        using var cmd = pgDataSource.CreateCommand("SELECT * FROM clients WHERE id = $1");
+        cmd.Parameters.AddWithValue(id);
+        using var reader = cmd.ExecuteReader();
+        reader.Read();
+
+        callback.Invoke((int)reader["id"], (string)reader["name"], (string)reader["address"],
+            (string)reader["vat_number"], (string)reader["email"]);
     }
 
     bool Invoiced()

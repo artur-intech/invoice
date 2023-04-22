@@ -74,4 +74,19 @@ class PgClientTest : Base
         var pgClient = new PgSupplier(clientFixture.Id, pgDataSource);
         Assert.AreEqual(clientFixture.Id, pgClient.Id());
     }
+
+    [Test]
+    public void ReportsDetails()
+    {
+        dynamic fixture = fixtures["clients"]["one"];
+
+        new PgClient(fixture.Id, pgDataSource).WithDetails((actualId, actualName, actualAddress, actualVatNumber, actualEmail) =>
+        {
+            Assert.AreEqual(fixture.Id, actualId);
+            Assert.AreEqual(fixture.Name, actualName);
+            Assert.AreEqual(fixture.Address, actualAddress);
+            Assert.AreEqual(fixture.VatNumber, actualVatNumber);
+            Assert.AreEqual(fixture.Email, actualEmail);
+        });
+    }
 }

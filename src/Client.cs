@@ -29,7 +29,7 @@ interface Client
             throw new NotImplementedException();
         }
 
-        ConsoleMedia Client.Print(ConsoleMedia media)
+        public void WithDetails(Action<int, string, string, string, string> callback)
         {
             throw new NotImplementedException();
         }
@@ -37,8 +37,8 @@ interface Client
 
     int Id();
     string ToString();
-    ConsoleMedia Print(ConsoleMedia media);
     string Name();
     void Delete();
     void Modify(string newName, string newAddress, string newVatNumber);
+    public void WithDetails(Action<int, string, string, string, string> callback);
 }

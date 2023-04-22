@@ -189,7 +189,7 @@ try
                 }
             case "client list":
                 {
-                    new ConsoleDelimitedList<Client>(new PgClients(pgDataSource)).Print();
+                    new ConsoleDelimitedListUsingDetails<Client>(new PgClients(pgDataSource)).Print();
                     break;
                 }
             case "client modify":

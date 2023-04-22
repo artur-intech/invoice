@@ -36,13 +36,9 @@ sealed class ConstClient : Client
         return Name();
     }
 
-    public ConsoleMedia Print(ConsoleMedia media)
+    public void WithDetails(Action<int, string, string, string, string> callback)
     {
-        return media.With("Id", Id())
-                    .With("Name", Name())
-                    .With("Address", Address())
-                    .With("VAT number", VatNumber())
-                    .With("Email", Email());
+        callback.Invoke(Id(), Name(), Address(), VatNumber(), Email());
     }
 
     string Address()
