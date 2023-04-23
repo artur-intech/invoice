@@ -15,7 +15,7 @@ sealed class ConsoleDelimitedSupplierList<T>
 
         foreach (dynamic listItem in list)
         {
-            Console.Write(Delimiter() + Environment.NewLine);
+            Console.WriteLine(Delimiter());
 
             listItem.WithDetails((Action<int, string, string, string, string, string>)((int id, string name, string address, string vatNumber, string iban, string email) =>
             {

@@ -15,7 +15,7 @@ sealed class ConsoleDelimitedInvoiceList<T>
 
         foreach (dynamic listItem in list)
         {
-            Console.Write(Delimiter() + Environment.NewLine);
+            Console.WriteLine(Delimiter());
 
             listItem.WithDetails((Action<int, string, string, DateOnly, DateOnly, long, long, long, bool, DateOnly?>)
             ((int id, string clientName, string number, DateOnly date, DateOnly dueDate, long subtotal, long vatAmount,
