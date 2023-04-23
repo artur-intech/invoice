@@ -33,13 +33,6 @@ sealed class PgInvoice : Invoice
         return Number();
     }
 
-    string Number()
-    {
-        using var command = pgDataSource.CreateCommand("SELECT number FROM invoices WHERE id = $1");
-        command.Parameters.AddWithValue(id);
-        return (string)command.ExecuteScalar();
-    }
-
     public void SavePdf()
     {
         var sql = """
@@ -63,6 +56,139 @@ sealed class PgInvoice : Invoice
 
 
         File.WriteAllBytes(filename, Pdf().ToArray());
+    }
+
+    public void MarkPaid(DateOnly paidDate)
+    {
+        if (Nonexistent()) throw new Exception("Nonexistent invoice.");
+        if (Paid()) throw new Exception("Cannot mark paid invoice as paid again.");
+
+        using var cmd = pgDataSource.CreateCommand("UPDATE invoices SET paid = true, paid_date = $1 WHERE id = $2");
+        cmd.Parameters.AddWithValue(paidDate);
+        cmd.Parameters.AddWithValue(id);
+        cmd.ExecuteNonQuery();
+    }
+
+    public void Send(ISmtpClient smtpClient)
+    {
+        var sql = """
+            SELECT
+                number,
+                due_date,
+                supplier_name,
+                client_name,
+                SUM(price * quantity::int) + ((SUM(price * quantity::int) * vat_rate) / 100) AS total,
+                supplier_name,
+                client_name,
+                (SELECT email FROM clients WHERE id = client_id) AS client_email,
+                (SELECT email FROM suppliers WHERE id = supplier_id) AS supplier_email
+            FROM
+                invoices
+            LEFT JOIN
+                line_items ON invoices.id = line_items.invoice_id
+            WHERE
+                invoices.id = $1
+            GROUP BY
+                invoices.id
+            """;
+
+        using var cmd = pgDataSource.CreateCommand(sql);
+        cmd.Parameters.AddWithValue(id);
+        using var reader = cmd.ExecuteReader();
+        reader.Read();
+        var number = reader["number"];
+        var dueDate = reader.GetFieldValue<DateOnly>(reader.GetOrdinal("due_date"));
+        var total = (long)reader["total"];
+        var supplierName = (string)reader["supplier_name"];
+        var supplierEmail = (string)reader["supplier_email"];
+        var clientName = (string)reader["client_name"];
+        var clientEmail = (string)reader["client_email"];
+
+        // Needs to be disposed, but then `FakeSmtpClient` fails.
+        var message = new MimeMessage();
+        message.From.Add(new MailboxAddress(name: supplierName, address: supplierEmail));
+        message.To.Add(MailboxAddress.Parse(clientEmail));
+        message.Subject = $"Invoice no. {number}";
+
+        var bodyBuilder = new BodyBuilder();
+        bodyBuilder.Attachments.Add($"invoice_{number}_{supplierName}.pdf", Pdf().ToArray(), ContentType.Parse("application/pdf"));
+        bodyBuilder.TextBody = new InterpolatedEmailTemplate(new InFileEmailTemplate("assets/email_template.txt"), dueDate, total, clientName, supplierName).ToString();
+        message.Body = bodyBuilder.ToMessageBody();
+
+        smtpClient.Send(message);
+    }
+
+    public void WithDetails(Action<int, string, string, DateOnly, DateOnly, long, long, long, bool, DateOnly?> callback)
+    {
+        var sql = """
+            SELECT
+            invoices.*,
+            SUM(price * quantity::int) AS subtotal,
+            (SUM(price * quantity::int) * vat_rate) / 100 AS vat_amount,
+            SUM(price * quantity::int) + ((SUM(price * quantity::int) * vat_rate) / 100) AS total
+            FROM
+            invoices
+            LEFT JOIN
+            line_items ON invoices.id = line_items.invoice_id
+            WHERE
+            invoices.id = $1
+            GROUP BY
+            invoices.id
+            """;
+
+        using var cmd = pgDataSource.CreateCommand(sql);
+        cmd.Parameters.AddWithValue(id);
+        using var reader = cmd.ExecuteReader();
+        reader.Read();
+        var number = (string)reader["number"];
+        var date = reader.GetFieldValue<DateOnly>(reader.GetOrdinal("date"));
+        var dueDate = reader.GetFieldValue<DateOnly>(reader.GetOrdinal("due_date"));
+        var vatRate = (short)reader["vat_rate"];
+        var subtotal = (long)reader["subtotal"];
+        var vatAmount = (long)reader["vat_amount"];
+        var total = (long)reader["total"];
+        var supplierName = reader["supplier_name"];
+        var supplierAddress = reader["supplier_address"];
+        var supplierVatNumber = reader["supplier_vat_number"];
+        var supplierIban = reader["supplier_iban"];
+        var clientName = (string)reader["client_name"];
+        var clientAddress = reader["client_address"];
+        var clientVatNumber = reader["client_vat_number"];
+        var paid = (bool)reader["paid"];
+
+        DateOnly? paidDate;
+
+        if (!reader.IsDBNull(reader.GetOrdinal("paid_date")))
+        {
+            paidDate = reader.GetFieldValue<DateOnly>(reader.GetOrdinal("paid_date"));
+        }
+        else
+        {
+            paidDate = null;
+        }
+
+        callback.Invoke(id, clientName, number, date, dueDate, subtotal, vatAmount, total, paid, paidDate);
+    }
+
+    string Number()
+    {
+        using var command = pgDataSource.CreateCommand("SELECT number FROM invoices WHERE id = $1");
+        command.Parameters.AddWithValue(id);
+        return (string)command.ExecuteScalar();
+    }
+
+    bool Nonexistent()
+    {
+        var cmd = pgDataSource.CreateCommand("SELECT id FROM invoices WHERE id = $1");
+        cmd.Parameters.AddWithValue(id);
+        return cmd.ExecuteScalar() is null;
+    }
+
+    bool Paid()
+    {
+        var cmd = pgDataSource.CreateCommand("SELECT paid FROM invoices WHERE id = $1");
+        cmd.Parameters.AddWithValue(id);
+        return (bool)cmd.ExecuteScalar();
     }
 
     MemoryStream Pdf()
@@ -218,131 +344,5 @@ sealed class PgInvoice : Invoice
         document.Add(new Paragraph("Reverse charge"));
 
         return stream;
-    }
-
-    public void MarkPaid(DateOnly paidDate)
-    {
-        if (Nonexistent()) throw new Exception("Nonexistent invoice.");
-        if (Paid()) throw new Exception("Cannot mark paid invoice as paid again.");
-
-        using var cmd = pgDataSource.CreateCommand("UPDATE invoices SET paid = true, paid_date = $1 WHERE id = $2");
-        cmd.Parameters.AddWithValue(paidDate);
-        cmd.Parameters.AddWithValue(id);
-        cmd.ExecuteNonQuery();
-    }
-
-    public void Send(ISmtpClient smtpClient)
-    {
-        var sql = """
-            SELECT
-                number,
-                due_date,
-                supplier_name,
-                client_name,
-                SUM(price * quantity::int) + ((SUM(price * quantity::int) * vat_rate) / 100) AS total,
-                supplier_name,
-                client_name,
-                (SELECT email FROM clients WHERE id = client_id) AS client_email,
-                (SELECT email FROM suppliers WHERE id = supplier_id) AS supplier_email
-            FROM
-                invoices
-            LEFT JOIN
-                line_items ON invoices.id = line_items.invoice_id
-            WHERE
-                invoices.id = $1
-            GROUP BY
-                invoices.id
-            """;
-
-        using var cmd = pgDataSource.CreateCommand(sql);
-        cmd.Parameters.AddWithValue(id);
-        using var reader = cmd.ExecuteReader();
-        reader.Read();
-        var number = reader["number"];
-        var dueDate = reader.GetFieldValue<DateOnly>(reader.GetOrdinal("due_date"));
-        var total = (long)reader["total"];
-        var supplierName = (string)reader["supplier_name"];
-        var supplierEmail = (string)reader["supplier_email"];
-        var clientName = (string)reader["client_name"];
-        var clientEmail = (string)reader["client_email"];
-
-        // Needs to be disposed, but then `FakeSmtpClient` fails.
-        var message = new MimeMessage();
-        message.From.Add(new MailboxAddress(name: supplierName, address: supplierEmail));
-        message.To.Add(MailboxAddress.Parse(clientEmail));
-        message.Subject = $"Invoice no. {number}";
-
-        var bodyBuilder = new BodyBuilder();
-        bodyBuilder.Attachments.Add($"invoice_{number}_{supplierName}.pdf", Pdf().ToArray(), ContentType.Parse("application/pdf"));
-        bodyBuilder.TextBody = new InterpolatedEmailTemplate(new InFileEmailTemplate("assets/email_template.txt"), dueDate, total, clientName, supplierName).ToString();
-        message.Body = bodyBuilder.ToMessageBody();
-
-        smtpClient.Send(message);
-    }
-
-    public void WithDetails(Action<int, string, string, DateOnly, DateOnly, long, long, long, bool, DateOnly?> callback)
-    {
-        var sql = """
-            SELECT
-            invoices.*,
-            SUM(price * quantity::int) AS subtotal,
-            (SUM(price * quantity::int) * vat_rate) / 100 AS vat_amount,
-            SUM(price * quantity::int) + ((SUM(price * quantity::int) * vat_rate) / 100) AS total
-            FROM
-            invoices
-            LEFT JOIN
-            line_items ON invoices.id = line_items.invoice_id
-            WHERE
-            invoices.id = $1
-            GROUP BY
-            invoices.id
-            """;
-
-        using var cmd = pgDataSource.CreateCommand(sql);
-        cmd.Parameters.AddWithValue(id);
-        using var reader = cmd.ExecuteReader();
-        reader.Read();
-        var number = (string)reader["number"];
-        var date = reader.GetFieldValue<DateOnly>(reader.GetOrdinal("date"));
-        var dueDate = reader.GetFieldValue<DateOnly>(reader.GetOrdinal("due_date"));
-        var vatRate = (short)reader["vat_rate"];
-        var subtotal = (long)reader["subtotal"];
-        var vatAmount = (long)reader["vat_amount"];
-        var total = (long)reader["total"];
-        var supplierName = reader["supplier_name"];
-        var supplierAddress = reader["supplier_address"];
-        var supplierVatNumber = reader["supplier_vat_number"];
-        var supplierIban = reader["supplier_iban"];
-        var clientName = (string)reader["client_name"];
-        var clientAddress = reader["client_address"];
-        var clientVatNumber = reader["client_vat_number"];
-        var paid = (bool)reader["paid"];
-
-        DateOnly? paidDate;
-
-        if (!reader.IsDBNull(reader.GetOrdinal("paid_date")))
-        {
-            paidDate = reader.GetFieldValue<DateOnly>(reader.GetOrdinal("paid_date"));
-        }
-        else
-        {
-            paidDate = null;
-        }
-
-        callback.Invoke(id, clientName, number, date, dueDate, subtotal, vatAmount, total, paid, paidDate);
-    }
-
-    bool Nonexistent()
-    {
-        var cmd = pgDataSource.CreateCommand("SELECT id FROM invoices WHERE id = $1");
-        cmd.Parameters.AddWithValue(id);
-        return cmd.ExecuteScalar() is null;
-    }
-
-    bool Paid()
-    {
-        var cmd = pgDataSource.CreateCommand("SELECT paid FROM invoices WHERE id = $1");
-        cmd.Parameters.AddWithValue(id);
-        return (bool)cmd.ExecuteScalar();
     }
 }
