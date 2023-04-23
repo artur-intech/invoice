@@ -26,11 +26,8 @@ sealed class ConsoleDelimitedInvoiceList<T>
                 Console.WriteLine($"Number: {number}");
                 Console.WriteLine($"Date: {date}");
                 Console.WriteLine($"Due date: {dueDate}");
-                Console.WriteLine($"Subtotal: {subtotal}");
-                Console.WriteLine($"VAT amount: {vatAmount}");
                 Console.WriteLine($"Total: {total}");
                 Console.WriteLine($"Paid: {paid}");
-                Console.WriteLine($"Paid on: {paidDate}");
             }));
         }
     }

@@ -179,22 +179,16 @@ class ConsoleTest : Base
             Number: {secondFixture.Number}
             Date: {secondFixture.Date}
             Due date: {secondFixture.DueDate}
-            Subtotal: {secondFixture.Subtotal}
-            VAT amount: {secondFixture.VatAmount}
             Total: {secondFixture.Total}
             Paid: {secondFixture.Paid}
-            Paid on:{new string(' ', 1)}
             {ListDelimiter()}
             Id: {firstFixture.Id}
             Client: {clientFixture.Name}
             Number: {firstFixture.Number}
             Date: {firstFixture.Date}
             Due date: {firstFixture.DueDate}
-            Subtotal: {firstFixture.Subtotal}
-            VAT amount: {firstFixture.VatAmount}
             Total: {firstFixture.Total}
-            Paid: {firstFixture.Paid}
-            Paid on: {Environment.NewLine}
+            Paid: {firstFixture.Paid}{Environment.NewLine}
             """, capturedStdOut);
     }
 
