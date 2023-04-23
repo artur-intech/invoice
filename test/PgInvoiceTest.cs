@@ -6,6 +6,14 @@ namespace Intech.Invoice.Test;
 class PgInvoiceTest : Base
 {
     [Test]
+    public void ReportsId()
+    {
+        var id = 1;
+        var pgInvoice = new PgInvoice(id, pgDataSource);
+        Assert.AreEqual(id, pgInvoice.Id());
+    }
+
+    [Test]
     public void RepresentsItselfAsString()
     {
         dynamic invoice = fixtures["invoices"]["one"];
