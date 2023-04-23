@@ -156,7 +156,7 @@ class ConsoleTest : Base
             VAT amount: {fixture.VatAmount}
             Total: {fixture.Total}
             Paid: {fixture.Paid}
-            Paid on:
+            Paid on: {Environment.NewLine}
             """, capturedStdOut);
     }
     [Test]
@@ -183,7 +183,7 @@ class ConsoleTest : Base
             VAT amount: {secondFixture.VatAmount}
             Total: {secondFixture.Total}
             Paid: {secondFixture.Paid}
-            Paid on:
+            Paid on:{new string(' ', 1)}
             {ListDelimiter()}
             Id: {firstFixture.Id}
             Client: {clientFixture.Name}
@@ -194,8 +194,7 @@ class ConsoleTest : Base
             VAT amount: {firstFixture.VatAmount}
             Total: {firstFixture.Total}
             Paid: {firstFixture.Paid}
-            Paid on:
-
+            Paid on: {Environment.NewLine}
             """, capturedStdOut);
     }
 

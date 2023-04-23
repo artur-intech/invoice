@@ -37,22 +37,13 @@ sealed class ConstInvoice : Invoice
         return origin.ToString();
     }
 
-    public ConsoleMedia Print(ConsoleMedia media)
-    {
-        return media.With("Id", origin.Id())
-                    .With("Client", clientName)
-                    .With("Number", number)
-                    .With("Date", date)
-                    .With("Due date", dueDate)
-                    .With("Subtotal", subtotal)
-                    .With("VAT amount", vatAmount)
-                    .With("Total", total)
-                    .With("Paid", paid)
-                    .With("Paid on", paidDate);
-    }
-
     public void MarkPaid(DateOnly paidDate)
     {
         origin.MarkPaid(paidDate);
+    }
+
+    public void WithDetails(Action<int, string, string, DateOnly, DateOnly, long, long, long, bool, DateOnly?> callback)
+    {
+        callback.Invoke(Id(), clientName, number, date, dueDate, subtotal, vatAmount, total, paid, paidDate);
     }
 }

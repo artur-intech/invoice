@@ -147,13 +147,27 @@ try
                     int invoiceId = int.Parse(args[2]);
 
                     var pgInvoice = new PgInvoice(invoiceId, pgDataSource);
-                    Console.Write(pgInvoice.Print(new ConsoleMedia()).Text());
+
+                    pgInvoice.WithDetails((int id, string clientName, string number, DateOnly date, DateOnly dueDate,
+                    long subtotal, long vatAmount, long total, bool paid, DateOnly? paidDate) =>
+                    {
+                        Console.WriteLine($"Id: {id}");
+                        Console.WriteLine($"Client: {clientName}");
+                        Console.WriteLine($"Number: {number}");
+                        Console.WriteLine($"Date: {date}");
+                        Console.WriteLine($"Due date: {dueDate}");
+                        Console.WriteLine($"Subtotal: {subtotal}");
+                        Console.WriteLine($"VAT amount: {vatAmount}");
+                        Console.WriteLine($"Total: {total}");
+                        Console.WriteLine($"Paid: {paid}");
+                        Console.WriteLine($"Paid on: {paidDate}");
+                    });
 
                     break;
                 }
             case "invoice list":
                 {
-                    new ConsoleDelimitedList<Invoice>(new PgInvoices(pgDataSource)).Print();
+                    new ConsoleDelimitedInvoiceList<Invoice>(new PgInvoices(pgDataSource)).Print();
                     break;
                 }
             case "supplier modify":

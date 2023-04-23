@@ -220,67 +220,6 @@ sealed class PgInvoice : Invoice
         return stream;
     }
 
-    public ConsoleMedia Print(ConsoleMedia media)
-    {
-        var sql = """
-            SELECT
-            invoices.*,
-            SUM(price * quantity::int) AS subtotal,
-            (SUM(price * quantity::int) * vat_rate) / 100 AS vat_amount,
-            SUM(price * quantity::int) + ((SUM(price * quantity::int) * vat_rate) / 100) AS total
-            FROM
-            invoices
-            LEFT JOIN
-            line_items ON invoices.id = line_items.invoice_id
-            WHERE
-            invoices.id = $1
-            GROUP BY
-            invoices.id
-            """;
-
-        using var command = pgDataSource.CreateCommand(sql);
-        command.Parameters.AddWithValue(id);
-        using var reader = command.ExecuteReader();
-        reader.Read();
-        var number = reader["number"];
-        var date = reader.GetFieldValue<DateOnly>(reader.GetOrdinal("date"));
-        var dueDate = reader.GetFieldValue<DateOnly>(reader.GetOrdinal("due_date"));
-        var vatRate = (short)reader["vat_rate"];
-        var subtotal = (long)reader["subtotal"];
-        var vatAmount = (long)reader["vat_amount"];
-        var total = (long)reader["total"];
-        var supplierName = reader["supplier_name"];
-        var supplierAddress = reader["supplier_address"];
-        var supplierVatNumber = reader["supplier_vat_number"];
-        var supplierIban = reader["supplier_iban"];
-        var clientName = reader["client_name"];
-        var clientAddress = reader["client_address"];
-        var clientVatNumber = reader["client_vat_number"];
-        var paid = (bool)reader["paid"];
-
-        DateOnly? paidDate;
-
-        if (!reader.IsDBNull(reader.GetOrdinal("paid_date")))
-        {
-            paidDate = reader.GetFieldValue<DateOnly>(reader.GetOrdinal("paid_date"));
-        }
-        else
-        {
-            paidDate = null;
-        }
-
-        return media.With("Id", id)
-                    .With("Client", clientName)
-                    .With("Number", number)
-                    .With("Date", date)
-                    .With("Due date", dueDate)
-                    .With("Subtotal", subtotal)
-                    .With("VAT amount", vatAmount)
-                    .With("Total", total)
-                    .With("Paid", paid)
-                    .With("Paid on", paidDate);
-    }
-
     public void MarkPaid(DateOnly paidDate)
     {
         if (Nonexistent()) throw new Exception("Nonexistent invoice.");
@@ -339,6 +278,58 @@ sealed class PgInvoice : Invoice
         message.Body = bodyBuilder.ToMessageBody();
 
         smtpClient.Send(message);
+    }
+
+    public void WithDetails(Action<int, string, string, DateOnly, DateOnly, long, long, long, bool, DateOnly?> callback)
+    {
+        var sql = """
+            SELECT
+            invoices.*,
+            SUM(price * quantity::int) AS subtotal,
+            (SUM(price * quantity::int) * vat_rate) / 100 AS vat_amount,
+            SUM(price * quantity::int) + ((SUM(price * quantity::int) * vat_rate) / 100) AS total
+            FROM
+            invoices
+            LEFT JOIN
+            line_items ON invoices.id = line_items.invoice_id
+            WHERE
+            invoices.id = $1
+            GROUP BY
+            invoices.id
+            """;
+
+        using var cmd = pgDataSource.CreateCommand(sql);
+        cmd.Parameters.AddWithValue(id);
+        using var reader = cmd.ExecuteReader();
+        reader.Read();
+        var number = (string)reader["number"];
+        var date = reader.GetFieldValue<DateOnly>(reader.GetOrdinal("date"));
+        var dueDate = reader.GetFieldValue<DateOnly>(reader.GetOrdinal("due_date"));
+        var vatRate = (short)reader["vat_rate"];
+        var subtotal = (long)reader["subtotal"];
+        var vatAmount = (long)reader["vat_amount"];
+        var total = (long)reader["total"];
+        var supplierName = reader["supplier_name"];
+        var supplierAddress = reader["supplier_address"];
+        var supplierVatNumber = reader["supplier_vat_number"];
+        var supplierIban = reader["supplier_iban"];
+        var clientName = (string)reader["client_name"];
+        var clientAddress = reader["client_address"];
+        var clientVatNumber = reader["client_vat_number"];
+        var paid = (bool)reader["paid"];
+
+        DateOnly? paidDate;
+
+        if (!reader.IsDBNull(reader.GetOrdinal("paid_date")))
+        {
+            paidDate = reader.GetFieldValue<DateOnly>(reader.GetOrdinal("paid_date"));
+        }
+        else
+        {
+            paidDate = null;
+        }
+
+        callback.Invoke(id, clientName, number, date, dueDate, subtotal, vatAmount, total, paid, paidDate);
     }
 
     bool Nonexistent()

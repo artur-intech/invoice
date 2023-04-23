@@ -78,4 +78,16 @@ class PgInvoiceTest : Base
         sentEmail.Attachments.First().ContentType.ToString());
         Assert.True(sentEmail.Attachments.First().IsAttachment);
     }
+
+    [Test]
+    public void ReportsDetails()
+    {
+        dynamic fixture = fixtures["invoices"]["one"];
+        var pgInvoice = new PgInvoice(fixture.Id, pgDataSource);
+
+        pgInvoice.WithDetails((actualId, actualClientName, actualNumber, actualDate, actualDueDate, actualSubtotal, actualVatAmount, actualTotal, actualPaid, actualPaidDate) =>
+        {
+            Assert.AreEqual(fixture.Id, actualId);
+        });
+    }
 }
