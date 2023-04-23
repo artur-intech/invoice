@@ -85,9 +85,19 @@ class PgInvoiceTest : Base
         dynamic fixture = fixtures["invoices"]["one"];
         var pgInvoice = new PgInvoice(fixture.Id, pgDataSource);
 
-        pgInvoice.WithDetails((actualId, actualClientName, actualNumber, actualDate, actualDueDate, actualSubtotal, actualVatAmount, actualTotal, actualPaid, actualPaidDate) =>
+        pgInvoice.WithDetails((actualId, actualClientName, actualNumber, actualDate, actualDueDate, actualSubtotal,
+            actualVatAmount, actualTotal, actualPaid, actualPaidDate) =>
         {
             Assert.AreEqual(fixture.Id, actualId);
+            Assert.AreEqual(fixture.ClientName, actualClientName);
+            Assert.AreEqual(fixture.Number, actualNumber);
+            Assert.AreEqual(fixture.Date, actualDate);
+            Assert.AreEqual(fixture.DueDate, actualDueDate);
+            Assert.AreEqual(fixture.Subtotal, actualSubtotal);
+            Assert.AreEqual(fixture.VatAmount, actualVatAmount);
+            Assert.AreEqual(fixture.Total, actualTotal);
+            Assert.AreEqual(fixture.Paid, actualPaid);
+            Assert.AreEqual(fixture.PaidDate, actualPaidDate);
         });
     }
 }
