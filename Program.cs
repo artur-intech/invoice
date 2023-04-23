@@ -203,7 +203,7 @@ try
                 }
             case "client list":
                 {
-                    new DelimitedListUsingDetails<Client>(new PgClients(pgDataSource)).Print();
+                    new DelimitedClientList<Client>(new PgClients(pgDataSource)).Print();
                     break;
                 }
             case "client modify":
