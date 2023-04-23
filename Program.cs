@@ -167,7 +167,7 @@ try
                 }
             case "invoice list":
                 {
-                    new ConsoleDelimitedInvoiceList<Invoice>(new PgInvoices(pgDataSource)).Print();
+                    new DelimitedInvoiceList<Invoice>(new PgInvoices(pgDataSource)).Print();
                     break;
                 }
             case "supplier modify":
@@ -198,12 +198,12 @@ try
                 }
             case "supplier list":
                 {
-                    new ConsoleDelimitedSupplierList<Supplier>(new PgSuppliers(pgDataSource)).Print();
+                    new DelimitedSupplierList<Supplier>(new PgSuppliers(pgDataSource)).Print();
                     break;
                 }
             case "client list":
                 {
-                    new ConsoleDelimitedListUsingDetails<Client>(new PgClients(pgDataSource)).Print();
+                    new DelimitedListUsingDetails<Client>(new PgClients(pgDataSource)).Print();
                     break;
                 }
             case "client modify":

@@ -1,10 +1,10 @@
 namespace Intech.Invoice;
 
-sealed class ConsoleDelimitedListUsingDetails<T>
+sealed class DelimitedListUsingDetails<T>
 {
     readonly IEnumerable<T> list;
 
-    public ConsoleDelimitedListUsingDetails(IEnumerable<T> list)
+    public DelimitedListUsingDetails(IEnumerable<T> list)
     {
         this.list = list;
     }

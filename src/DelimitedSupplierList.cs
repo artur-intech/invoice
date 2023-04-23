@@ -1,10 +1,10 @@
 namespace Intech.Invoice;
 
-sealed class ConsoleDelimitedSupplierList<T>
+sealed class DelimitedSupplierList<T>
 {
     readonly IEnumerable<T> list;
 
-    public ConsoleDelimitedSupplierList(IEnumerable<T> list)
+    public DelimitedSupplierList(IEnumerable<T> list)
     {
         this.list = list;
     }
