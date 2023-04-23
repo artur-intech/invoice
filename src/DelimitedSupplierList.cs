@@ -1,24 +1,23 @@
 namespace Intech.Invoice;
 
-sealed class DelimitedSupplierList<T>
+sealed class DelimitedSupplierList
 {
-    readonly IEnumerable<T> list;
+    readonly IEnumerable<Supplier> suppliers;
 
-    public DelimitedSupplierList(IEnumerable<T> list)
+    public DelimitedSupplierList(IEnumerable<Supplier> suppliers)
     {
-        this.list = list;
+        this.suppliers = suppliers;
     }
 
     public void Print()
     {
-        Console.WriteLine($"Records total: {list.ToList().Count}");
+        Console.WriteLine($"Records total: {suppliers.ToList().Count}");
 
-        foreach (dynamic listItem in list)
+        foreach (var supplier in suppliers)
         {
             Console.WriteLine(Delimiter());
 
-            listItem.WithDetails((Action<int, string, string, string, string, string>)((int id, string name,
-                string address, string vatNumber, string iban, string email) =>
+            supplier.WithDetails((int id, string name, string address, string vatNumber, string iban, string email) =>
             {
                 Console.WriteLine($"Id: {id}");
                 Console.WriteLine($"Name: {name}");
@@ -26,7 +25,7 @@ sealed class DelimitedSupplierList<T>
                 Console.WriteLine($"VAT number: {vatNumber}");
                 Console.WriteLine($"IBAN: {iban}");
                 Console.WriteLine($"Email: {email}");
-            }));
+            });
         }
     }
 

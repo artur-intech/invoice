@@ -1,31 +1,30 @@
 namespace Intech.Invoice;
 
-sealed class DelimitedClientList<T>
+sealed class DelimitedClientList
 {
-    readonly IEnumerable<T> list;
+    readonly IEnumerable<Client> invoices;
 
-    public DelimitedClientList(IEnumerable<T> list)
+    public DelimitedClientList(IEnumerable<Client> invoices)
     {
-        this.list = list;
+        this.invoices = invoices;
     }
 
     public void Print()
     {
-        Console.WriteLine($"Records total: {list.ToList().Count}");
+        Console.WriteLine($"Records total: {invoices.ToList().Count}");
 
-        foreach (dynamic listItem in list)
+        foreach (var client in invoices)
         {
             Console.WriteLine(Delimiter());
 
-            listItem.WithDetails((Action<int, string, string, string, string>)((int id, string name, string address,
-                string vatNumber, string email) =>
+            client.WithDetails((int id, string name, string address, string vatNumber, string email) =>
             {
                 Console.WriteLine($"Id: {id}");
                 Console.WriteLine($"Name: {name}");
                 Console.WriteLine($"Address: {address}");
                 Console.WriteLine($"VAT number: {vatNumber}");
                 Console.WriteLine($"Email: {email}");
-            }));
+            });
         }
     }
 

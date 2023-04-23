@@ -1,25 +1,24 @@
 namespace Intech.Invoice;
 
-sealed class DelimitedInvoiceList<T>
+sealed class DelimitedInvoiceList
 {
-    readonly IEnumerable<T> list;
+    readonly IEnumerable<Invoice> invoices;
 
-    public DelimitedInvoiceList(IEnumerable<T> list)
+    public DelimitedInvoiceList(IEnumerable<Invoice> invoices)
     {
-        this.list = list;
+        this.invoices = invoices;
     }
 
     public void Print()
     {
-        Console.WriteLine($"Records total: {list.ToList().Count}");
+        Console.WriteLine($"Records total: {invoices.ToList().Count}");
 
-        foreach (dynamic listItem in list)
+        foreach (var invoice in invoices)
         {
             Console.WriteLine(Delimiter());
 
-            listItem.WithDetails((Action<int, string, string, DateOnly, DateOnly, long, long, long, bool, DateOnly?>)
-            ((int id, string clientName, string number, DateOnly date, DateOnly dueDate, long subtotal, long vatAmount,
-            long total, bool paid, DateOnly? paidDate) =>
+            invoice.WithDetails((int id, string clientName, string number, DateOnly date, DateOnly dueDate,
+            long subtotal, long vatAmount, long total, bool paid, DateOnly? paidDate) =>
             {
                 Console.WriteLine($"Id: {id}");
                 Console.WriteLine($"Client: {clientName}");
@@ -28,7 +27,7 @@ sealed class DelimitedInvoiceList<T>
                 Console.WriteLine($"Due date: {dueDate}");
                 Console.WriteLine($"Total: {total}");
                 Console.WriteLine($"Paid: {paid}");
-            }));
+            });
         }
     }
 
