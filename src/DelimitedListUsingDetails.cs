@@ -17,7 +17,8 @@ sealed class DelimitedListUsingDetails<T>
         {
             Console.WriteLine(Delimiter());
 
-            listItem.WithDetails((Action<int, string, string, string, string>)((int id, string name, string address, string vatNumber, string email) =>
+            listItem.WithDetails((Action<int, string, string, string, string>)((int id, string name, string address,
+                string vatNumber, string email) =>
             {
                 Console.WriteLine($"Id: {id}");
                 Console.WriteLine($"Name: {name}");
