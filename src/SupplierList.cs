@@ -1,21 +1,14 @@
 namespace Intech.Invoice;
 
-sealed class DelimitedSupplierList
+sealed class SupplierList : DelimitedList
 {
-    readonly IEnumerable<Supplier> suppliers;
+    public SupplierList(IEnumerable<Supplier> list) : base(list) { }
 
-    public DelimitedSupplierList(IEnumerable<Supplier> suppliers)
+    protected override void PrintBody()
     {
-        this.suppliers = suppliers;
-    }
-
-    public void Print()
-    {
-        Console.WriteLine($"Records total: {suppliers.ToList().Count}");
-
-        foreach (var supplier in suppliers)
+        foreach (var supplier in list.Cast<Supplier>())
         {
-            Console.WriteLine(Delimiter());
+            PrintDelimiter();
 
             supplier.WithDetails((int id, string name, string address, string vatNumber, string iban, string email) =>
             {
@@ -27,10 +20,5 @@ sealed class DelimitedSupplierList
                 Console.WriteLine($"Email: {email}");
             });
         }
-    }
-
-    string Delimiter()
-    {
-        return new string('-', 50);
     }
 }

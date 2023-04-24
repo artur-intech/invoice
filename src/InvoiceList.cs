@@ -1,21 +1,14 @@
 namespace Intech.Invoice;
 
-sealed class DelimitedInvoiceList
+sealed class InvoiceList : DelimitedList
 {
-    readonly IEnumerable<Invoice> invoices;
+    public InvoiceList(IEnumerable<Invoice> list) : base(list) { }
 
-    public DelimitedInvoiceList(IEnumerable<Invoice> invoices)
+    protected override void PrintBody()
     {
-        this.invoices = invoices;
-    }
-
-    public void Print()
-    {
-        Console.WriteLine($"Records total: {invoices.ToList().Count}");
-
-        foreach (var invoice in invoices)
+        foreach (var invoice in list.Cast<Invoice>())
         {
-            Console.WriteLine(Delimiter());
+            PrintDelimiter();
 
             invoice.WithDetails((int id, string clientName, string number, DateOnly date, DateOnly dueDate,
             long subtotal, long vatAmount, long total, bool paid, DateOnly? paidDate) =>
@@ -29,10 +22,5 @@ sealed class DelimitedInvoiceList
                 Console.WriteLine($"Paid: {paid}");
             });
         }
-    }
-
-    string Delimiter()
-    {
-        return new string('-', 50);
     }
 }

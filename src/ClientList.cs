@@ -1,21 +1,14 @@
 namespace Intech.Invoice;
 
-sealed class DelimitedClientList
+sealed class ClientList : DelimitedList
 {
-    readonly IEnumerable<Client> invoices;
+    public ClientList(IEnumerable<Client> list) : base(list) { }
 
-    public DelimitedClientList(IEnumerable<Client> invoices)
+    protected override void PrintBody()
     {
-        this.invoices = invoices;
-    }
-
-    public void Print()
-    {
-        Console.WriteLine($"Records total: {invoices.ToList().Count}");
-
-        foreach (var client in invoices)
+        foreach (var client in list.Cast<Client>())
         {
-            Console.WriteLine(Delimiter());
+            PrintDelimiter();
 
             client.WithDetails((int id, string name, string address, string vatNumber, string email) =>
             {
@@ -26,10 +19,5 @@ sealed class DelimitedClientList
                 Console.WriteLine($"Email: {email}");
             });
         }
-    }
-
-    string Delimiter()
-    {
-        return new string('-', 50);
     }
 }
