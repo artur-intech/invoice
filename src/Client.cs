@@ -4,6 +4,12 @@ interface Client
 {
     class Fake : Client
     {
+        public int id = 1;
+        public string name = "fake name";
+        public string address = "fake address";
+        public string vatNumber = "fake vat number";
+        public string email = "fake email";
+
         public int Id()
         {
             throw new NotImplementedException();
@@ -31,7 +37,7 @@ interface Client
 
         public void WithDetails(Action<int, string, string, string, string> callback)
         {
-            throw new NotImplementedException();
+            callback.Invoke(id, name, address, vatNumber, email);
         }
     }
 

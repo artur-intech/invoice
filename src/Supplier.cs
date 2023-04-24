@@ -4,6 +4,13 @@ interface Supplier
 {
     class Fake : Supplier
     {
+        public int id = 1;
+        public string name = "fake name";
+        public string address = "fake address";
+        public string vatNumber = "fake vat number";
+        public string iban = "fake iban";
+        public string email = "fake email";
+
         public int Id()
         {
             throw new NotImplementedException();
@@ -31,7 +38,7 @@ interface Supplier
 
         public void WithDetails(Action<int, string, string, string, string, string> callback)
         {
-            throw new NotImplementedException();
+            callback.Invoke(id, name, address, vatNumber, iban, email);
         }
     }
 
