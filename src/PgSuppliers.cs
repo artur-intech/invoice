@@ -48,14 +48,7 @@ sealed class PgSuppliers : Suppliers
 
         while (reader.Read())
         {
-            var id = (int)reader["id"];
-            var name = (string)reader["name"];
-            var address = (string)reader["address"];
-            var vatNumber = (string)reader["vat_number"];
-            var iban = (string)reader["iban"];
-            var email = (string)reader["email"];
-
-            yield return new ConstSupplier(new PgSupplier(id, pgDataSource), name, address, vatNumber, iban, email);
+            yield return new ConstSupplier(reader);
         }
     }
 

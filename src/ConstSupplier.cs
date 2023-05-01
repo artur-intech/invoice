@@ -1,37 +1,29 @@
+using System.Data;
+
 namespace Intech.Invoice;
 
 sealed class ConstSupplier : Supplier
 {
-    readonly Supplier origin;
-    readonly string name;
-    readonly string address;
-    readonly string vatNumber;
-    readonly string iban;
-    readonly string email;
+    readonly IDataReader reader;
 
-    public ConstSupplier(Supplier origin, string name, string address, string vatNumber, string iban, string email)
+    public ConstSupplier(IDataReader reader)
     {
-        this.origin = origin;
-        this.name = name;
-        this.address = address;
-        this.vatNumber = vatNumber;
-        this.iban = iban;
-        this.email = email;
+        this.reader = reader;
     }
 
     public int Id()
     {
-        return origin.Id();
+        return (int)reader["id"];
     }
 
     public string Name()
     {
-        return name;
+        return (string)reader["name"];
     }
 
     public override string ToString()
     {
-        return origin.ToString();
+        return Name();
     }
 
     public void Modify(string newName, string newAddress, string newVatNumber, string newIban, string newEmail)
@@ -46,6 +38,26 @@ sealed class ConstSupplier : Supplier
 
     public void WithDetails(Action<int, string, string, string, string, string> callback)
     {
-        callback.Invoke(Id(), Name(), address, vatNumber, iban, email);
+        callback.Invoke(Id(), Name(), Address(), VatNumber(), Iban(), Email());
+    }
+
+    string Address()
+    {
+        return (string)reader["address"];
+    }
+
+    string VatNumber()
+    {
+        return (string)reader["vat_number"];
+    }
+
+    string Iban()
+    {
+        return (string)reader["iban"];
+    }
+
+    string Email()
+    {
+        return (string)reader["email"];
     }
 }
