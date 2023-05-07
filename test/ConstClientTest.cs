@@ -9,7 +9,7 @@ class ConstClientTest
     {
         var id = 1;
         var rawDbData = new Dictionary<string, object>() { { "id", id } };
-        var constClient = new ConstClient(new FakeDbDataReader(rawDbData));
+        var constClient = new ConstClient(rawDbData);
 
         var actual = constClient.Id();
 
@@ -21,7 +21,7 @@ class ConstClientTest
     {
         var name = "name";
         var rawDbData = new Dictionary<string, object>() { { "name", name } };
-        var constClient = new ConstClient(new FakeDbDataReader(rawDbData));
+        var constClient = new ConstClient(rawDbData);
 
         var actual = constClient.Name();
 
@@ -33,7 +33,7 @@ class ConstClientTest
     {
         var name = "name";
         var rawDbData = new Dictionary<string, object>() { { "name", name } };
-        var constClient = new ConstClient(new FakeDbDataReader(rawDbData));
+        var constClient = new ConstClient(rawDbData);
 
         var actual = constClient.Name();
 
@@ -50,7 +50,7 @@ class ConstClientTest
         var email = "email";
         var rawDbData = new Dictionary<string, object>() { { "id", id }, { "name", name }, { "address", address },
             { "vat_number", vatNumber }, { "email", email } };
-        var constClient = new ConstClient(new FakeDbDataReader(rawDbData));
+        var constClient = new ConstClient(rawDbData);
 
         constClient.WithDetails((actualId, actualName, actualAddress, actualVatNumber, actualEmail) =>
         {

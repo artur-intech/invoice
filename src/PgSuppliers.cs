@@ -48,7 +48,8 @@ sealed class PgSuppliers : Suppliers
 
         while (reader.Read())
         {
-            yield return new ConstSupplier(reader);
+            var rawData = Enumerable.Range(0, reader.FieldCount).ToDictionary(reader.GetName, reader.GetValue);
+            yield return new ConstSupplier(rawData);
         }
     }
 

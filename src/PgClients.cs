@@ -45,7 +45,8 @@ sealed class PgClients : Clients
 
         while (reader.Read())
         {
-            yield return new ConstClient(reader);
+            var rawData = Enumerable.Range(0, reader.FieldCount).ToDictionary(reader.GetName, reader.GetValue);
+            yield return new ConstClient(rawData);
         }
     }
 

@@ -1,24 +1,22 @@
-using System.Data;
-
 namespace Intech.Invoice;
 
 sealed class ConstSupplier : Supplier
 {
-    readonly IDataReader reader;
+    readonly IDictionary<string, object> rawDbData;
 
-    public ConstSupplier(IDataReader reader)
+    public ConstSupplier(IDictionary<string, object> rawDbData)
     {
-        this.reader = reader;
+        this.rawDbData = rawDbData;
     }
 
     public int Id()
     {
-        return (int)reader["id"];
+        return (int)rawDbData["id"];
     }
 
     public string Name()
     {
-        return (string)reader["name"];
+        return (string)rawDbData["name"];
     }
 
     public override string ToString()
@@ -43,21 +41,21 @@ sealed class ConstSupplier : Supplier
 
     string Address()
     {
-        return (string)reader["address"];
+        return (string)rawDbData["address"];
     }
 
     string VatNumber()
     {
-        return (string)reader["vat_number"];
+        return (string)rawDbData["vat_number"];
     }
 
     string Iban()
     {
-        return (string)reader["iban"];
+        return (string)rawDbData["iban"];
     }
 
     string Email()
     {
-        return (string)reader["email"];
+        return (string)rawDbData["email"];
     }
 }

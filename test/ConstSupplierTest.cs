@@ -9,7 +9,7 @@ class ConstSupplierTest
     {
         var id = 1;
         var rawDbData = new Dictionary<string, object>() { { "id", id } };
-        var constSupplier = new ConstSupplier(new FakeDbDataReader(rawDbData));
+        var constSupplier = new ConstSupplier(rawDbData);
 
         var actual = constSupplier.Id();
 
@@ -21,7 +21,7 @@ class ConstSupplierTest
     {
         var name = "name";
         var rawDbData = new Dictionary<string, object>() { { "name", name } };
-        var constSupplier = new ConstSupplier(new FakeDbDataReader(rawDbData));
+        var constSupplier = new ConstSupplier(rawDbData);
 
         var actual = constSupplier.Name();
 
@@ -33,7 +33,7 @@ class ConstSupplierTest
     {
         var name = "name";
         var rawDbData = new Dictionary<string, object>() { { "name", name } };
-        var constSupplier = new ConstSupplier(new FakeDbDataReader(rawDbData));
+        var constSupplier = new ConstSupplier(rawDbData);
 
         var actual = constSupplier.Name();
 
@@ -51,7 +51,7 @@ class ConstSupplierTest
         var email = "email";
         var rawDbData = new Dictionary<string, object>() { { "id", id }, { "name", name }, { "address", address },
             { "vat_number", vatNumber }, { "iban", iban }, { "email", email } };
-        var constSupplier = new ConstSupplier(new FakeDbDataReader(rawDbData));
+        var constSupplier = new ConstSupplier(rawDbData);
 
         constSupplier.WithDetails((actualId, actualName, actualAddress, actualVatNumber, actualIban, actualEmail) =>
         {
