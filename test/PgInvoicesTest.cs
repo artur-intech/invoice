@@ -97,9 +97,9 @@ class PgInvoicesTest : Base
     {
         CreateSupplierFixtures();
         CreateClientFixtures();
-        dynamic thirdInvoiceFixture = CreateInvoiceFixture(new DateOnly(1970, 1, 1));
-        dynamic firstInvoiceFixture = CreateInvoiceFixture(new DateOnly(1970, 1, 3));
-        dynamic secondInvoiceFixture = CreateInvoiceFixture(new DateOnly(1970, 1, 2));
+        dynamic thirdInvoiceFixture = CreateInvoiceFixture(date: new DateOnly(1970, 1, 1));
+        dynamic firstInvoiceFixture = CreateInvoiceFixture(date: new DateOnly(1970, 1, 3));
+        dynamic secondInvoiceFixture = CreateInvoiceFixture(date: new DateOnly(1970, 1, 2));
         CreateLineItemFixture(thirdInvoiceFixture.Id);
         CreateLineItemFixture(firstInvoiceFixture.Id);
         CreateLineItemFixture(secondInvoiceFixture.Id);
