@@ -24,6 +24,7 @@ public class ReverseChargedVatRateTest
         var one = new ReverseChargedVatRate();
         var other = new ReverseChargedVatRate();
 
+        Assert.True(one.Equals(one));
         Assert.True(one.Equals(other));
 #pragma warning disable CS1718 // Comparison made to same variable
         Assert.True(one == one);
