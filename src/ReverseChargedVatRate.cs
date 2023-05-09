@@ -4,7 +4,8 @@ sealed class ReverseChargedVatRate : VatRate
 {
     public static bool operator ==(ReverseChargedVatRate a, ReverseChargedVatRate b)
     {
-        if (ReferenceEquals(a, b)) return true;
+        _ = a;
+        _ = b;
 
         return true;
     }
