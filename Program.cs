@@ -88,10 +88,10 @@ try
                     Console.WriteLine("Enter client email:");
                     var email = new StrictInputEmail(new Nonblank(new ConsoleInput(Console.ReadLine()))).ToString();
 
-                    var pgClients = new UniqPgClients(new PgClients(pgDataSource), pgDataSource);
-                    var client = pgClients.Add(clientName, clientAddress, clientVatNumber, email);
+                    var uniqPgClients = new UniqPgClients(new PgClients(pgDataSource), pgDataSource);
+                    var addedClient = uniqPgClients.Add(clientName, clientAddress, clientVatNumber, email);
 
-                    Console.Write($"Client {client} has been created.");
+                    Console.Write($"Client {addedClient} has been created.");
                     break;
                 }
             case "invoice create":
