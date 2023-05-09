@@ -1,24 +1,12 @@
-using System.Collections;
-
 namespace Intech.Invoice;
 
-interface Clients : IEnumerable<Client>
+interface Clients
 {
     class Fake : Clients
     {
         public Client Add(string name, string address, string vatNumber, string email)
         {
             return new Client.Fake();
-        }
-
-        public IEnumerator GetEnumerator()
-        {
-            throw new NotImplementedException();
-        }
-
-        IEnumerator<Client> IEnumerable<Client>.GetEnumerator()
-        {
-            throw new NotImplementedException();
         }
     }
 
