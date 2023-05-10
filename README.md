@@ -1,5 +1,6 @@
 # INTECH Invoice
 
+[![.NET](https://github.com/artur-intech/invoice/actions/workflows/dotnet.yml/badge.svg)](https://github.com/artur-intech/invoice/actions/workflows/dotnet.yml)
 [![Coverage Status](https://coveralls.io/repos/github/artur-intech/invoice/badge.svg)](https://coveralls.io/github/artur-intech/invoice)
 
 ## Overview
