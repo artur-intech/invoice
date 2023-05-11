@@ -9,9 +9,6 @@ sealed class DefaultVatRate : VatRate
         if (ReferenceEquals(a, b))
             return true;
 
-        if ((object)a == null || (object)b == null)
-            return false;
-
         return a.IntValue() == b.IntValue();
     }
 
