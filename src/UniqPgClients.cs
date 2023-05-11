@@ -1,7 +1,9 @@
+using System.Collections;
 using Npgsql;
 
 namespace Intech.Invoice;
 
+// Having separate class enables to test database constraints
 sealed class UniqPgClients : Clients
 {
     readonly Clients origin;
@@ -28,5 +30,15 @@ sealed class UniqPgClients : Clients
         var cmd = pgDataSource.CreateCommand("SELECT id FROM clients WHERE name = $1");
         cmd.Parameters.AddWithValue(name);
         return cmd.ExecuteScalar() is not null;
+    }
+
+    public IEnumerator<Client> GetEnumerator()
+    {
+        return origin.GetEnumerator();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return ((IEnumerable)origin).GetEnumerator();
     }
 }
