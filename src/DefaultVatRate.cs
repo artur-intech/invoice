@@ -6,8 +6,7 @@ sealed class DefaultVatRate : VatRate
 
     public static bool operator ==(DefaultVatRate a, DefaultVatRate b)
     {
-        if (ReferenceEquals(a, b))
-            return true;
+        if (ReferenceEquals(a, b)) return true;
 
         return a.IntValue() == b.IntValue();
     }
