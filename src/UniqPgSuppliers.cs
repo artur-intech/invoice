@@ -27,12 +27,12 @@ sealed class UniqPgSuppliers : Suppliers
 
     public IEnumerator<Supplier> GetEnumerator()
     {
-        return origin.GetEnumerator();
+        throw new NotImplementedException();
     }
 
     IEnumerator IEnumerable.GetEnumerator()
     {
-        return ((IEnumerable)origin).GetEnumerator();
+        throw new NotImplementedException();
     }
 
     bool NameTaken(string name)
