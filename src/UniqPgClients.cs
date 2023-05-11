@@ -34,11 +34,11 @@ sealed class UniqPgClients : Clients
 
     public IEnumerator<Client> GetEnumerator()
     {
-        return origin.GetEnumerator();
+        throw new NotImplementedException();
     }
 
     IEnumerator IEnumerable.GetEnumerator()
     {
-        return ((IEnumerable)origin).GetEnumerator();
+        throw new NotImplementedException();
     }
 }
