@@ -19,6 +19,15 @@ class TrackedTest : Base
         Assert.AreEqual(migration.Id(), pgDataSource.CreateCommand("SELECT id FROM applied_migrations LIMIT 1").ExecuteScalar());
     }
 
+    [Test]
+    public void RepresentsAsString()
+    {
+        var migration = new Migration.Fake();
+        var tracked = new Tracked(migration, pgDataSource);
+
+        Assert.AreEqual(migration.ToString(), $"{tracked}");
+    }
+
     long AppliedMigrationDbRowCount()
     {
         return (long)pgDataSource.CreateCommand("SELECT COUNT(*) FROM applied_migrations").ExecuteScalar();
