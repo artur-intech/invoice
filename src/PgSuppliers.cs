@@ -3,7 +3,7 @@ using Npgsql;
 
 namespace Intech.Invoice;
 
-sealed class PgSuppliers : Suppliers
+sealed class PgSuppliers : Suppliers, IEnumerable<Supplier>
 {
     readonly NpgsqlDataSource pgDataSource;
 

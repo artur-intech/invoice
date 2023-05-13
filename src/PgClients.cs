@@ -3,7 +3,7 @@ using Npgsql;
 
 namespace Intech.Invoice;
 
-sealed class PgClients : Clients
+sealed class PgClients : Clients, IEnumerable<Client>
 {
     readonly NpgsqlDataSource pgDataSource;
 

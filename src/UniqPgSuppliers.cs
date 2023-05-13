@@ -1,9 +1,7 @@
-using System.Collections;
 using Npgsql;
 
 namespace Intech.Invoice;
 
-// Having separate class enables to test database constraints
 sealed class UniqPgSuppliers : Suppliers
 {
     readonly Suppliers origin;
@@ -23,16 +21,6 @@ sealed class UniqPgSuppliers : Suppliers
         }
 
         return origin.Add(name, address, vatNumber, iban, email);
-    }
-
-    public IEnumerator<Supplier> GetEnumerator()
-    {
-        throw new NotImplementedException();
-    }
-
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-        throw new NotImplementedException();
     }
 
     bool NameTaken(string name)
