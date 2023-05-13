@@ -2,12 +2,12 @@ using Npgsql;
 
 namespace Intech.Invoice.DbMigration;
 
-sealed class FileMigration : Migration
+sealed class InFileMigration : Migration
 {
     readonly string path;
     readonly NpgsqlDataSource pgDataSource;
 
-    public FileMigration(string path, NpgsqlDataSource pgDataSource)
+    public InFileMigration(string path, NpgsqlDataSource pgDataSource)
     {
         this.path = path;
         this.pgDataSource = pgDataSource;

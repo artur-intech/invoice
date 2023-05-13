@@ -2,7 +2,7 @@ using NUnit.Framework;
 
 namespace Intech.Invoice.Test;
 
-class FileMigrationTest : Base
+class InFileMigrationTest : Base
 {
     [Test]
     public void Applies()

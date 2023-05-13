@@ -133,7 +133,7 @@ class Base
         var path = Path.Combine(migrationsPath, $"{id}.pgsql");
         File.WriteAllText(path, sql);
 
-        return new FileMigration(path, pgDataSource);
+        return new InFileMigration(path, pgDataSource);
     }
 
     protected ExpandoObject CreateInvoiceFixture()

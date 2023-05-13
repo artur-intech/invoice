@@ -252,7 +252,7 @@ try
                 }
             case "migration init":
                 {
-                    new FileMigration(Path.Combine("assets", "initial_migration.pgsql"), pgDataSource).Apply();
+                    new InFileMigration(Path.Combine("assets", "initial_migration.pgsql"), pgDataSource).Apply();
                     migrations.Init();
                     pgSchema.Generate();
 

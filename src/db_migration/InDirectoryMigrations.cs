@@ -12,7 +12,7 @@ sealed class InDirectoryMigrations : Migrations, IEnumerable<Migration>
     {
         this.path = path;
         // Consider returning `pgDataSource` from FileTransaction
-        pathToMigration = (path) => new Transactional(new Tracked(new FileMigration(path, pgDataSource), pgDataSource), new PgTransaction(pgDataSource));
+        pathToMigration = (path) => new Transactional(new Tracked(new InFileMigration(path, pgDataSource), pgDataSource), new PgTransaction(pgDataSource));
     }
 
     public void Init()
