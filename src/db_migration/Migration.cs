@@ -4,8 +4,16 @@ interface Migration
 {
     class Fake : Migration
     {
+        bool pending;
+
+        public Fake(bool pending = true)
+        {
+            this.pending = pending;
+        }
+
         public void Apply()
         {
+            pending = false;
         }
 
         public string Id()
@@ -15,7 +23,7 @@ interface Migration
 
         public bool Pending()
         {
-            throw new NotImplementedException();
+            return pending;
         }
 
         public override string ToString()
