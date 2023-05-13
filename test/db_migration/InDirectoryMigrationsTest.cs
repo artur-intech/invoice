@@ -9,7 +9,7 @@ class MigrationsTest : Base
     public void Initializes()
     {
         Directory.Delete(migrationsPath, recursive: true);
-        new Migrations(migrationsPath, pgDataSource).Init();
+        new InDirectoryMigrations(migrationsPath, pgDataSource).Init();
         DirectoryAssert.Exists(migrationsPath);
         FileAssert.Exists(Path.Combine(migrationsPath, ".gitkeep"));
     }
@@ -21,7 +21,7 @@ class MigrationsTest : Base
         var expectedPath = Path.Combine(migrationsPath, $"{id}.pgsql");
         FileAssert.DoesNotExist(expectedPath);
 
-        new Migrations(migrationsPath, pgDataSource).CreateEmpty(new Id.Fake(id));
+        new InDirectoryMigrations(migrationsPath, pgDataSource).CreateEmpty(new Id.Fake(id));
 
         FileAssert.Exists(expectedPath);
     }
@@ -33,7 +33,7 @@ class MigrationsTest : Base
         var firstMigration = Migration(id: "19700101080001_test");
         var secondMigration = Migration(id: "19700101080002_test");
 
-        var migrations = new Migrations(migrationsPath, pgDataSource);
+        var migrations = new InDirectoryMigrations(migrationsPath, pgDataSource);
         var actualMigrations = migrations.ToList();
 
         CollectionAssert.AreEqual(new List<string> { firstMigration.Id(), secondMigration.Id(), thirdMigration.Id() }, actualMigrations.Select(i => i.Id()).ToList(),

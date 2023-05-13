@@ -27,7 +27,7 @@ var supportedCommands = ImmutableHashSet.Create("supplier create", "client creat
     "invoice paid", "invoice send");
 var currentCommand = string.Join(" ", args.Take(2));
 
-var migrations = new Migrations(Path.Combine(Environment.CurrentDirectory, "db", "migrations"), pgDataSource);
+var migrations = new InDirectoryMigrations(Path.Combine(Environment.CurrentDirectory, "db", "migrations"), pgDataSource);
 var pgDump = new PgDump(dbConnectionString.PgDump());
 var pgSchema = new PgSchema(Path.Combine("db", "schema.sql"), pgDataSource, pgDump);
 
