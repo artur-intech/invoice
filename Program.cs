@@ -327,9 +327,11 @@ try
                     var username = Environment.GetEnvironmentVariable("SMTP_USERNAME");
                     var password = Environment.GetEnvironmentVariable("SMTP_PASSWORD");
                     var secure = bool.Parse(Environment.GetEnvironmentVariable("SMTP_SECURE"));
+
                     using var smtpClient = new SmtpClient();
-                    // TODO Get rid of the conditions.
                     smtpClient.Connect(host: host, port: port, secure ? SecureSocketOptions.Auto : SecureSocketOptions.None);
+
+                    // Needed because Mailcrab with TLS enabled does not work for some reason
                     if (secure) smtpClient.Authenticate(userName: username, password: password);
 
                     var pgInvoice = new PgInvoice(id, pgDataSource);
