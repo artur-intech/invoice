@@ -529,6 +529,7 @@ class ConsoleTest : Base
     public void SendsEmailWithInvoice()
     {
         dynamic fixture = fixtures["invoices"]["one"];
+        // Port is specified in `.runsettings`.
         using var fakeSmtpServer = SimpleSmtpServer.Start(port: 1024);
 
         var capturedStdOut = CapturedStdOut(() =>
